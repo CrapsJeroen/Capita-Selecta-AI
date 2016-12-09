@@ -1,63 +1,123 @@
-\documentclass[a4paper,10pt]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Journal Article
+% LaTeX Template
+% Version 1.4 (15/5/16)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com) with extensive modifications by
+% Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage[english]{babel}
-\usepackage{graphicx}
-\usepackage[colorlinks, allcolors=black]{hyperref}
-\usepackage{geometry}
-\geometry{tmargin=3cm, bmargin=3cm, lmargin=2.4cm, rmargin=2.2cm}
-\usepackage{todonotes} %Used for the figure placeholders
-\usepackage{ifthen}
-\usepackage{parskip}
-\usepackage{hyperref}
-\usepackage{caption}
-\usepackage{listings}
-\usepackage{tabu}
-\usepackage{rotating}
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
 
-\usepackage{pmboxdraw}
-\usepackage{setspace}
-\usepackage{subcaption}
-\usepackage{alltt}
-\usepackage{amsmath}
+\documentclass[twoside,twocolumn]{article}
 
-\graphicspath{{./images/}}
+\usepackage{blindtext} % Package to generate dummy text throughout this template 
+
+\usepackage[sc]{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\linespread{1.05} % Line spacing - Palatino needs more space between lines
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+
+\usepackage[english]{babel} % Language hyphenation and typographical rules
+
+\usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document margins
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{booktabs} % Horizontal rules in tables
+
+\usepackage{lettrine} % The lettrine is the first enlarged letter at the beginning of the text
+
+\usepackage{enumitem} % Customized lists
+\setlist[itemize]{noitemsep} % Make itemize lists more compact
+
+\usepackage{abstract} % Allows abstract customization
+\renewcommand{\abstractnamefont}{\normalfont\bfseries} % Set the "Abstract" text to bold
+\renewcommand{\abstracttextfont}{\normalfont\small\itshape} % Set the abstract itself to small italic text
+
+\usepackage{titlesec} % Allows customization of titles
+\renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
+\renewcommand\thesubsection{\roman{subsection}} % roman numerals for subsections
+\titleformat{\section}[block]{\large\scshape\centering}{\thesection.}{1em}{} % Change the look of the section titles
+\titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{} % Blank out the default header
+\fancyfoot{} % Blank out the default footer
+\fancyhead[C]{Running title $\bullet$ May 2016 $\bullet$ Vol. XXI, No. 1} % Custom header text
+\fancyfoot[RO,LE]{\thepage} % Custom footer text
+
+\usepackage{titling} % Customizing the title section
+
+\usepackage{hyperref} % For hyperlinks in the PDF
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\setlength{\droptitle}{-4\baselineskip} % Move the title up
+
+\pretitle{\begin{center}\Huge\bfseries} % Article title formatting
+\posttitle{\end{center}} % Article title closing formatting
+\title{Community Detection: Metaheuristic} % Article title
+\author{%
+\textsc{Jeroen Craps} \\[1ex] % Your name
+\normalsize KU Leuven \\ % Your institution
+\normalsize \href{mailto:jeroen.craps@student.kuleuven.be}{jeroen.craps@student.kuleuven.be} % Your email address
+\and % Uncomment if 2 authors are required, duplicate these 4 lines if more
+\textsc{Jorik De Waen} \\[1ex] % Second author's name
+\normalsize KU Leuven \\ % Second author's institution
+\normalsize \href{mailto:jorik.dewaen@student.kuleuven.be}{jorik.dewaen@student.kuleuven.be} % Second author's email address
+}
+\date{\today} % Leave empty to omit a date
+%\renewcommand{\maketitlehookd}{%
+%\begin{abstract}
+%\noindent \blindtext % Dummy abstract text - replace \blindtext with your abstract text
+%\end{abstract}
+%}
+
+%----------------------------------------------------------------------------------------
 
 \begin{document}
-\newboolean{anonymize}
-% Uncomment to create an anonymized version of your report
-%\setboolean{anonymize}{true}
 
-\input{titlepage}
+% Print the title
+\maketitle
 
-\tableofcontents
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
 
-\newpage
 \section{Introduction}
-We will discuss several declaritive systems for solving sudoku and shikaku puzzles.
-An attempt at a proper discussion about the different systems is made.
-An alternative viewpoint to the sudoku problem is proposed and tested.
-Together with the experiments we will further explain the results and our findings of this project.
 
-\input{sudoku}
-\newpage
-\input{shikaku}
+\lettrine[nindent=0em,lines=3]{L} orem ipsum dolor sit amet, consectetur adipiscing elit.
+
+%------------------------------------------------
+
+\section{Overview}
 
 
-\newpage
-\section{Conclusions}
-Our experiments have shown that the viewpoint, search method and redundant constraints are critical factors which determine how quickly a solution can be found. We have also found that it was almost trivial to solve Sudokus using ECLiPSe while it took a lot of effort to make sure our CHR implementation could solve all puzzles in a reasonable amount of time. Even after a lot of experimentation, our fastest CHR Sudoku is still an order of magnitude slower than our ECLiPSe Sudoku solver. \\
+Text requiring further explanation\footnote{Example footnote}.
 
-When solving Shikakus we saw the opposite: We never managed to solve all puzzles in our ECLiPSe Shikaku solver, but with just a few easy optimizations the CHR solver can solve the entire data set in less than 20 seconds. Obviously we wondered why these two seemingly similar types of puzzles end up being so different to implement and optimize in ECLiPSe and CHR. \\ 
+%------------------------------------------------
 
-A first important influence is the quality of our code. Given more time, we are confident we can improve the performance of all of our solvers and probably close the gap between them slightly. However, given that the implementations between the languages use similar viewpoints, search methods and constraints this is probably not the only cause. \\
-What we believe is more likely is that the different languages are better suited for different types of problems. ECLiPSe has libraries specialized in propagating constraints and searching over integer domains. Sudoku puzzles are a perfect match to solve using those specialized libraries. In our CHR implementation we ended up attempting to immitate the way constraints are propagated in the ic library. It is just extremely hard to capture all the advanced techniques and optimizations found in those libraries. \\
+\section{Proposal}
 
-The opposite is true when solving Shikaku puzzles. There is no ECLiPSe library that can handle constraints on domains of arbitrary predicates. While it is certainly possible to make the Shikaku solver work in ECLiPSe, the libraries are simply not suited for problems where constraints apply to more complex structures. The freedom that made it hard for our Sudoku CHR solver to compete with its ECLiPSe counterpart actually made it very easy to manually construct and update the domains of the rectangles. It is possible to also do this work manually in the ECLiPSe solver, but added value of working within an ECLiPSe environment is greatly diminished.
+%----------------------------------------------------------------------------------------
+%	REFERENCE LIST
+%----------------------------------------------------------------------------------------
 
-\bibliography{bib} 
-\bibliographystyle{ieeetr}
+\bibliographystyle{plain}
+\bibliography{bib.bib}
 
-
-
+%----------------------------------------------------------------------------------------
 
 \end{document}
