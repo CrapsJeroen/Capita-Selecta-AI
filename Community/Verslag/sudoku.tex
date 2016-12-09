@@ -1,0 +1,460 @@
+\section{Task 1: Sudoku}\label{sec:sudoku}
+\subsection{Introduction}
+
+An \textit{n-sudoku} puzzle contains $n^{4}$ squares, in an $n^{2} \times n^{2}$ grid, and has $n^{2}$ blocks. These blocks are of size $n \times n$. Sudoku puzzles are form of latin squares these are proven to be \textbf{NP-Complete}. This implies that the general case of sudoku puzzles are also \textbf{NP-Complete}. The collection of these rows, columns and blocks are all \textbf{units} in the puzzle. So we come to the following definition:
+
+\paragraph*{Definition:}
+\textit{A puzzle is solved if every unit contains every element from the interval $1$ to $n^2$ exactly once.}
+
+This means that every unit is filled with a permutation of $[1,2,\cdots,n^{2}]$. 
+The classical viewpoint for Sudoku states that all numbers in a row must be different, that all numbers in a column must be different and that all numbers in a block must be different.\\
+
+\begin{center}
+\begin{tabu} {|[2pt] c | c | c |[2pt] c | c | c |[2pt] c | c | c |[2pt]} \tabucline[2pt]{-}
+	$x_{1,1}$ & $x_{1,2}$ & $x_{1,3}$ & $x_{1,4}$ & $x_{1,5}$ & $x_{1,6}$ & $x_{1,7}$ & $x_{1,8}$ & $x_{1,9}$ \\ \hline
+	$x_{2,1}$ & $x_{2,2}$ & $x_{2,3}$ & $x_{2,4}$ & $x_{2,5}$ & $x_{2,6}$ & $x_{2,7}$ & $x_{2,8}$ & $x_{2,9}$ \\ \hline
+	$x_{3,1}$ & $x_{3,2}$ & $x_{3,3}$ & $x_{3,4}$ & $x_{3,5}$ & $x_{3,6}$ & $x_{3,7}$ & $x_{3,8}$ & $x_{3,9}$ \\ \tabucline[2pt]{-}
+	$x_{4,1}$ & $x_{4,2}$ & $x_{4,3}$ & $x_{4,4}$ & $x_{4,5}$ & $x_{4,6}$ & $x_{4,7}$ & $x_{4,8}$ & $x_{4,9}$ \\ \hline
+	$x_{5,1}$ & $x_{5,2}$ & $x_{5,3}$ & $x_{5,4}$ & $x_{5,5}$ & $x_{5,6}$ & $x_{5,7}$ & $x_{5,8}$ & $x_{5,9}$ \\ \hline
+	$x_{6,1}$ & $x_{6,2}$ & $x_{6,3}$ & $x_{6,4}$ & $x_{6,5}$ & $x_{6,6}$ & $x_{6,7}$ & $x_{6,8}$ & $x_{6,9}$ \\ \tabucline[2pt]{-}
+	$x_{7,1}$ & $x_{7,2}$ & $x_{7,3}$ & $x_{7,4}$ & $x_{7,5}$ & $x_{7,6}$ & $x_{7,7}$ & $x_{7,8}$ & $x_{7,9}$ \\ \hline
+	$x_{8,1}$ & $x_{8,2}$ & $x_{8,3}$ & $x_{8,4}$ & $x_{8,5}$ & $x_{8,6}$ & $x_{8,7}$ & $x_{8,8}$ & $x_{8,9}$ \\ \hline
+	$x_{9,1}$ & $x_{9,2}$ & $x_{9,3}$ & $x_{9,4}$ & $x_{9,5}$ & $x_{9,6}$ & $x_{9,7}$ & $x_{9,8}$ & $x_{9,9}$ \\ \tabucline[2pt]{-}
+\end{tabu}
+\captionof{figure}{Example of the classical viewpoint on a $3$-sudoku puzzle.}
+\end{center}
+
+We can now define the Sudoku problem formally. A value at position row $i$ and column $j$ in the grid is represented as $x_{i,j}$. We define the following constraints for an \textit{n-sudoku} puzzle:
+
+\begin{center}
+\begin{tabular}{l l l}
+\textbf{Variables}: & $ x_{1,1},x_{1,2},\cdots,x_{i,i},x_{i,i+1},\cdots,x_{n^{2},n^{2}} \in \left\{1,2,\cdots,{n^2}\right\}$ & \\
+\textbf{Constraints}: & $\forall i, j, k \in \left\{1,2,\cdots,n^{2}\right\}: x_{i,k} \neq x_{j,k}$ & \textbf{Rows}\\
+& $\forall i, j, k \in \left\{1,2,\cdots,n^{2}\right\}: x_{i,j} \neq x_{i,k}$ & \textbf{Columns}\\
+& $\forall i, j \in \left\{0,1,\cdots,n-1\right\}, \forall a, b, c, d \in \left\{0,1,\cdots,n\right\} : x_{i*n+a,j*n+b} \neq x_{i*n+c,j*n+d}$ & \textbf{Blocks}\\
+\end{tabular}
+\end{center}
+
+\subsection{Alternative viewpoint}
+
+In this section we will discuss an alternative for the classical viewpoint of a \textit{n-sudoku} puzzle.
+Now we will define the puzzle as a problem of $n^{2}$ rows instead of $n^{4}$ separate variables, so that we can group all the elements in a row into a single variable. 
+These rows will be permutations of the list $[1,2,\cdots,n^{2}]$. 
+The goal of this viewpoint is to reduce the amount of constraints needed to express the problem. 
+The amount of variables that are used has been reduced from $n^{4}$ to $n^{2}$. \\
+
+Again we can define this more formally. 
+We define $n^{2}$ variables $r_{i}$ instead of the $n^{4}$ variables $x_{i,j}$ in the classical sudoku viewpoint. 
+The variable $r_{i}$ is the collection of $x_{i,1},x_{i,2},\cdots,x_{i,n^{2}}$ in this case.
+A visualisation of this can be seen in Figure \ref{fig:sudokuRow}
+
+\begin{center}
+\begin{tabu} to 0.3\textwidth{ |[2pt] X[2] X[1] X[2] |[2pt]}\tabucline[2pt]{-}
+& $r_{1}$ & \\ \hline
+& $r_{2}$ & \\ \hline
+& $r_{3}$ & \\ \tabucline[2pt]{-}
+& $r_{4}$ & \\ \hline
+& $r_{5}$ & \\ \hline
+& $r_{6}$ & \\ \tabucline[2pt]{-}
+& $r_{7}$ & \\ \hline
+& $r_{8}$ & \\ \hline
+& $r_{9}$ & \\ \tabucline[2pt]{-}
+\end{tabu}
+\captionof{figure}{Example of the alternative viewpoint on an 3-sudoku puzzle.}\label{fig:sudokuRow}
+\end{center}
+
+The row constraints from the original viewpoint are no longer necessary because they are already included in the fact that each row has to be a permutation of the sequence $[1,2,\cdots,n^{2}]$.
+We will still need to define the column and block constraints.
+To do so we will say that $r_{i,j}$ is the element with index $j$ in the $i$th row of the puzzle.
+So that we can still properly define the columns and blocks.
+
+\begin{center}
+\begin{tabular}{l l l}
+\textbf{Variables}: & $ r_{1},r_{2},\cdots,r_{n^{2}} \in \{[1,2,\cdots,n^{2}],[2,1,\cdots,n^{2}],\cdots,[n^{2},n^{2}-1,\cdots,1]\}$ & \\
+\textbf{Constraints}: & $\forall i, j, k \in \left\{1,2,\cdots,n^{2}\right\}: r_{i,k} \neq r_{j,k}$ & \textbf{Columns}\\
+& $\forall i, j \in \left\{0,1,\cdots,n-1\right\}, \forall a, b, c, d \in \left\{0,1,\cdots,n\right\} : r_{i*n+a,j*n+b} \neq r_{i*n+c,j*n+d}$ & \textbf{Blocks}\\
+
+\end{tabular}
+\end{center}
+
+\subsection{Criteria}
+The criteria for a good viewpoint according to us are the following: an easy understanding of the representation, a low computational complexity to get to a solution, a low amount of backtracks or logical inferences that are required to get a solution from the implementation of the proposed viewpoint.
+In our opinion the alternative viewpoint that we suggested is a good viewpoint, because the amount of required backtracks should be greatly reduced. 
+This is due to the decrease in variables in the problem and the further restriction of their domain. 
+
+\subsection{Channeling Constraints}
+The channeling constraints between the classical viewpoint and the alternative viewpoint we proposed can only be defined in one direction.
+It is only possible to define the values of the individual variables in the classical viewpoint when we have the rows in the alternative viewpoint.
+This should always be valid in any case $r_{i} \rightarrow x_{i,1},x_{i,2},\cdots,x_{i,n^{2}}$, but in the other direction this is not the case.
+If a row is assigned a certain permutation as its value, then the elements of the corresponding row in the original viewpoint can be assigned the values from this permutation.
+In the other direction this isn't possible unless all of the variables in a row have been assigned a value and they are all different from each other.
+So that these values form a permutation of the original list.
+The alternative viewpoint has as main advantage that the row-constraints are automatically implied when defining the domain of the variables.
+The influence of this would be mainly noticed in the search process, instead of instantiating every variable separately the entire row will be instantiated at once.
+Due to these channeling constraints being so trivial we think that there is no point in implementing them, since the influence would be minimal.
+\newpage
+\subsection{Implementation}
+
+In this section we will be discussing the implementation of our sudoku solvers.
+The reasoning behind why we chose \texttt{ECLiPSe} and \texttt{CHR} is later explained in section \ref{subsec:sudokudescision}.
+As mentioned previously we will not be implementing any channeling constraints due to them being too straightforward and it is only possible to define them in one direction.
+
+\subsubsection{ECLiPSe}
+\paragraph*{Original viewpoint}
+In the original viewpoint we view the sudoku as a matrix with $n^{4}$ variables.
+We extract the required information from this matrix by defining rows, columns and blocks.
+The constraints that are required for this viewpoint of the problem are the following.
+For each row, column and block we say that every value in these lists must be different.
+So all of the constraints are exactly the same, but the way of extracting this information from the matrix is different.\\
+
+A row with index $I$ is defined in a matrix by \textit{Row is} $Sudoku[I,1..N^{2}]$. 
+For extracting a column with index $I$ we use \textit{Col is } $Sudoku[1..N^{2},I]$.
+While extracting the information for the rows and columns is straight forward, it becomes clear when extracting the variables required to fulfill the block constraints.
+We define the block with index $(I,J)$ as follows. 
+The indexes $I, J$ are elements from the interval $[0,1,\cdots,(n-1)]$.
+The block at the upperleft corner of the puzzle will be named the $(0,0)$-block and the block at the bottomright corner will be the $(n-1,n-1)$-block.
+For each pair $(I,J)$ we now need to define the list containing its $n^{2}$ elements.
+We need two new variables $(K,L)$ to define the rows and columns needed to form these blocks.
+For example, the $X$ coordinate in our matrix will be equal to $(I*n)+K$. 
+So for the $(0,0)$ the required rows are $1,2,\cdots,n-1$.
+A similar approach can be made for the columns where $Y = (J*n)+L$.
+Combining all of the possible $X$ and $Y$ values based on the given $(I,J)$ pair leads to the all of the indexes required to create the specified $(I,J)$-block.
+
+\begin{lstlisting}
+( multifor([I,J],0,(N-1)), param(Sudoku, N) do
+	( multifor([K,L],1,N), param(Sudoku, I, J, N), foreach(B,Block) do
+		R is (I*N)+K,
+		C is (J*N)+L,
+		B is Sudoku[R,C]
+	),
+	alldifferent(Block)
+).
+\end{lstlisting}
+
+Important to note is that after all of these constraints the most important aspect of the problem remains how to decide if every value in a list is unique. 
+There are a couple of different ways to implement this.
+In this first viewpoint every variable is instantiated separately with an element from the domain $[1,2,\cdots,n^{2}]$. \\
+
+As can be seen in the code snippet above we utilize the built-in \textsl{alldiferent/1} function from the \texttt{ic library}, which we have imported into our program with the \textsl{:- lib(ic)} command.
+We could have used passive constraints where the entire search space would be used instead of the pruned version that is created by the \texttt{ic library}.
+This would have caused a lot of backtracking to occur while looking for a possible solution since every variable would be instantiated separately from the others.
+For every variable in the list the rest of the list is checked to see if it doesn't contains the same value.\\
+
+Another option was to use the suspend library which puts constraints on the variables before searching.
+But afterwards it still iterates over the entire search space, because it still doesn't utilize the additional constraints to reduce the search space of the other variables in a list/column/block.\\
+\newpage
+We ended up choosing the \texttt{ic library} for two reasons.
+Firstly this allows us to define the constraint before starting the search process.
+Secondly, the search domain is reduced while searching by the constraints so that less backtracking is required.
+This is called Forward Checking. \\
+
+Further optimizations can be achieved by value and variable ordering.
+Which we can change by using different methods in the \textsl{search(+L, ++Arg, ++Select, +Choice, ++Method, +Option)} command of the ECLiPSe library. 
+We have tried out multiple of these methods to decide which one performs best with our given implementation.
+\begin{itemize}
+\item \textbf{input first}: The order of the instantiation of the variables is done in the same order as they have been put into the system by our implementation. This method utilizes no extra information about the domain size of the variables.
+\item \textbf{first fail}: The variable with the smallest domain size will be instantiated first, meaning that the deeper we go into the search tree the larger the domain size should be. This would normally imply that failure should occur earlier rather than later. 
+\item \textbf{anti first fail}: In this method the variables with the largest domain size will be instantiated first. This implies that harder decisions are made later in the search tree.
+\end{itemize}
+
+The result of these experiments can be found in the section \ref{subsec:sudokuexperiments}.
+Where we will further evaluate these different methods, so that we can decide which one produces the best results.
+
+\paragraph*{Alternative viewpoint}
+
+In this alternative viewpoint we view the puzzle as a list of lists.
+There are $n^2$ list with each $n^{2}$ variables.
+In this representation we see this list of variables as a single variable of which the possible values are all of the possible permutations of the sequence $[1,2,\cdots,n^{2}]$. \\
+
+\begin{lstlisting}
+(foreach(Row,Sudoku), param(N2)  do
+	permutation([1..N2],Row)
+)
+
+permutation(Sequence,Permutation):-
+	Permutation :: Sequence,
+	alldifferent(Permutation).
+\end{lstlisting}
+
+By defining the entire row as a variable we no longer need the row constraints since these are implied by the domain of the variables.
+The column and block constraints are similar to the original viewpoint, except for the fact that instead of working with the matrix we now need to iterate over the lists to extract the necessary variables to form the columns and blocks.
+
+\begin{lstlisting}
+(for(J,1,N2) do
+	(foreach(Row,Sudoku), param(J), foreach(E,Col) do
+		selectElement(E,J,Row)
+	),
+	alldifferent(Col)
+)
+\end{lstlisting}
+
+As a consequence of this viewpoint is that we use active propagation by only having permutation of the sequence 1 to $n^2$.
+The reasoning behind this is that we will no longer attempt a certain value for a variable in a row when the value already exists in the row. 
+This kind of active propagation is already done when we utilize the \texttt{ic library}, so we are not expecting to see a big difference in performance between these two implementations.
+We will further discuss the results in the section \ref{subsec:sudokuexperiments}
+\newpage
+\subsubsection{CHR}
+First of all we want to clearly mention how the implementation of our sudoku solver works.
+To start everything off we retrieve the \texttt{Puzzle} by its name and calculate $n^2$, which we add to the constraint store.
+Now the \textsl{import(Puzzle)} will be added to the constraint store to further add the elements of the puzzle.
+Afterwards the constraint store is printed out, the search is started and the solution is printed out once more. 
+We will also empty the constraint store afterwards for convenience.
+
+\begin{lstlisting}
+solve(Name) <=>
+	puzzles(Puzzle,Name),
+	length(Puzzle,N2),
+	dom(N2),
+	import(Puzzle),
+	show,
+	search,
+	!,
+	show,
+	clean.
+\end{lstlisting}
+
+The way the elements are added to the constraint store and processed beforehand both depend on the viewpoint that is used.
+
+\paragraph*{Original viewpoint}
+In the original viewpoint the \texttt{$import(puzzle)$} will be used to change the value of the element at the specified position in the existing lists of length $n^{2}$. 
+But before this can be done we need to specify a few constraints.
+For every column, row and block we will add a constraint to the constraint store.
+Each of these constraints will contain an index to specify about which column/row/block we are talking about and a list of the length $n^2$.\\
+
+Now we can start adding the known elements into the lists.
+So for example if there is an element at position (1,2) with value 3, then in the \textsl{col(2,ColList)} constraint the list will be changed so that at the position with index 1 the value 3 is placed.
+Of course for the other lists this is also done, so at the position with index 2 in the RowList the value 3 is placed.
+For the blocks, the exact position in the list is calculated from the row and column of the given value.
+Something to explain is that the column, row and block constraints aren't removed from and added again to the constraint store with their updated list because we don't want these rules to trigger again.
+
+\begin{lstlisting}
+dom(N), row(Y,RowList), col(X,ColList), block(BlockN,BlockList) 
+	\ import_row([CVal|Vals],Y,X) <=>
+	in_block(Y,X,BlockN,N), position_in_block(Y,X,PosInBlock,N) | 
+	nth1(X,RowList,CVal), nth1(Y,ColList,CVal), 
+	nth1(PosInBlock, BlockList, CVal), 
+	X1 is X + 1, import_row(Vals,Y,X1).
+\end{lstlisting}
+
+After adding all of the known values into the domain, the only thing that remains is to specify that all of the elements in the list need to be different from each other.
+We will force this constraint by using a built-in function namely the \textsl{alldifferent} function.
+This function will enforce that all of the elements in the list are different from each other, if not the function will fail.
+
+\begin{lstlisting}
+imported, col(_,L) ==> all_different(L); fail.
+imported, block(_,L) ==> all_different(L); fail.
+imported, row(_,L) ==> all_different(L); fail.
+\end{lstlisting}
+
+The only thing that for remains for us is to iterate over the search space. We have done this by using the built-in labeling functionality. We show the puzzle before and after solving it.
+Finally we end by cleaning our entire constraint store.
+
+\paragraph*{Alternative viewpoint}
+In the alternative viewpoint we will exchange the \textsl{$import([CRow|Rows],Y)$} for two new constraints namely \textsl{$import\_row(CRow,Y,1)$} and \textsl{$import(Rows,Y1)$} which is $Y$ incremented by one.
+
+This method of inserting the domain knowledge into the constraint store will be continued recursively until all the given information is handled.
+So depending on the fact that an element is known or not will determine how it is added to the constraint store.
+If the element is a variable \textsl{$option(X,Y,L)$} is used where X stands for column, Y stands for row and the L contains all possible values in the domain.
+On the other hand if a element is a value, we add \textsl{$known(X,Y,V)$} to the constraint store where this is the position of the specified value in the puzzle.
+When there is only one remaining value in the domain of an \textsl{$option(X,Y,L)$} we will simplify this to \textsl{$known(X,Y,V)$} with V being the only remaining value in the domain.
+
+\begin{lstlisting}
+import([],_) <=> true.
+import([CRow|Rows],Y) <=>
+    import_row(CRow,Y,1), Y1 is Y + 1 ,import(Rows,Y1).
+
+import_row([],_,_) <=> true.
+import_row([CVal|Vals],Y,X) <=>
+    nonvar(CVal) | known(Y,X,CVal), X1 is X + 1, import_row(Vals,Y,X1).
+
+import_row([CVal|Vals],Y,X) <=>
+    var(CVal) | upto(9,L), option(Y,X,L), X1 is X + 1, import_row(Vals,Y,X1).
+\end{lstlisting}
+
+Now that all of the information is added to the system we will use constraints to change the domains of the \textsl{$option$} elements in the constraint store.
+If an known element is on the same row as a variable that is not instantiated yet, we can remove the value of the known element from the possibilities from the variable.
+We also do this for the columns.
+
+\begin{lstlisting}
+%% ROW Constraints
+known(X,_,V) \ option(X,Y,L) <=> member(V,L) | delete(L,V,NL), option(X,Y,NL).
+%% COL Constraints
+known(_,Y,V) \ option(X,Y,L) <=> member(V,L) | delete(L,V,NL), option(X,Y,NL).
+\end{lstlisting}
+
+The block constraints have the same purpose but were less obvious to implement. 
+This was because of the way we needed to decide when a certain variable was occurring in the same block as the known value.
+For this we used the integer division to give an index to the blocks.
+As a result we have blocks (0,0) to (n-1,n-1) which we can use to filter the domain of the remaining variables even further.
+We always remove the existing option from the constraint store before adding an updated one.
+This way we ensure that all of the rules will be checked for the new constraint.
+
+\begin{lstlisting}
+%% BLOCK Constraints
+known(X,Y,V), dom(N2) \ option(X1,Y1,L) <=> member(V,L),
+        N is integer(sqrt(N2)),
+        XB is (X-1)//N, YB is (Y-1)//N,
+        XB is (X1-1)//N, YB is (Y1-1)//N
+         | delete(L,V,NL), option(X1,Y1,NL).
+\end{lstlisting}
+
+The only thing that remains now is to enumerate the search space. 
+This is done by adding the \textsl{search} constraint into the constraint store by the first method we mentioned.
+When an \textsl{option} constraint is present in the constraint store it will be retrieved and stored together with a \textsl{permute} constraint. 
+This permute constraint will remain in the constraint store until all of the options at the row specified by the permute constraint are removed from the constraint store. \\
+
+Due to the enumeration being implemented in Prolog we can backtrack if necessary.
+Once a single variable is instantiated and a known constraint is added to the store, the remaining variables on that row will remove the selected value from their domain so that there can never be a conflict in a row.
+Here we instantiated the entire row as a permutation from the sequence one to $n^2$. 
+We say that failure occurs when an option has no possible values left.
+If this happens, we will backtrack to the last choice point. 
+The only time a choice is made in our implementation is when we enumerate the possible options in the domain of a variable.
+
+\subsubsection{Decision}\label{subsec:sudokudescision}
+Before deciding which languages we would use for our implementation, we made a comparison between the programming languages.
+We will explain why they are usually used, what the idea behind them is and how we would reason about them when applying them to sudoku puzzles.
+We will start to discussion with \texttt{ECLiPSe}. Afterwards we will continue with \texttt{CHR} and \texttt{Jess}.
+
+\paragraph*{ECLiPSe} is an constraint logic programming language that is backward-compatible with \texttt{Prolog}.
+The constraint logic programming is used for constraint satisfaction problems.
+More specific, optimization, planning and other similar kind of problems.
+These problems are defined by some variables which can take a possible value from a certain domain.
+A solution for these kind of problems is found when each variable has exactly one value and that it fulfills all of the constraints.
+\texttt{ECLiPSe} provides several libraries which can be used in application programs.
+In case of the sudoku problem the variables would be the unknown values in the puzzle with their domain being the interval between 1 and $n^2$.
+The constraints would be that there can only be one occurrence of a value in a certain row, column or block.
+
+\paragraph*{CHR} is short for Constraint Handling Rules. 
+In \texttt{CHR} we will work with a constraint store which we will use to represent the state of the problem that we are trying to solve.
+This is used often used to implement Rule Based Systems, an example of this is the domain-specific expert system.
+This uses rules to make deductions or choices, which is very applicable to the provided problems. 
+By using simplification and propagation rules we will be making committed choices. 
+This means once we change the state of the constraint store this can't be undone.
+Whenever a new constraint is added to the constraint store every rule is checked to see if it is necessary to execute it.
+Propagation rules are only executed once for the same constraint.
+Again for the sudoku problem we would see the constraint store as a way to represent our knowledge of the given information.
+The row, column and block constraints will change the constraint store to reduce the search space.
+While we said that \texttt{CHR} makes committed choices, it is still possible to backtrack due to the usage of \texttt{Prolog}.
+ 
+\paragraph*{Jess} stands for the Java expert system shell.
+It uses backward chaining and works by deriving conclusions from premises.
+So due to its integration in with Java we can use objects and other Java functionality to fulfill our needs.
+Just like with \texttt{CHR} this can easily be used to implement Rule Based Systems.
+In this system there are three parts: the Rule Base, the Working Memory (Fact Base) and the Inference Engine.
+The Rule Base contains functions calls that manipulate the Fact Base, which contains all of the prior information for the problem.
+While the Inference Engine will match the elements from the Fact Base to the Rule Base.
+This is done by comparing all the rules to the Fact Base to see which rules need to be activated.
+Further it will handle conflicts and execute the commands on the Fact Base.
+The Fact Base will represent the state of our system during the processing of the information.
+The order in which the rules are activated depends on the patterns. 
+The most specific pattern will be triggered first, but it is possible to prioritize certain rules above others by defining a weight.
+If we look at Sudoku, we could say that the known values are the Fact Base and that all of the row, column and block constraints are part of the Rule Base.
+These rules will deduce the options on the other variables.
+
+\paragraph*{Decision}
+We eventually chose to use \texttt{ECLiPSe} and \texttt{CHR} for our implementations of our Sudoku solver.
+The reasoning behind this was that \texttt{CHR} and \texttt{Jess} are in a way very similar and we found the syntax of \texttt{CHR} much more clearer compared to \texttt{Jess}.
+Since we already had a basic understanding of \texttt{Prolog}, it was preferable that the chosen languages had a certain integration with it.
+\texttt{ECLiPSe} was chosen because of its difference from the two other languages and the similarities to \texttt{Prolog}.
+On the other hand \texttt{CHR} was chosen due to it being a more understandable high level language that was still closely related to \texttt{Prolog}.
+\texttt{Jess} looked less straightforward and suitable for the specified problems in our eyes.
+It seemed like the least desirable option out of the three.
+
+
+\subsection{Experiments}\label{subsec:sudokuexperiments}
+In these experiments we want to see the difference between the two viewpoints and the different programming languages.
+But it is also our intention to measure the influence of the different search methods, so that we can find the optimal setup for our implementations.
+The most important aspects that we will consider are the time it takes to solve the problem, and the amount of inferences that are required, these are good measuring points.
+During all of our experiments we used the same computer\footnote{Intel® Core™ i5-4570S CPU @ 2.90GHz × 4}.
+It is in our interest to time-out the process after a certain time.
+Due to using the same computer for all the experiments we should get a good indication of the performance of our different sudoku solvers.
+
+\subsubsection{Results}
+\paragraph*{Viewpoint 1}
+\begin{center}
+\footnotesize
+\begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|}
+\cline{2-9}
+\multicolumn{1}{c|}{} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Input Order}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ First Fail} \end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Anti First Fail}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR}\end{sideways}}\\ \cline{2-9}
+\multicolumn{1}{c|}{} & Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & inferences \\ \tabucline[2pt]{-} 
+verydifficult	&	0.00	& 0 &	0.00	& 0 &	0.00	& 0 &	0.01	& 157,196	\\
+expert			&	0.00	& 0 &	0.01	& 1 &	0.00	& 0 &	0.03	& 537,655 \\
+lambda			&	0.00	& 3 &	0.00	& 3 &	0.00	& 0 &	0.93	& 18,295,296\\
+hard17			&	0.00	& 1 &	0.01	& 1 &	1.10	& 273 &	0.46	& 8,960,808	\\
+symme			&	0.14	& 42 &	0.07	& 19 &	4.09	& 912 &	0.49	& 9,590,025\\
+eastermonster	&	0.16	& 51 &	0.08	& 33 &	1.79	& 351 &	0.18	& 3,291,075\\
+tarek052		&	0.25	& 59 &	0.12	& 35 &	1.84	& 398 &	0.23	& 4,581,841\\
+goldennugget	&	0.49	& 104 &	0.22	& 76 &	0.23	& 30 &	0.52	& 9,906,969\\
+coloin			&	0.17	& 88 &	0.02	& 8 &	12.84	& 3004 &	0.13	& 2,240,845\\
+extra1			&	0.01	& 0 &	0.00	& 1 &	0.00	& 0 &	0.18	& 3,321,574\\ 
+extra2			&	0.00	& 0 &	0.00	& 0 &	0.00	& 0 &	6.79	& 132,119,829\\ 
+extra3			&	0.00	& 3 &	0.01	& 3 &	0.00	& 0 &	0.93	& 18,295,296\\ 
+extra4			&	0.01	& 4 &	0.00	& 3 &	0.00	& 0 &	1.88	& 37,006,351\\ 
+inkara2012		&	0.02	& 3 &	0.06	& 17 &	1.13	& 244 &	0.42	& 8,091,754\\ 
+clue18			&	0.19	& 69 &	0.03	& 8 &	0.55	& 129 &	0.47	& 9,212,851\\ 
+clue17			&	0.00	& 0 &	0.00	& 0 &	0.00	& 0 &	0.24	& 4,378,228\\ 
+sudowiki\_nb28	&	0.75	& 413 &	0.40	& 297 &	0.08	& 11 &	2.32	& 46,412,038\\ 
+sudowiki\_nb49	&	0.15	& 48 &	0.14	& 58 &	1.14	& 242 &	0.81	& 15,918,183\\ 
+peter			&	0.00	& 0 &	0.00	& 0 &	0.00	& 0 &	0.06	& 741,743 \\\tabucline[2pt]{-}
+Average	 		&	0.12	& 47 &	0.06	& 30 &	1.34	& 294 &	0.90	& 22,075,239\\
+\hline
+\end{tabu}
+\captionof{table}{The results from the experiments on the first viewpoint}
+\end{center}
+
+\begin{itemize}
+\item The first thing we can notice is that all of our implementations of the first viewpoint successfully solve all of the sudoku puzzles. We added an extra $16 \times 16$ sudoku puzzle to show that our implementations can handle larger puzzles than the original $9 \times 9$ sudoku.
+\item When comparing the \texttt{input order} against the \texttt{fail first} we see that there is significant difference in performance. The \texttt{first fail} performs equally good or even better in almost all cases, expect for a few puzzles like for example \textbf{inkara2012}. The \texttt{first fail} will make the hard decisions early on with the intention to require less backtracking, which can also be seen in our results.
+\item On every puzzle, except for a few, the \texttt{anti first fail} will perform worse compared to the other implementations in \texttt{ECLiPSe}. The puzzles in question are \textbf{sudowiki\_nb28} and \textbf{goldennugget}. Our reasoning is that the variables with the smallest domains don't have a lot of influence on the rest of the variables in these few cases. So almost no progress is made by prioritizing them, while the variables with the larger domain have more influence.
+\item Our \texttt{CHR} implementation works slower than the \texttt{ECLiPSe} implementations, except for the \texttt{anti first fail} one. We believe this is due to the usage of the built-in libraries in our \texttt{ECLiPSe} implementations, these should perform much better than our own written methods in \texttt{CHR}.
+\item Which puzzle is the most difficult depends on the search heuristic that is used. In case of the \texttt{anti first fail} heuristic the \textbf{coloin} puzzle is the hardest, but when we look at the \texttt{first fail} heuristic we see that the \texttt{sudowiki\_nb28} is the most difficult puzzle. Our reasoning is that it mainly depends on the importance of the variables with a small domain, if these variables have a large influence on the domain of the other variables then the \texttt{first fail} will see an increase in performance (due to the increased importance of the choice) and a decrease in the amount of backtracks that are made. 
+\end{itemize}
+
+\paragraph*{Viewpoint 2}
+\begin{center}
+\footnotesize
+\begin{tabu}{|c|[2pt] c|c|c|c|c|c|c|c|}
+\cline{2-9}
+\multicolumn{1}{c|}{} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Input Order}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ First Fail} \end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{ECLiPSe \\ Anti First Fail}\end{sideways}} & \multicolumn{2}{|c|}{\begin{sideways}\parbox{2cm}{CHR}\end{sideways}}\\ \cline{2-9}
+\multicolumn{1}{c|}{} & Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & nbOfBt& Time (s) & inferences \\ \tabucline[2pt]{-}             
+verydifficult	&	0.00	&	0	&	0.00	&	0	&	0.00	&	0	&	0.35	& 6,462,861	\\
+expert			&	0.01	&	0	&	0.00	&	1	&	0.00	&	0	&	1.87	& 34,471,978	\\
+lambda			&	0.00	&	3	&	0.08	&	3	&	0.00	&	0	&	TO	&	\\
+hard17			&	0.00	&	1	&	0.00	&	1	&	1.18	&	273	&		& 	\\
+symme			&	0.15	&	42	&	0.00	&	19	&	4.39	&	909	&		& 	\\
+eastermonster	&	0.19	&	52	&	0.11	&	33	&	1.97	&	352	&		& 	\\
+tarek052		&	0.30	&	59	&	0.18	&	35	&	1.97	&	398	&		& 	\\
+goldennugget	&	0.53	&	104	&	0.30	&	76	&	0.00	&	30	&		& 	\\
+coloin			&	0.25	&	88	&	0.00	&	8	&	13.71	&	3006&		& 	\\
+extra1			&	0.00	&	0	&	0.00	&	1	&	0.00	&	0	&		& 	\\ 
+extra2			&	0.00	&	0	&	0.00	&	0	&	0.00	&	0	&		& 	\\ 
+extra3			&	0.00	&	3	&	0.00	&	3	&	0.00	&	0	&		& 	\\
+extra4			&	0.00	&	4	&	0.00	&	3	&	0.00	&	0	&		& 	\\ 
+inkara2012		&	0.00	&	3	&	0.00	&	17	&	1.52	&	252	&		& 	\\ 
+clue18			&	0.22	&	69	&	0.00	&	8	&	0.00	&	129	&		& 	\\ 
+clue17			&	0.00	&	0	&	0.00	&	0	&	0.00	&	0	&		& 	\\ 
+sudowiki\_nb28	&	0.95	&	413	&	0.59	&	297	&	0.00	&	11	&		& 	\\ 
+sudowiki\_nb49	&	0.22	&	47	&	0.21	&	58	&	2.08	&	265	&		& 	\\ 
+peter			&	0.00	&	0	&	0.00	&	0	&	0.00	&	0	&		& 	\\\tabucline[2pt]{-}
+Average	 		&	0.12	&	47	&	0.06	&	30	&	1.34	&	296	&		& 	\\
+\hline
+\end{tabu}
+\captionof{table}{The results from the experiments on the second viewpoint.}
+\end{center}
+
+\begin{itemize}
+\item Again we notice that all of the \texttt{ECLiPSe} implementations are able to solve all of the puzzles. In case of the \texttt{CHR} implementation we notice that almost none of the puzzles can be solved under the time limit that we specified.
+\item The moment we start using the \texttt{first fail} heuristic, we see a drastic increase in performance for almost all puzzles. The only puzzle that performs worse is the \textbf{lambda} puzzle, here we see a decrease in performance. Our reasoning here is that the optimal ordering of the variables is close to the \texttt{input order}, while currently we are looking at the variables with the smallest domain. This suspicion is confirmed when we take a look at the performance of the \texttt{anti first fail} heuristic, which also performs better than the \texttt{first fail} heuristic.
+\item When we compare the \texttt{anti first fail} against the other implementations we see a decrease in performance except for a couple of instances where it performs drastically better than the other heuristics. The puzzles in question are \textbf{lambda}, \textbf{goldennugget}, \textbf{sudowiki\_nb28} and \textbf{clue18}. We saw a similar pattern in the original viewpoint. The worst puzzle for this viewpoint was \textbf{coloin}, where it takes $13.71$ seconds compared to $0.25$ in the \texttt{input order} heuristic. The reasoning again is that in this puzzle \texttt{anti first fail} is the worst possible search heuristic.
+\item We also observe an increase in the amount of backtracks when using the \texttt{anti first fail} heuristic, which we expected.
+\item In general the alternative viewpoint performs worse than the original viewpoint. We think that the reason for this is that due to using the \texttt{ic library} we already use the forward checking that we were trying to achieve by using this viewpoint. So we end up creating extra overhead by imposing these constraints on the variables ourselves. 
+\item The implementation in \texttt{CHR} works pretty poorly considering the other results. Our reasoning behind why it is not able to finish the majority of the puzzles is that we go too deep into our search tree before we observe a failure. With improvements to this method we should be able to increase the further performance of our implementation in \texttt{CHR}.
+\end{itemize}
+
+\subsubsection{Conclusions}
+
+We can see that our alternative viewpoint in general is performing worse on almost all puzzles, we believe this is due to the fact that the \texttt{ic library} will use forward checking which we tried to simulate with our implementation.
+The conclusion is that in almost all cases the \texttt{first fail} search heuristic performs best in the original viewpoint. While the \texttt{anti first fail} performs the worst overal, except for our implementation in \texttt{CHR}.
+We believe that \texttt{CHR} is less suited for problems that can be explained in a very straightforward fashion compared to \texttt{ECLiPSe}.
+Adding all of the constraints to the constraint store and processing them by using the simplification or propagation rules takes too much time compared to the quick built-in libraries and methods that can be used from \texttt{ECLiPSe}.
+ 

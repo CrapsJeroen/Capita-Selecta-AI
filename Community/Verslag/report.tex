@@ -1,0 +1,63 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage[colorlinks, allcolors=black]{hyperref}
+\usepackage{geometry}
+\geometry{tmargin=3cm, bmargin=3cm, lmargin=2.4cm, rmargin=2.2cm}
+\usepackage{todonotes} %Used for the figure placeholders
+\usepackage{ifthen}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{tabu}
+\usepackage{rotating}
+
+\usepackage{pmboxdraw}
+\usepackage{setspace}
+\usepackage{subcaption}
+\usepackage{alltt}
+\usepackage{amsmath}
+
+\graphicspath{{./images/}}
+
+\begin{document}
+\newboolean{anonymize}
+% Uncomment to create an anonymized version of your report
+%\setboolean{anonymize}{true}
+
+\input{titlepage}
+
+\tableofcontents
+
+\newpage
+\section{Introduction}
+We will discuss several declaritive systems for solving sudoku and shikaku puzzles.
+An attempt at a proper discussion about the different systems is made.
+An alternative viewpoint to the sudoku problem is proposed and tested.
+Together with the experiments we will further explain the results and our findings of this project.
+
+\input{sudoku}
+\newpage
+\input{shikaku}
+
+
+\newpage
+\section{Conclusions}
+Our experiments have shown that the viewpoint, search method and redundant constraints are critical factors which determine how quickly a solution can be found. We have also found that it was almost trivial to solve Sudokus using ECLiPSe while it took a lot of effort to make sure our CHR implementation could solve all puzzles in a reasonable amount of time. Even after a lot of experimentation, our fastest CHR Sudoku is still an order of magnitude slower than our ECLiPSe Sudoku solver. \\
+
+When solving Shikakus we saw the opposite: We never managed to solve all puzzles in our ECLiPSe Shikaku solver, but with just a few easy optimizations the CHR solver can solve the entire data set in less than 20 seconds. Obviously we wondered why these two seemingly similar types of puzzles end up being so different to implement and optimize in ECLiPSe and CHR. \\ 
+
+A first important influence is the quality of our code. Given more time, we are confident we can improve the performance of all of our solvers and probably close the gap between them slightly. However, given that the implementations between the languages use similar viewpoints, search methods and constraints this is probably not the only cause. \\
+What we believe is more likely is that the different languages are better suited for different types of problems. ECLiPSe has libraries specialized in propagating constraints and searching over integer domains. Sudoku puzzles are a perfect match to solve using those specialized libraries. In our CHR implementation we ended up attempting to immitate the way constraints are propagated in the ic library. It is just extremely hard to capture all the advanced techniques and optimizations found in those libraries. \\
+
+The opposite is true when solving Shikaku puzzles. There is no ECLiPSe library that can handle constraints on domains of arbitrary predicates. While it is certainly possible to make the Shikaku solver work in ECLiPSe, the libraries are simply not suited for problems where constraints apply to more complex structures. The freedom that made it hard for our Sudoku CHR solver to compete with its ECLiPSe counterpart actually made it very easy to manually construct and update the domains of the rectangles. It is possible to also do this work manually in the ECLiPSe solver, but added value of working within an ECLiPSe environment is greatly diminished.
+
+\bibliography{bib} 
+\bibliographystyle{ieeetr}
+
+
+
+
+\end{document}
