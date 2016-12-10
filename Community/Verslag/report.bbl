@@ -1,3 +1,19 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{Pizzuti2009}
+Pizzuti Clara.
+\newblock Overlapped community detection in complex networks.
+\newblock {\em GECCO}, pages 859--866, 2009.
+
+\bibitem{multiagent2016}
+Zhangtao Li and Jing Liu.
+\newblock A multi-agent genetic algorithm for community detection in complex
+  networks.
+\newblock {\em Physica A}, 449:336--347, 2016.
+
+\bibitem{Ding2016}
+Dengdi~Sun Zhuanlian~Ding, Xingyi~Zhang and Bin Luo.
+\newblock Overlapping community detection based on network decomposition.
+\newblock {\em Scientific Reports}, 2016.
 
 \end{thebibliography}
