@@ -1,8 +1,8 @@
-#Latex files
 *.aux
 *.blg
 *.log
 *.bbl
 *.dvi
 *.out
+*.gz
 *.syntech.gz
