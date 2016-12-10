@@ -1,0 +1,8 @@
+#Latex files
+*.aux
+*.blg
+*.log
+*.bbl
+*.dvi
+*.out
+*.syntech.gz
