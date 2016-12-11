@@ -98,32 +98,34 @@
 
 \section{Introduction}
 
-\lettrine[nindent=0em,lines=3]{C} ommunities are found in networks everywhere in the world, due to the rise of social networks and the collection of other graph data over the last decade these networks have been growing exponentially.
+\lettrine[nindent=0em,lines=3]{N} etworks are ever so present in the world, due to the rise of social media and the emergence of Big Data\footnote{Big data is a term for data sets that are so large or complex that traditional data processing applications are inadequate to deal with them.} over the last decade.
+The detection of communities\footnote{A network is said to have community structure if the nodes of the network can be easily grouped into (potentially overlapping) sets of nodes such that each set of nodes is densely connected internally.} in these large networks has grown in importance.
 Communities can be seen as fairly independent parts of the graph.
-The information these graphs contain can be very valuable for a variety of reasons.
-Faster algorithms are required to deal with this increase of data. 
+The information contained in these graphs can be utmost importance to understanding the data that is being dealt with.
 The problem has been proven to be NP-hard \cite{Fortunato2010}.
 
 %------------------------------------------------
 
 \section{Overview}
-A large amount of research has gone into community detection in the last several decades. Finding a good way to approach this issue has been particularly hard because it is not trivial to come up with an exact definition of a community and a metric to compare different partitionings. As the amount of data being gathered grows at an incredible pace, so has the size of the networks which need to be analysed. Traditional approaches simply don't scale to many thousands, let alone millions, of nodes. Because the problem is NP-hard, calculating the optimal solution for large networks is an unreachable goal. Genetic algorithms provide a way to still find solutions in such large networks. One such algorithm was introduced in a recent paper by Li et al. \cite{multiagent2016}, using a multi-agent approach. Each agent represents a candidate solution and ``lives'' in a lattice structure. In this lattice, candidate solutions compete with their direct neighbours. \\
-Most algorithms for community detection assume that each node can only be a part of a single community. In many cases, this is simply not true. Overlapping community detection algorithms can be divided into two groups: node-based algorithms and link-based algorithms \cite{linkclus2013}. The node-based algorithms focus directly on the nodes and try to detect communities by looking how nodes are related. The link-based algorithms are built with the assumption that the links between nodes are actually more important than the nodes themselves. Not the individuals, but the relations between the individuals define the community. The links are divided into communities, and only afterwards is that translated to the nodes. Generally, link-based algorithms have been shown to yield superior results, but at a much higher computational cost. Ding et al. \cite{Ding2016} have proposed a new approach which attempts to improve on the computational cost typically associated with a link-based algorithm using network decomposition. This algorithm is not genetic,  but others have proposed several different genetic overlapping community detection algorithms \cite{linkclus2013,Pizzuti2009,Dickinson2013}.\\
-\\
-DIT IS MISSCHIEN MEER METHODE?
-The candidate solutions in these genetic overlapping community detection algorithms have the same structure as the multi-agent algorithm by Li et al. We believe that some of the techniques used in the overlapping algorithms could be applied to the multi-agent algorithm to allow it to detect overlapping communities.
+A large amount of research has gone into community detection in the last several decades. Finding a good way to approach this issue has been particularly hard because it is not trivial to come up with an exact definition of a community and a metric to compare different partitionings. As the amount of data being gathered grows at an incredible pace, so has the size of the networks which need to be analysed. \\ \newline
+Traditional approaches simply don't scale to many thousands, let alone millions, of nodes. Because the problem is NP-hard, calculating the optimal solution for large networks is an unreachable goal. Genetic algorithms provide a way to still find solutions in such large networks. One such algorithm was introduced in a recent paper by Li et al. \cite{multiagent2016}, using a multi-agent approach. Each agent represents a candidate solution and ``lives'' in a lattice structure. In this lattice, candidate solutions compete with their direct neighbours. \\ \newline
+Most algorithms for community detection assume that each node can only be a part of a single community. In many cases, this is simply not true. Overlapping community detection algorithms can be divided into two groups: node-based algorithms and link-based algorithms \cite{linkclus2013}.\\ \newline
+The node-based algorithms focus directly on the nodes and try to detect communities by looking how nodes are related. The link-based algorithms are built with the assumption that the links between nodes are actually more important than the nodes themselves. Not the individuals, but the relations between the individuals define the community. The links are divided into communities, and only afterwards is that translated to the nodes. Generally, link-based algorithms have been shown to yield superior results, but at a much higher computational cost. Ding et al. \cite{Ding2016} have proposed a new approach which attempts to improve on the computational cost typically associated with a link-based algorithm using network decomposition. This algorithm is not genetic,  but others have proposed several different genetic overlapping community detection algorithms \cite{linkclus2013, Pizzuti2009, Dickinson2013}.\\
 
 %------------------------------------------------
 
 \section{Methods}
-Based on previous algorithms that have been used detect overlapping communities in large networks, the intention is to use techniques from outside of the Genetic Algorithm domain to improve the efficiency and performance of a recently used Multi-Agent approach \cite{multiagent2016}.
-The main method that will be used to facilitate is Node Clustering \cite{Ding2016}.
-In the locus-based adjacency representation of the graph structure, all of the nodes are represented separately which leads to a very large data structure when being used on large but realistic network graphs.
-By clustering some of the obvious communities into new nodes prior to using the Genetic Algorithm, the space and time complexity should decrease.
-Edge contraction based on node clustering should keep the general structure of the graph without much information loss if the relationship between the merged nodes in the graph is transitive.
-Multiple methods of link clustering will be tested to see its performance compared to the original set-ups
-A possible problem might be that by doing this is will become harder to find nodes that are in several communities.
-Further research is required to see how this can be prevented while still improving the efficiency of the Genetic Algorithm.
+Based on previous work on overlapping communities detectiong algorithms, the intention of this research is to use the technique of node clustering\cite{Ding2016} to improve the efficiency and performance of a recently used Multi-Agent community detection algorithm\cite{multiagent2016}.
+The candidate solutions in our genetic overlapping community detection algorithm will have the same structure as presented in the multi-agent algorithm by Li et al. 
+We believe that some of the techniques used to detect overlapping algorithms could be applied to the multi-agent algorithm to allow it to detect overlapping communities as well, seeing that this was not the case up until now.\\ \newline
+In the locus-based adjacency representation of the graph structure, all of the nodes are represented separately. This leads to a very large data structure when being used on large, but realistic network graphs. 
+The space and time complexity decreases when the amount of nodes is decreased.
+A decrease in the amount of nodes is made by clustering together nodes that are clearly interconnected.
+This will be done by randomly selecting seeds in the network to looks for strong local communities.
+Due to the use of edge contraction, the general structure of the graph will remain without much information loss. That is if the relationship between the merged nodes in the graph is transitive.
+Multiple methods of link clustering will be tested to see their performances compared to the original set-up.\\ \newline
+A problem that might arise is the fact that it might become harder to find nodes that are in several communities at the same time.
+Further research is required to see how this can be prevented, while still improving the efficiency of the Genetic Algorithm.
 
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST
