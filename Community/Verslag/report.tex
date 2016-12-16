@@ -49,12 +49,7 @@
 \titleformat{\section}[block]{\large\scshape\centering}{\thesection.}{1em}{} % Change the look of the section titles
 \titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
 
-\usepackage{fancyhdr} % Headers and footers
-\pagestyle{fancy} % All pages have headers and footers
-\fancyhead{} % Blank out the default header
-\fancyfoot{} % Blank out the default footer
-\fancyhead[C]{Running title $\bullet$ May 2016 $\bullet$ Vol. XXI, No. 1} % Custom header text
-\fancyfoot[RO,LE]{\thepage} % Custom footer text
+
 
 \usepackage{titling} % Customizing the title section
 
@@ -101,7 +96,7 @@
 \lettrine[nindent=0em,lines=3]{N} etworks are ever so present in the world, due to the rise of social media and the emergence of Big Data\footnote{Big data is a term for data sets that are so large or complex that traditional data processing applications are inadequate to deal with them.} over the last decade.
 The detection of communities\footnote{A network is said to have community structure if the nodes of the network can be easily grouped into (potentially overlapping) sets of nodes such that each set of nodes is densely connected internally.} in these large networks has grown in importance.
 Communities can be seen as fairly independent parts of the graph.
-The information contained in these graphs can be utmost importance to understanding the data that is being dealt with.
+The information contained in these graphs can be of utmost importance to understanding the data that is being dealt with.
 The problem has been proven to be NP-hard \cite{Fortunato2010}.
 
 %------------------------------------------------
@@ -110,12 +105,12 @@ The problem has been proven to be NP-hard \cite{Fortunato2010}.
 A large amount of research has gone into community detection in the last several decades. Finding a good way to approach this issue has been particularly hard because it is not trivial to come up with an exact definition of a community and a metric to compare different partitionings. As the amount of data being gathered grows at an incredible pace, so has the size of the networks which need to be analysed. \\ \newline
 Traditional approaches simply don't scale to many thousands, let alone millions, of nodes. Because the problem is NP-hard, calculating the optimal solution for large networks is an unreachable goal. Genetic algorithms provide a way to still find solutions in such large networks. One such algorithm was introduced in a recent paper by Li et al. \cite{multiagent2016}, using a multi-agent approach. Each agent represents a candidate solution and ``lives'' in a lattice structure. In this lattice, candidate solutions compete with their direct neighbours. \\ \newline
 Most algorithms for community detection assume that each node can only be a part of a single community. In many cases, this is simply not true. Overlapping community detection algorithms can be divided into two groups: node-based algorithms and link-based algorithms \cite{linkclus2013}.\\ \newline
-The node-based algorithms focus directly on the nodes and try to detect communities by looking how nodes are related. The link-based algorithms are built with the assumption that the links between nodes are actually more important than the nodes themselves. Not the individuals, but the relations between the individuals define the community. The links are divided into communities, and only afterwards is that translated to the nodes. Generally, link-based algorithms have been shown to yield superior results, but at a much higher computational cost. Ding et al. \cite{Ding2016} have proposed a new approach which attempts to improve on the computational cost typically associated with a link-based algorithm using network decomposition. This algorithm is not genetic,  but others have proposed several different genetic overlapping community detection algorithms \cite{linkclus2013, Pizzuti2009, Dickinson2013}.\\
+The node-based algorithms focus directly on the nodes and try to detect communities by looking at how nodes are related. The link-based algorithms are built with the assumption that the links between nodes are actually more important than the nodes themselves. Not the individuals, but the relations between the individuals define the community. The links are divided into communities, and only afterwards is that translated to the nodes. Generally, link-based algorithms have been shown to yield superior results, but at a much higher computational cost. Ding et al. \cite{Ding2016} have proposed a new approach which attempts to improve on the computational cost typically associated with a link-based algorithm using network decomposition. This algorithm is not genetic,  but others have proposed several different genetic overlapping community detection algorithms \cite{linkclus2013, Pizzuti2009, Dickinson2013}.\\
 
 %------------------------------------------------
 
 \section{Methods}
-Based on previous work on overlapping communities detectiong algorithms, the intention of this research is to use the technique of node clustering\cite{Ding2016} to improve the efficiency and performance of a recently used Multi-Agent community detection algorithm\cite{multiagent2016}.
+Based on previous work on overlapping community detection algorithms, the intention of this research is to use the technique of node clustering\cite{Ding2016} to improve the efficiency and performance of a recently used Multi-Agent community detection algorithm\cite{multiagent2016}.
 The candidate solutions in our genetic overlapping community detection algorithm will have the same structure as presented in the multi-agent algorithm by Li et al. 
 We believe that some of the techniques used to detect overlapping algorithms could be applied to the multi-agent algorithm to allow it to detect overlapping communities as well, seeing that this was not the case up until now.\\ \newline
 In the locus-based adjacency representation of the graph structure, all of the nodes are represented separately. This leads to a very large data structure when being used on large, but realistic network graphs. 
