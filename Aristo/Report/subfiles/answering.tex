@@ -7,7 +7,7 @@ The approach chosen by Krishnamurthy \cite{probseman} to parse the question is t
 \end{figure}
 
 \subsection{Querying the knowledge graph}
-Once the meaning of the question is clear, an answer needs to be found in the knowledge base. The algorithm by Li and Clark \cite{sciencequestions} is one way to achieve that goal. After parsing the question, they extract keywords. Background knowledge is added, which results in a knowledge graph of concepts connected by the relations found in the knowledge base. These concepts are the keywords themselves, but also other related words which provide context. The questions are multiple choice, so each option is placed within that graph and connected to the other concepts. The answer that is the most connected with the concepts in the knowledge graph is chosen as the answer.
+Once the meaning of the question is clear, an answer needs to be found in the knowledge base. The algorithm by Li and Clark \cite{sciencequestions} is one way to achieve that goal. After parsing the question, they extract keywords. Background knowledge is added, which results in a knowledge graph of concepts connected by the relations found in the knowledge base. These concepts are the keywords themselves, but also other related words which provide context. The questions are multiple choice, so each option is placed within that graph and connected to the other concepts. The answer that gets the highest confidence score in the knowledge graph is chosen as the solution.
 
 \begin{figure}
 \includegraphics[width=0.48\textwidth]{graph}
