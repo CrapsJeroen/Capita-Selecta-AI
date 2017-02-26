@@ -1,12 +1,10 @@
-To learn the required knowledge artificial intelligence needs a source of data to work with.
+To learn the required knowledge, the artificial intelligence needs a source of data to work with.
 These data will almost exclusively consist of scientific papers and elementary school books. 
-Currently two separate directions are being pursued, image recognition \cite{pdffigures2} and text based knowledge extraction \cite{probseman,sciencequestions}.
+Currently two separate directions are being pursued for the Aristo system: image recognition \cite{pdffigures2} and text based knowledge extraction \cite{probseman,sciencequestions}.
 
 Both streams will be explained in this report, but the focus will be put on the latter.
 The first will try to retrieve images from scientific papers and correctly label it by using the caption that is included with the table or figure.
-In the second method the goal is to extract logical statements from the text. By combining these logical statements into a knowledge graph  \cite{construction}.
-....... TODO: DIT IS NIET HELEMAAL CORRECT ......
-While answering questions the keywords of the text will be extracted and filled into the Knowledge graph.
-The multiple choice questions will be reformed to multiple true or false questions. 
-Every answer will lead to a percentage which will define how true the statement was.
-The answer with the largest percentage is considered to be the best answer for this question.
+In the second method the goal is to extract logical statements from the text. When taking the test, the questions are translated into logical queries.
+The questions all use a multiple-choice format. This means that the system can focus on determining the most likely answer from the given possibilities.
+By matching every possibility to the concepts and relations extracted from the text, the support for each answer can be quantified by measuring how well it fits within the knowledge that's available.
+The answer with the best support is considered to be the best answer for this question.
