@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Parser {
 	private Graph parse(List<String> lines) {
@@ -14,7 +15,7 @@ public class Parser {
 		int amountOfVertices = Integer.parseInt(splitted[0]);
 
 		// Create Vertices
-		List<Vertex> vertices = new ArrayList<Vertex>(amountOfVertices);
+		List<Vertex> vertices = new ArrayList<Vertex>(amountOfVertices+1);
 		for (int i = 0; i < amountOfVertices; i++) {
 			vertices.add(new Vertex(i, new ArrayList<Vertex>()));
 		}
@@ -23,9 +24,16 @@ public class Parser {
 		List<Edge> edges = new ArrayList<Edge>();
 		int i = 0;
 		while(it.hasNext()){
-			String[] edgeLine = it.next().split(" ");
+			String[] edgeLine = it.next().split("	");
 			int home = Integer.parseInt(edgeLine[0]);
 			int away = Integer.parseInt(edgeLine[1]);
+			
+			// 
+			int max = (home > away) ? home : away;
+			for (int j = vertices.size(); j <= max; j++) {
+				vertices.add(new Vertex(j, new ArrayList<Vertex>()));
+			}
+			
 			// Retrieve vertices
 			Vertex from = vertices.get(home);
 			Vertex to = vertices.get(away);
@@ -40,6 +48,8 @@ public class Parser {
 			edges.add(new Edge(i++, neighbours));
 		}
 
+		vertices = vertices.stream().filter(v -> v.getNeighbours().size() != 0).collect(Collectors.toList());
+		
 		return new Graph(vertices, edges);
 	}
 
