@@ -11,23 +11,23 @@ public class LargeTest {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		Parser parser = new Parser();
-		graph = parser.parseFile(new File("youtube.txt"));
+		graph = parser.parseFile(new File("amazon.txt"));
 	}
 	
 	@Test
 	public void addedVertices() {
-		assertTrue(1134890 == graph.getVertices().size());
+		assertTrue(334863 == graph.getVertices().size());
 	}
 	
 	@Test
 	public void addedEdges() {
-		assertTrue(2987624 == graph.getEdges().size());
+		assertTrue(925872 == graph.getEdges().size());
 	}
 
 	@Test
 	public void findClique() {
 		Algorithm algo = new Algorithm(graph);
-		Graph tmp = algo.findCliques(100);
+		Graph tmp = algo.findCliques(50000);
 		System.out.println(tmp.toString());
 	}
 }

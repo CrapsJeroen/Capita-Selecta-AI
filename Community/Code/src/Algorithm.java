@@ -102,7 +102,6 @@ public class Algorithm {
 	private List<List<Vertex>> cliques;
 
 	public void search(List<Vertex> vertices){
-		System.out.println(vertices.toString());
 		for(Vertex vertex: vertices.get(vertices.size()-1).getNeighbours()){
 			if(vertex.getNeighbours().containsAll(vertices)){
 				vertices.add(vertex);
