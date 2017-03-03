@@ -48,7 +48,6 @@ public class Algorithm {
 			vertices.add(clique);
 
 			// Required lists
-			List<Edge> adapt = new ArrayList<>();
 			List<Vertex> handled = new ArrayList<>();
 			List<Edge> addNew = new ArrayList<>();
 			// Get affected edges
@@ -56,20 +55,15 @@ public class Algorithm {
 			for(Vertex vertex : largestClique){
 				affectedEdges.addAll(graph.getEdgesFrom(vertex));
 			}
-			System.out.println("Found affectedEdges: " + affectedEdges.size());
+			
 			// Remove all edges that are completely in the clique
 			edges.removeAll(affectedEdges);
 			//Main bottleneck
 			//affectedEdges = affectedEdges.stream().distinct().collect(Collectors.toList());
-			System.out.println("Starting counter");
-			int counter = 0;
 			for(Edge edge: affectedEdges){
-				System.out.println(counter++);
 				List<Vertex> intersect = edge.getNeighbours().stream().filter(largestClique::contains).collect(Collectors.toList());
 				// Check if there is overlap
 				if(intersect.size() == 1){
-					// Add to edge to be removed
-					adapt.add(edge);
 					Vertex tmp = intersect.get(0);
 					tmp = edge.connectsTo(tmp);
 					if(!handled.contains(tmp)){
@@ -90,8 +84,6 @@ public class Algorithm {
 					}
 				}
 			}
-			// Remove previous edges
-			edges.removeAll(adapt);
 			// Add newly created edges
 			edges.addAll(addNew);
 		}

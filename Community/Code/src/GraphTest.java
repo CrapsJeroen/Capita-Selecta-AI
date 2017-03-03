@@ -1,6 +1,7 @@
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.*;
 import org.junit.Test;
@@ -45,10 +46,10 @@ public class GraphTest {
 	}
 
 	@Test
-	public void findClique() {
+	public void findClique() throws IOException {
 		Algorithm algo = new Algorithm(graph);
 		Graph newGraph = algo.findCliques(3);
-		
+		newGraph.writeOut("./graph01Reduced.txt");
 		assertTrue(4 == newGraph.getVertices().size());
 		assertTrue(4 == newGraph.getEdges().size());
 	}

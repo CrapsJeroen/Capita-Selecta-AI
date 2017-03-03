@@ -29,6 +29,6 @@ public class Edge {
 
 	@Override
 	public String toString(){
-		return ""+id+"="+neighbours.toString();
+		return ""+ this.neighbours.get(0).getId() + "	" + this.neighbours.get(1).getId();
 	}
 }

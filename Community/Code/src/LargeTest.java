@@ -1,6 +1,7 @@
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.*;
 
@@ -25,9 +26,11 @@ public class LargeTest {
 	}
 
 	@Test
-	public void findClique() {
+	public void findClique() throws IOException {
 		Algorithm algo = new Algorithm(graph);
 		Graph tmp = algo.findCliques(50000);
-		System.out.println(tmp.toString());
+		tmp.writeOut("./amazonReduced.txt");
+		System.out.println("Reduced vertices: " + (graph.getVertices().size()-tmp.getVertices().size()));
+		System.out.println("Reduced edges: " + (graph.getEdges().size()-tmp.getEdges().size()));
 	}
 }

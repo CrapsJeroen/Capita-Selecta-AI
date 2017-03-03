@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +42,17 @@ public class Graph {
 	public void replaceVertex(Vertex old, Vertex newVertex){
 		vertices.remove(old);
 		vertices.add(newVertex);
+	}
+	
+	public void writeOut(String path) throws IOException{
+		String result = "";
+		//Adding the amount of vertices
+		result += this.vertices.size()+"\n";
+		//Adding the edges
+		for(Edge edge : this.edges)
+			result += edge.toString()+"\n";
+		
+		Files.write(Paths.get(path), result.getBytes());
 	}
 	
 	@Override
