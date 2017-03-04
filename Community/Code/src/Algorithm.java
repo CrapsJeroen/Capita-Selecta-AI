@@ -12,14 +12,14 @@ public class Algorithm {
 
 	private Graph graph;
 	private List<Vertex> vertices;
-	private List<Edge> edges;
+	private PriorityQueue<Edge> edges;
 
 	public Graph findCliques(int amountOfSeeds){
 		Random rand = new Random();
 		int vertexId = vertices.size();
 		int edgeId = edges.size();
 		for(int i = 0; i < amountOfSeeds; i++){
-			System.out.println("New seed: " + i);
+			System.out.println("Progress: " + i);
 			cliques = new ArrayList<>();
 			Vertex seed = vertices.get(rand.nextInt(vertices.size()));
 			if(seed.getClass().equals(Clique.class)){
@@ -34,7 +34,7 @@ public class Algorithm {
 			Collections.sort(cliques, (c1,c2) -> c1.size() < c2.size() ? +1 : c1.size() > c2.size() ? -1 : 0); 
 			// Retrieve the largest
 			List<Vertex> largestClique = cliques.get(0);
-			System.out.println("Found clique:" + largestClique.toString());
+			//System.out.println("Found clique:" + largestClique.toString());
 			// Remove vertices from the clique
 			vertices = vertices.stream().filter(v -> !largestClique.contains(v)).collect(Collectors.toList());
 			List<Vertex> neighbours = new ArrayList<>();
@@ -57,11 +57,11 @@ public class Algorithm {
 			}
 			
 			// Remove all edges that are completely in the clique
-			edges.removeAll(affectedEdges);
-			//Main bottleneck
-			//affectedEdges = affectedEdges.stream().distinct().collect(Collectors.toList());
+			// edges.removeAll(affectedEdges);
+			// Main bottleneck
 			for(Edge edge: affectedEdges){
 				List<Vertex> intersect = edge.getNeighbours().stream().filter(largestClique::contains).collect(Collectors.toList());
+				edges.remove(edge);
 				// Check if there is overlap
 				if(intersect.size() == 1){
 					Vertex tmp = intersect.get(0);

@@ -21,7 +21,8 @@ public class Parser {
 		}
 
 		// Parse Edges
-		List<Edge> edges = new ArrayList<Edge>();
+		PriorityQueue<Edge> edges = new PriorityQueue<Edge>(
+				(Edge e1, Edge e2) -> e1.getId() < e2.getId() ? +1 : e1.getId() > e2.getId() ? -1 : 0);
 		int i = 0;
 		while(it.hasNext()){
 			String[] edgeLine = it.next().split("	");
