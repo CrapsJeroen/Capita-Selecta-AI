@@ -2,13 +2,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
 public class Graph {
 	private List<Vertex> vertices;
-	private List<Edge> edges;
+	private PriorityQueue<Edge> edges;
 
-	public Graph(List<Vertex> vertices, List<Edge> edges) {
+	public Graph(List<Vertex> vertices, PriorityQueue<Edge> edges) {
 		super();
 		this.vertices = vertices;
 		this.edges = edges;
@@ -18,7 +19,7 @@ public class Graph {
 		return vertices;
 	}
 
-	public List<Edge> getEdges() {
+	public PriorityQueue<Edge> getEdges() {
 		return edges;
 	}
 
