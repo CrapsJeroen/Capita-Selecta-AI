@@ -1,10 +1,15 @@
 import static org.junit.Assert.*;
 
+import java.util.Collection;
+import java.util.List;
 import java.io.File;
 import java.io.IOException;
 
+import jdk.nashorn.internal.ir.SetSplitState;
+
 import org.junit.*;
-import org.junit.Test;
+
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
 
 public class GraphTest {
 
@@ -27,9 +32,6 @@ public class GraphTest {
 	@Test
 	public void addedEdges() {
 		assertTrue(8 == graph.getEdges().size());
-		for(int i = 0; i < graph.getEdges().size(); i++){
-			assertNotEquals(null, graph.getEdgeById(i));
-		}
 	}
 	
 	@Test
@@ -40,15 +42,24 @@ public class GraphTest {
 		for(int i = 4; i < 6; i++)
 			assertTrue(2 == graph.getEdgesFrom(graph.getVertexById(i)).size());
 		
-		assertEquals("[0, 1, 2]",graph.getVertexById(3).getNeighbours().toString());
-		assertEquals("[2, 4]",graph.getVertexById(5).getNeighbours().toString());
-		assertEquals("[0, 3, 5]",graph.getVertexById(2).getNeighbours().toString());
+		assertTrue(graph.getVertexById(3).getNeighbours().contains(graph.getVertexById(0)));
+		assertTrue(graph.getVertexById(3).getNeighbours().contains(graph.getVertexById(1)));
+		assertTrue(graph.getVertexById(3).getNeighbours().contains(graph.getVertexById(2)));
+		assertEquals(3, graph.getVertexById(3).getNeighbours().size());
+
+		assertTrue(graph.getVertexById(5).getNeighbours().contains(graph.getVertexById(2)));
+        assertTrue(graph.getVertexById(5).getNeighbours().contains(graph.getVertexById(4)));
+        assertEquals(2, graph.getVertexById(5).getNeighbours().size());
+        
+        assertTrue(graph.getVertexById(2).getNeighbours().contains(graph.getVertexById(0)));
+        assertTrue(graph.getVertexById(2).getNeighbours().contains(graph.getVertexById(3)));
+        assertTrue(graph.getVertexById(2).getNeighbours().contains(graph.getVertexById(5)));
 	}
 
 	@Test
 	public void findClique() throws IOException {
 		Algorithm algo = new Algorithm(graph);
-		Graph newGraph = algo.findCliques(3);
+		Graph newGraph = algo.findCliques(1, 5);
 		newGraph.writeOut("./graph01Reduced.txt");
 		assertTrue(4 == newGraph.getVertices().size());
 		assertTrue(4 == newGraph.getEdges().size());

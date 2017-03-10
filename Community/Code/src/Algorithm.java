@@ -2,100 +2,75 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Algorithm {
+    
+    private Graph graph;
+    private List<Vertex> vertices;
+    private List<List<Vertex>> cliques;
 
 	public Algorithm(Graph graph){
 		this.graph = graph;
 		this.vertices = graph.getVertices();
-		this.edges = graph.getEdges();
 		this.cliques = new ArrayList<List<Vertex>>();
 	}
 
-	private Graph graph;
-	private List<Vertex> vertices;
-	private PriorityQueue<Edge> edges;
 
-	public Graph findCliques(int amountOfSeeds){
+	public Graph findCliques(int amountOfCliques, int maxAttemptsWithoutClique){
 		Random rand = new Random();
 		int vertexId = vertices.size();
-		int edgeId = edges.size();
-		for(int i = 0; i < amountOfSeeds; i++){
-			System.out.println("Progress: " + i);
+		int i = 0;
+		int failedAttempts = 0;
+		while(i < amountOfCliques && failedAttempts < maxAttemptsWithoutClique){
 			cliques = new ArrayList<>();
 			Vertex seed = vertices.get(rand.nextInt(vertices.size()));
 			if(seed.getClass().equals(Clique.class)){
+			    failedAttempts++;
 				continue;
 			}
 			List<Vertex> start = new ArrayList<Vertex>();
 			start.add(seed);
 			search(start);
-			if(cliques.size() == 0)
-				continue;
+			if(cliques.size() == 0){
+	             failedAttempts++;
+				 continue;
+			}
+	         System.out.println("Progress: " + i);
 			// Largest element first
 			Collections.sort(cliques, (c1,c2) -> c1.size() < c2.size() ? +1 : c1.size() > c2.size() ? -1 : 0); 
 			// Retrieve the largest
 			List<Vertex> largestClique = cliques.get(0);
-			//System.out.println("Found clique:" + largestClique.toString());
-			// Remove vertices from the clique
-			vertices = vertices.stream().filter(v -> !largestClique.contains(v)).collect(Collectors.toList());
-			List<Vertex> neighbours = new ArrayList<>();
+			
+			Set<Vertex> neighbours = new HashSet<>();
 			// Create a list of all vertices that were connected to the clique
 			for(Vertex vertex : largestClique){
 				neighbours.addAll(vertex.getNeighbours());
 			}
-			System.out.println("Found neighbours: " + neighbours.size());
-			// Create new clique and add to the list
-			Vertex clique = new Clique(vertexId++,neighbours,largestClique);
-			vertices.add(clique);
-
-			// Required lists
-			List<Vertex> handled = new ArrayList<>();
-			List<Edge> addNew = new ArrayList<>();
-			// Get affected edges
-			List<Edge> affectedEdges = new ArrayList<>();
-			for(Vertex vertex : largestClique){
-				affectedEdges.addAll(graph.getEdgesFrom(vertex));
-			}
 			
-			// Remove all edges that are completely in the clique
-			// edges.removeAll(affectedEdges);
-			// Main bottleneck
-			for(Edge edge: affectedEdges){
-				List<Vertex> intersect = edge.getNeighbours().stream().filter(largestClique::contains).collect(Collectors.toList());
-				edges.remove(edge);
-				// Check if there is overlap
-				if(intersect.size() == 1){
-					Vertex tmp = intersect.get(0);
-					tmp = edge.connectsTo(tmp);
-					if(!handled.contains(tmp)){
-						// Add the vertex to the list of updated vertices
-						handled.add(tmp);
-						// Create a new pair between this and the clique
-						List<Vertex> pair = new ArrayList<>(2);
-						pair.add(tmp);
-						pair.add(clique);
-						// Remove elements in the clique from old neighbours
-						List<Vertex> newNeighbours = tmp.getNeighbours().stream().filter(v -> !largestClique.contains(v)).collect(Collectors.toList());
-						// Add clique as new neighbour
-						newNeighbours.add(clique);
-						// Set the new list
-						tmp.setNeighbours(newNeighbours);
-						// Create a new edge for the clique and the vertex that was connected to a part of the clique earlier
-						addNew.add(new Edge(edgeId++,pair));
-					}
-				}
-			}
-			// Add newly created edges
-			edges.addAll(addNew);
+	        // Remove vertices from the clique from neighbours
+			neighbours.removeAll(largestClique);
+			System.out.println("Found neighbours: " + neighbours.size());
+			
+			// Create new clique and add to the list
+			Clique clique = new Clique(vertexId++,largestClique);
+			vertices.add(clique);
+			
+			// Remove vertices from the clique
+			vertices.removeAll(largestClique);
+			
+			// Replace references to nodes in clique to the clique itself
+			neighbours.stream().forEach(n -> n.replaceNeighbours(clique));
+			
+			failedAttempts = 0;
+			i++;
 		}
 		
-		return new Graph(this.vertices,this.edges);
+		return new Graph(this.vertices);
 	}
 
-	private List<List<Vertex>> cliques;
 
 	public void search(List<Vertex> vertices){
 		for(Vertex vertex: vertices.get(vertices.size()-1).getNeighbours()){
 			if(vertex.getNeighbours().containsAll(vertices)){
+			    if(vertex.getClass() == Clique.class) continue;
 				vertices.add(vertex);
 				search(vertices);
 			} else if(vertices.size() >= 3 && !cliques.contains(vertices)) {

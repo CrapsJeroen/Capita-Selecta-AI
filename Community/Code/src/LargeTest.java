@@ -2,6 +2,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import org.junit.*;
 
@@ -14,23 +16,22 @@ public class LargeTest {
 		Parser parser = new Parser();
 		graph = parser.parseFile(new File("youtube.txt"));
 	}
-	
-	@Test
-	public void addedVertices() {
-		//assertTrue(334863 == graph.getVertices().size());
-	}
-	
-	@Test
-	public void addedEdges() {
-		//assertTrue(925872 == graph.getEdges().size());
-	}
 
 	@Test
 	public void findClique() throws IOException {
+	    NumberFormat              formatter        = new DecimalFormat("#0.0000");
 		Algorithm algo = new Algorithm(graph);
-		Graph tmp = algo.findCliques(50000);
+		int initialVertices = graph.getVertices().size();
+		int initialEdges = graph.getEdges().size();
+		Graph tmp = algo.findCliques(50000, 1000);
+		int newVertices = tmp.getVertices().size();
+		int newEdges = tmp.getEdges().size();
+		int diffVertices = initialVertices - newVertices;
+		int diffEdges  = initialEdges - newEdges;
 		tmp.writeOut("./youtubeReduced.txt");
-		System.out.println("Reduced vertices: " + (graph.getVertices().size()-tmp.getVertices().size()));
-		System.out.println("Reduced edges: " + (graph.getEdges().size()-tmp.getEdges().size()));
+		System.out.println("Reduced vertices: " + (diffVertices) + " of " + (initialVertices) 
+		        + " (" + formatter.format(100.0 * diffVertices / initialVertices)+ "%)");
+		System.out.println("Reduced edges: " + (diffEdges) + " of " + (initialEdges)
+	              + " (" + formatter.format(100.0 * diffEdges / initialEdges)+ "%)");
 	}
 }

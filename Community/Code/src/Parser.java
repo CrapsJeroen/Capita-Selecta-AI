@@ -17,13 +17,9 @@ public class Parser {
 		// Create Vertices
 		List<Vertex> vertices = new ArrayList<Vertex>(amountOfVertices+1);
 		for (int i = 0; i < amountOfVertices; i++) {
-			vertices.add(new Vertex(i, new ArrayList<Vertex>()));
+			vertices.add(new Vertex(i, new HashSet<Vertex>()));
 		}
 
-		// Parse Edges
-		PriorityQueue<Edge> edges = new PriorityQueue<Edge>(
-				(Edge e1, Edge e2) -> e1.getId() < e2.getId() ? +1 : e1.getId() > e2.getId() ? -1 : 0);
-		int i = 0;
 		while(it.hasNext()){
 			String[] edgeLine = it.next().split("	");
 			int home = Integer.parseInt(edgeLine[0]);
@@ -32,7 +28,7 @@ public class Parser {
 			// 
 			int max = (home > away) ? home : away;
 			for (int j = vertices.size(); j <= max; j++) {
-				vertices.add(new Vertex(j, new ArrayList<Vertex>()));
+				vertices.add(new Vertex(j, new HashSet<Vertex>()));
 			}
 			
 			// Retrieve vertices
@@ -45,13 +41,11 @@ public class Parser {
 			// Add to both lists
 			from.addNeighbour(to);
 			to.addNeighbour(from);
-			// Create Edges
-			edges.add(new Edge(i++, neighbours));
 		}
 
 		vertices = vertices.stream().filter(v -> v.getNeighbours().size() != 0).collect(Collectors.toList());
 		
-		return new Graph(vertices, edges);
+		return new Graph(vertices);
 	}
 
 	public Graph parseFile(File file) throws IOException {
@@ -66,7 +60,7 @@ public class Parser {
 		if (args.length < 1) {
 			throw new IllegalArgumentException("No file given");
 		}
-
-		System.out.println(parseFile(args[0]));
+		
+		System.out.println(parseFile(args[0]));	
 	}
 }
