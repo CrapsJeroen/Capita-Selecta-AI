@@ -53,6 +53,17 @@ public class Vertex {
 	public Set<Edge> getEdges(){
 	    return neighbours.entrySet().stream().map(e -> new Edge(this, e.getKey(), e.getValue())).collect(Collectors.toSet());
 	}
+	
+	public int degree(){
+	    return neighbours.values().stream().reduce(0, (count, current) -> count + current);
+	}
+	
+	public int amountOfConnectionsTo(Set<Vertex> vertices){
+	    return neighbours.entrySet().stream()
+	            .filter(entry -> vertices.contains(entry.getKey()))
+	            .map(entry -> entry.getValue())
+	            .reduce(0, (count, current) -> count + current);
+	}
 
 	@Override
 	public String toString(){

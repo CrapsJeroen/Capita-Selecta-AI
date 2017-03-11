@@ -32,6 +32,10 @@ public class Edge {
 	    if(vertex.equals(first)) return second;
 	    return first;
 	}
+	
+	public int getWeight(){
+	    return weight;
+	}
 
 	@Override
 	public String toString(){
