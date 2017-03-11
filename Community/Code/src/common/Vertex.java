@@ -1,12 +1,11 @@
 package common;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import cliques.Clique;
 
 public class Vertex {
 	private Map<Vertex, Integer> neighbours;
@@ -54,6 +53,10 @@ public class Vertex {
 	    return neighbours.entrySet().stream().map(e -> new Edge(this, e.getKey(), e.getValue())).collect(Collectors.toSet());
 	}
 	
+   public Set<Edge> getInternalEdges(){
+        return new HashSet<Edge>();
+    }
+	
 	public int degree(){
 	    return neighbours.values().stream().reduce(0, (count, current) -> count + current);
 	}
@@ -63,6 +66,13 @@ public class Vertex {
 	            .filter(entry -> vertices.contains(entry.getKey()))
 	            .map(entry -> entry.getValue())
 	            .reduce(0, (count, current) -> count + current);
+	}
+	
+	public int getConnectionWeight(Vertex other){
+	    if(neighbours.containsKey(other)){
+	        return neighbours.get(other);
+	    }
+	    return 0;
 	}
 
 	@Override

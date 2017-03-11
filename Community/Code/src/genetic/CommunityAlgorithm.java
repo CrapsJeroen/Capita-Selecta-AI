@@ -29,7 +29,15 @@ public class CommunityAlgorithm {
     public final int numEdges;
     public CommunityAlgorithm(Graph graph){
         this.graph = graph;
-        numEdges = graph.getEdges().stream().map(edge -> edge.getWeight()).reduce(0, (count, current) -> count + current);
+        
+
+        // external edges
+        int tmp = graph.getEdges().stream().map(edge -> edge.getWeight()).reduce(0, (count, current) -> count + current);
+        
+        // internal edges (within cliques)
+        tmp += graph.getVertices().stream().map(v -> v.getInternalEdges().size()).reduce(0, (count, current) -> count + current);
+        
+        numEdges = tmp;
     }
     
     

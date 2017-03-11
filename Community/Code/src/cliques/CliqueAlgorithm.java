@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import common.Clique;
 import common.Graph;
 import common.Vertex;
 
