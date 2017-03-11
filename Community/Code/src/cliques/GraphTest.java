@@ -1,15 +1,16 @@
-import static org.junit.Assert.*;
+package cliques;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Collection;
-import java.util.List;
 import java.io.File;
 import java.io.IOException;
 
-import jdk.nashorn.internal.ir.SetSplitState;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.junit.*;
-
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
+import common.Graph;
+import common.Parser;
 
 public class GraphTest {
 
@@ -58,7 +59,7 @@ public class GraphTest {
 
 	@Test
 	public void findClique() throws IOException {
-		Algorithm algo = new Algorithm(graph);
+		CliqueAlgorithm algo = new CliqueAlgorithm(graph);
 		Graph newGraph = algo.findCliques(1, 5);
 		newGraph.writeOut("./graph01Reduced.txt");
 		assertTrue(4 == newGraph.getVertices().size());

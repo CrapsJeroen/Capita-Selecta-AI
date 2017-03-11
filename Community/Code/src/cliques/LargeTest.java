@@ -1,11 +1,14 @@
-import static org.junit.Assert.*;
-
+package cliques;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import org.junit.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import common.Graph;
+import common.Parser;
 
 public class LargeTest {
 
@@ -20,7 +23,7 @@ public class LargeTest {
 	@Test
 	public void findClique() throws IOException {
 	    NumberFormat              formatter        = new DecimalFormat("#0.0000");
-		Algorithm algo = new Algorithm(graph);
+		CliqueAlgorithm algo = new CliqueAlgorithm(graph);
 		int initialVertices = graph.getVertices().size();
 		int initialEdges = graph.getEdges().size();
 		Graph tmp = algo.findCliques(50000, 1000);

@@ -1,14 +1,20 @@
-import java.util.*;
-import java.util.stream.Collectors;
+package cliques;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
-public class Algorithm {
+import common.Graph;
+import common.Vertex;
+
+public class CliqueAlgorithm {
     
-    private Graph graph;
     private List<Vertex> vertices;
     private List<List<Vertex>> cliques;
 
-	public Algorithm(Graph graph){
-		this.graph = graph;
+	public CliqueAlgorithm(Graph graph){
 		this.vertices = graph.getVertices();
 		this.cliques = new ArrayList<List<Vertex>>();
 	}

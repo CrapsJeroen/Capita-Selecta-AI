@@ -1,5 +1,8 @@
-import java.util.*;
-import java.util.stream.*;
+package cliques;
+import java.util.HashSet;
+import java.util.List;
+
+import common.Vertex;
 
 public class Clique extends Vertex {
 
