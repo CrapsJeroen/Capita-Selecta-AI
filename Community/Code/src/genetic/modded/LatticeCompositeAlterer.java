@@ -25,14 +25,12 @@ import static java.lang.String.format;
 import static org.jenetics.internal.util.Equality.eq;
 import static org.jenetics.util.ISeq.toISeq;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.jenetics.AbstractAlterer;
 import org.jenetics.Gene;
 import org.jenetics.Genotype;
 import org.jenetics.Population;

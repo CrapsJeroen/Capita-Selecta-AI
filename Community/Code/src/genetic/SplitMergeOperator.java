@@ -4,7 +4,6 @@ import genetic.modded.LatticeAlterer;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -16,15 +15,12 @@ import org.jenetics.Phenotype;
 import org.jenetics.Population;
 import org.jenetics.internal.util.IntRef;
 import org.jenetics.util.ISeq;
-import org.jenetics.util.RandomRegistry;
 
 import common.Graph;
 
 
 public class SplitMergeOperator extends LatticeAlterer<IntegerGene, Double>{
     
-    final Random random = RandomRegistry.getRandom();
-
     protected SplitMergeOperator(double probability, int latticeWidth, int latticeHeight, Graph graph) {
         super(probability, latticeWidth, latticeHeight, graph);
     }

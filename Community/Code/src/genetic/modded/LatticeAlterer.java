@@ -1,9 +1,9 @@
 package genetic.modded;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -15,8 +15,10 @@ import org.jenetics.IntegerGene;
 import org.jenetics.Phenotype;
 import org.jenetics.Population;
 import org.jenetics.util.ISeq;
+import org.jenetics.util.RandomRegistry;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import common.Graph;
 
 
@@ -25,6 +27,7 @@ public abstract class LatticeAlterer<G extends Gene<?,G>,C extends Comparable<? 
     final int latticeWidth;
     final int latticeHeight;
     final Graph graph;
+    protected final Random random = RandomRegistry.getRandom();
     
     protected LatticeAlterer(double probability, int latticeWidth, int latticeHeight, Graph graph) {
         super(probability);
@@ -78,11 +81,7 @@ public abstract class LatticeAlterer<G extends Gene<?,G>,C extends Comparable<? 
     }
     
     protected boolean areInSameCommunity(final int gene1, final int gene2, final Map<Integer, Set<Integer>> communities){
-        try{
-            return communities.get(gene1).contains(gene2);
-        }catch(Exception e){
-            return false;
-        }
+        return communities.get(gene1).contains(gene2);
     }
     protected Set<Integer> getAlleles(int index){
         return graph.getVertices().get(index).getNeighboursSet().stream()

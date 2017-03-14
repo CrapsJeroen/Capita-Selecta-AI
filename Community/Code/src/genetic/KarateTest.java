@@ -35,7 +35,7 @@ public class KarateTest {
         optimal.add(new HashSet<Integer>(Arrays.asList(24,25,26,28,29,32)));
         System.out.println("Optimal: " + (algo.fitness(optimal)));
 		
-		List<Set<Vertex>> result = algo.solve(3, 100);
+		List<Set<Vertex>> result = algo.solve(5, 1000);
 		System.out.println("Communities found: " + (result.size()));
 		result.stream().forEach(set -> System.out.println(set.toString()));
 	}
