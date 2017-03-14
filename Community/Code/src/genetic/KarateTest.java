@@ -1,6 +1,4 @@
 package genetic;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +35,7 @@ public class KarateTest {
         optimal.add(new HashSet<Integer>(Arrays.asList(24,25,26,28,29,32)));
         System.out.println("Optimal: " + (algo.fitness(optimal)));
 		
-		List<Set<Vertex>> result = algo.solve();
+		List<Set<Vertex>> result = algo.solve(3, 100);
 		System.out.println("Communities found: " + (result.size()));
 		result.stream().forEach(set -> System.out.println(set.toString()));
 	}

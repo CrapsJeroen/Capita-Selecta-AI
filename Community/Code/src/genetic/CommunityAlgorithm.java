@@ -1,7 +1,7 @@
 package genetic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import genetic.modded.LatticeEngine;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -121,17 +121,18 @@ public class CommunityAlgorithm {
         return result;
     }
     
-    public List<Set<Vertex>> solve() {
-        final Engine<IntegerGene, Double> engine = Engine
+    public List<Set<Vertex>> solve(int latticeSize, int generations) {
+        final LatticeEngine<IntegerGene, Double> engine = LatticeEngine
             .builder(this::fitness, IntegerChromosome.of(0, graph.getVertices().size() - 1, graph.getVertices().size()))
-            .populationSize(100)
+            .populationSize(latticeSize * latticeSize)
+//            .selector(new InertSelector<>())
             .build();
         
         EvolutionStatistics<Double, DoubleMomentStatistics> statistics =
                 EvolutionStatistics.ofNumber();
         
         EvolutionResult<IntegerGene, Double> result = engine.stream()
-            .limit(1000)
+            .limit(generations)
             .peek(statistics)
             .collect(EvolutionResult.toBestEvolutionResult());
 
