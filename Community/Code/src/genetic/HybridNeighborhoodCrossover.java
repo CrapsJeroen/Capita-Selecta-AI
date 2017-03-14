@@ -5,9 +5,6 @@ import genetic.modded.LatticeHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,21 +15,19 @@ import org.jenetics.Population;
 import org.jenetics.internal.util.IntRef;
 import org.jenetics.util.ISeq;
 
-import common.Graph;
-
 
 public class HybridNeighborhoodCrossover extends LatticeAlterer{
 
     final double probCrossover;
     final double probStrat;
     
-    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeWidth, int latticeHeight, LatticeHelper helper) {
+    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeWidth, int latticeHeight, LatticeHelper<Double> helper) {
         super(0, latticeWidth, latticeHeight, helper);
         this.probCrossover = probCrossover;
         this.probStrat = probStrat;
     }
     
-    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeSize, LatticeHelper helper) {
+    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeSize, LatticeHelper<Double> helper) {
         this(probCrossover, probStrat, latticeSize, latticeSize, helper);
     }
 

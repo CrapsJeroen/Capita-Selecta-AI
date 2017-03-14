@@ -34,7 +34,6 @@ public class CommunityAlgorithm {
     private final double PROB_MUTATE            = 0.05;
     private final int    MAX_STEADY_GENS        = 10;
     private final int    SL_SIZE                = 3;
-    private final int    SL                     = SL_SIZE * SL_SIZE;
 
     public CommunityAlgorithm(Graph graph) {
         this.graph = graph;
@@ -141,8 +140,10 @@ public class CommunityAlgorithm {
     }
 
     public List<Set<Vertex>> solve(int latticeSize, int generations) {
-        final LatticeHelper helper = new LatticeHelper(CommunityAlgorithm::decodePartitionMap, 
-                                                        graph);
+        final LatticeHelper<Double> helper = new LatticeHelper<Double>(0.0, 
+                                                        CommunityAlgorithm::decodePartitionMap, 
+                                                        graph,
+                                                        MAX_STEADY_GENS);
         
         final LatticeEngine<IntegerGene, Double> engine = LatticeEngine
                 .builder(

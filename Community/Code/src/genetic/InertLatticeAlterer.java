@@ -9,7 +9,7 @@ import org.jenetics.Population;
 
 public class InertLatticeAlterer extends LatticeAlterer{
 
-    public InertLatticeAlterer(final int size, LatticeHelper helper) {
+    public InertLatticeAlterer(final int size, LatticeHelper<Double> helper) {
         super(size, helper);
     }
 

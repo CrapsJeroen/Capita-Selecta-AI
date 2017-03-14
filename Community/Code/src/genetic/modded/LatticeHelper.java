@@ -11,18 +11,21 @@ import org.jenetics.IntegerGene;
 import common.Graph;
 
 
-public class LatticeHelper {
-    public int steadyGenerations = 0;
-    public double lastBestFitness = 0;
+public class LatticeHelper<C extends Comparable<? super C>> {
+    private int steadyGenerations = 0;
+    private C lastBestFitness;
     private Map<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> communityCache;
     final Function<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> decodeFunction;
     public final Graph graph;
+    public final int maxSteadyGenerations;
     
-    public LatticeHelper(final Function<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> decodeFunction,
-                    Graph graph){
+    public LatticeHelper(C initialFitness, final Function<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> decodeFunction,
+                    Graph graph, int maxSteadyGenerations){
         communityCache = new HashMap<Genotype<IntegerGene>, Map<Integer,Set<Integer>>>();
+        this.lastBestFitness = initialFitness;
         this.decodeFunction = decodeFunction;
         this.graph = graph;
+        this.maxSteadyGenerations = maxSteadyGenerations;
     }
     
     public Map<Integer, Set<Integer>> getCommunities(Genotype<IntegerGene> gt){
@@ -35,5 +38,20 @@ public class LatticeHelper {
     public Map<Integer, Set<Integer>> decode(Genotype<IntegerGene> gt){
         return decodeFunction.apply(gt);
     }
-
+    
+    public void updateLastFitness(C fitness){
+        if(fitness.compareTo(lastBestFitness) > 0){
+            steadyGenerations = 0;
+        }else{
+            steadyGenerations++;
+        }
+        lastBestFitness = fitness;
+    }
+    
+    public int getSteadyGenerations(){
+        return steadyGenerations;
+    }
+    public int getMaxSteadyGenerations(){
+        return maxSteadyGenerations;
+    }
 }

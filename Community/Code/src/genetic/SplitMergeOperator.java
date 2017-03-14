@@ -6,7 +6,6 @@ import genetic.modded.LatticeHelper;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -17,16 +16,14 @@ import org.jenetics.Population;
 import org.jenetics.internal.util.IntRef;
 import org.jenetics.util.ISeq;
 
-import common.Graph;
-
 
 public class SplitMergeOperator extends LatticeAlterer{
     
-    protected SplitMergeOperator(double probability, int latticeWidth, int latticeHeight, LatticeHelper helper) {
+    protected SplitMergeOperator(double probability, int latticeWidth, int latticeHeight, LatticeHelper<Double> helper) {
         super(probability, latticeWidth, latticeHeight, helper);
     }
     
-    protected SplitMergeOperator(double probability, int latticeSize, LatticeHelper helper) {
+    protected SplitMergeOperator(double probability, int latticeSize, LatticeHelper<Double> helper) {
         super(probability, latticeSize, latticeSize, helper);
     }
 

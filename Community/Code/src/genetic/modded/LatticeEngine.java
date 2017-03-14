@@ -24,15 +24,11 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static org.jenetics.Population.toPopulation;
 import static org.jenetics.internal.util.require.probability;
-import genetic.InertLatticeAlterer;
 
 import java.time.Clock;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
@@ -134,7 +130,7 @@ public final class LatticeEngine<
 
 	// Needed context for population evolving.
 	private final Function<? super Genotype<G>, ? extends C> _fitnessFunction;
-	private final LatticeHelper helper;
+	private final LatticeHelper<C> helper;
 	private final Function<? super C, ? extends C> _fitnessScaler;
 	private final Factory<Genotype<G>> _genotypeFactory;
 	private final Selector<G, C> _survivorsSelector;
@@ -181,7 +177,7 @@ public final class LatticeEngine<
 	LatticeEngine(
 		final Function<? super Genotype<G>, ? extends C> fitnessFunction,
 		final Function<? super C, ? extends C> fitnessScaler,
-		final LatticeHelper helper,
+		final LatticeHelper<C> helper,
 		final Factory<Genotype<G>> genotypeFactory,
 		final Selector<G, C> survivorsSelector,
 		final Selector<G, C> offspringSelector,
@@ -328,6 +324,7 @@ public final class LatticeEngine<
 			result.duration.plus(evaluateTimer.getTime()),
 			timer.stop().getTime()
 		);
+		
 
 //		final int killCount =
 //			filteredOffspring.join().result.killCount +
@@ -337,15 +334,19 @@ public final class LatticeEngine<
 //			filteredOffspring.join().result.invalidCount +
 //			filteredSurvivors.join().result.invalidCount;
 
-		return EvolutionResult.of(
-			_optimize,
-			result.result,
-			start.getGeneration(),
-			durations,
-			0,
-			0,
-			alteredOffspring.join().result.alterCount
-		);
+		EvolutionResult<G, C> evoResult = EvolutionResult.of(
+	            _optimize,
+	            result.result,
+	            start.getGeneration(),
+	            durations,
+	            0,
+	            0,
+	            alteredOffspring.join().result.alterCount
+	        );
+		
+	      helper.updateLastFitness(evoResult.getBestFitness());
+
+		return evoResult; 
 	}
 	
 
@@ -360,43 +361,43 @@ public final class LatticeEngine<
 	public EvolutionResult<G, C> apply(final EvolutionStart<G, C> start) {
 		return evolve(start);
 	}
-
-	// Selects the survivors population. A new population object is returned.
-	private Population<G, C> selectSurvivors(final Population<G, C> population) {
-		return _survivorsCount > 0
-			?_survivorsSelector.select(population, _survivorsCount, _optimize)
-			: Population.empty();
-	}
-
-	// Selects the offspring population. A new population object is returned.
-	private Population<G, C> selectOffspring(final Population<G, C> population) {
-		return _offspringCount > 0
-			? _offspringSelector.select(population, _offspringCount, _optimize)
-			: Population.empty();
-	}
-
-	// Filters out invalid and to old individuals. Filtering is done in place.
-	private FilterResult<G, C> filter(
-		final Population<G, C> population,
-		final long generation
-	) {
-		int killCount = 0;
-		int invalidCount = 0;
-
-		for (int i = 0, n = population.size(); i < n; ++i) {
-			final Phenotype<G, C> individual = population.get(i);
-
-			if (!_validator.test(individual)) {
-				population.set(i, newPhenotype(generation));
-				++invalidCount;
-			} else if (individual.getAge(generation) > _maximalPhenotypeAge) {
-				population.set(i, newPhenotype(generation));
-				++killCount;
-			}
-		}
-
-		return new FilterResult<>(population, killCount, invalidCount);
-	}
+//
+//	// Selects the survivors population. A new population object is returned.
+//	private Population<G, C> selectSurvivors(final Population<G, C> population) {
+//		return _survivorsCount > 0
+//			?_survivorsSelector.select(population, _survivorsCount, _optimize)
+//			: Population.empty();
+//	}
+//
+//	// Selects the offspring population. A new population object is returned.
+//	private Population<G, C> selectOffspring(final Population<G, C> population) {
+//		return _offspringCount > 0
+//			? _offspringSelector.select(population, _offspringCount, _optimize)
+//			: Population.empty();
+//	}
+//
+//	// Filters out invalid and to old individuals. Filtering is done in place.
+//	private FilterResult<G, C> filter(
+//		final Population<G, C> population,
+//		final long generation
+//	) {
+//		int killCount = 0;
+//		int invalidCount = 0;
+//
+//		for (int i = 0, n = population.size(); i < n; ++i) {
+//			final Phenotype<G, C> individual = population.get(i);
+//
+//			if (!_validator.test(individual)) {
+//				population.set(i, newPhenotype(generation));
+//				++invalidCount;
+//			} else if (individual.getAge(generation) > _maximalPhenotypeAge) {
+//				population.set(i, newPhenotype(generation));
+//				++killCount;
+//			}
+//		}
+//
+//		return new FilterResult<>(population, killCount, invalidCount);
+//	}
 
 	// Create a new and valid phenotype
 	private Phenotype<G, C> newPhenotype(final long generation) {
@@ -996,7 +997,7 @@ public final class LatticeEngine<
 	public static <G extends Gene<?, G>, C extends Comparable<? super C>>
 	Builder<G, C> builder(
 		final Function<? super Genotype<G>, ? extends C> ff,
-		final LatticeHelper helper,
+		final LatticeHelper<C> helper,
 		final Factory<Genotype<G>> genotypeFactory
 	) {
 		return new Builder<>(genotypeFactory, ff, helper);
@@ -1019,7 +1020,7 @@ public final class LatticeEngine<
 	public static <G extends Gene<?, G>, C extends Comparable<? super C>>
 	Builder<G, C> builder(
 		final Function<? super Genotype<G>, ? extends C> ff,
-		final LatticeHelper helper,
+		final LatticeHelper<C> helper,
 		final Chromosome<G> chromosome,
 		final Chromosome<G>... chromosomes
 	) {
@@ -1044,7 +1045,7 @@ public final class LatticeEngine<
 	public static <T, G extends Gene<?, G>, C extends Comparable<? super C>>
 	Builder<G, C> builder(
 		final Function<? super T, ? extends C> ff,
-		final LatticeHelper helper,
+		final LatticeHelper<C> helper,
 		final Codec<T, G> codec
 	) {
 		return builder(ff.compose(codec.decoder()), helper, codec.encoding());
@@ -1094,12 +1095,12 @@ public final class LatticeEngine<
 
 		private int _individualCreationRetries = 10;
 		
-		private LatticeHelper helper;
+		private LatticeHelper<C> helper;
 
 		private Builder(
 			final Factory<Genotype<G>> genotypeFactory,
 			final Function<? super Genotype<G>, ? extends C> fitnessFunction,
-			final LatticeHelper helper
+			final LatticeHelper<C> helper
 		) {
 			_genotypeFactory = requireNonNull(genotypeFactory);
 			_fitnessFunction = requireNonNull(fitnessFunction);

@@ -5,46 +5,40 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.jenetics.AbstractAlterer;
-import org.jenetics.Gene;
-import org.jenetics.Genotype;
 import org.jenetics.IntegerGene;
 import org.jenetics.Phenotype;
 import org.jenetics.Population;
-import org.jenetics.util.ISeq;
 import org.jenetics.util.RandomRegistry;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import common.Graph;
 
 
 public abstract class LatticeAlterer extends AbstractAlterer<IntegerGene, Double> {
 
     final int latticeWidth;
     final int latticeHeight;
-    protected final LatticeHelper helper;
+    protected final LatticeHelper<Double> helper;
     protected final Random random = RandomRegistry.getRandom();
     
-    protected LatticeAlterer(double probability, int latticeWidth, int latticeHeight, LatticeHelper helper) {
+    protected LatticeAlterer(double probability, int latticeWidth, int latticeHeight, LatticeHelper<Double> helper) {
         super(probability);
         this.latticeWidth = latticeWidth;
         this.latticeHeight = latticeHeight;
         this.helper = helper;
     }
     
-    protected LatticeAlterer(double probability, int latticeSize, LatticeHelper helper) {
+    protected LatticeAlterer(double probability, int latticeSize, LatticeHelper<Double> helper) {
         this(probability, latticeSize, latticeSize, helper);
     }
     
-    protected LatticeAlterer(int latticeWidth, int latticeHeight, LatticeHelper helper) {
+    protected LatticeAlterer(int latticeWidth, int latticeHeight, LatticeHelper<Double> helper) {
         this(0, latticeWidth, latticeHeight, helper);
     }
     
-    protected LatticeAlterer(int latticeSize, LatticeHelper helper) {
+    protected LatticeAlterer(int latticeSize, LatticeHelper<Double> helper) {
         this(0, latticeSize, latticeSize, helper);
     }
     
