@@ -27,6 +27,12 @@ public class CommunityAlgorithm {
     
     public final Graph graph;
     public final int numEdges;
+  private final double PROB_CROSSOVER = 0.5;
+  private final double PROB_MUTATE = 0.5;
+  private final double PROB_HYBRID_STRAT = 0.5;
+  private final int MAX_STEADY_GENS = 10;
+  private final int SL_SIZE = 3;
+  private final int SL = SL_SIZE * SL_SIZE;
     public CommunityAlgorithm(Graph graph){
         this.graph = graph;
         
@@ -41,7 +47,7 @@ public class CommunityAlgorithm {
     }
     
     
-    public List<Set<Integer>> decodePartitions(Genotype<IntegerGene> individual){
+    public static Map<Integer, Set<Integer>> decodePartitionMap(Genotype<IntegerGene> individual){
         Map<Integer, Set<Integer>> communityMap = new HashMap<Integer, Set<Integer>>();        
         Chromosome<IntegerGene> chrom = individual.getChromosome();
 
@@ -87,7 +93,11 @@ public class CommunityAlgorithm {
             
             
         }
-        return communityMap.values().stream().distinct().collect(Collectors.toList());
+        return communityMap;
+    }
+    
+    public static List<Set<Integer>> decodePartitions(Genotype<IntegerGene> individual){
+        return decodePartitionMap(individual).values().stream().distinct().collect(Collectors.toList());
     }
     
     public Set<Vertex> intSetToVertexSet(Set<Integer> input){
@@ -123,9 +133,12 @@ public class CommunityAlgorithm {
     
     public List<Set<Vertex>> solve(int latticeSize, int generations) {
         final LatticeEngine<IntegerGene, Double> engine = LatticeEngine
-            .builder(this::fitness, IntegerChromosome.of(0, graph.getVertices().size() - 1, graph.getVertices().size()))
+            .builder(this::fitness, CommunityAlgorithm::decodePartitionMap, IntegerChromosome.of(0, graph.getVertices().size() - 1, graph.getVertices().size()))
             .populationSize(latticeSize * latticeSize)
-//            .selector(new InertSelector<>())
+            .alterers(new SplitMergeOperator(0.5, latticeSize, graph), 
+                    new HybridNeighborhoodCrossover(PROB_CROSSOVER, PROB_HYBRID_STRAT, latticeSize, graph),
+                    new AdaptiveMutator(PROB_MUTATE, latticeSize, graph),
+                    new SelfLearnOperator(SL_SIZE, latticeSize, graph))
             .build();
         
         EvolutionStatistics<Double, DoubleMomentStatistics> statistics =

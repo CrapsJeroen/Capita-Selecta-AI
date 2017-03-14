@@ -24,10 +24,16 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static org.jenetics.Population.toPopulation;
 import static org.jenetics.internal.util.require.probability;
+import genetic.InertLatticeAlterer;
 
 import java.time.Clock;
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
@@ -40,6 +46,7 @@ import org.jenetics.Alterer;
 import org.jenetics.Chromosome;
 import org.jenetics.Gene;
 import org.jenetics.Genotype;
+import org.jenetics.IntegerGene;
 import org.jenetics.Mutator;
 import org.jenetics.Optimize;
 import org.jenetics.Phenotype;
@@ -130,11 +137,12 @@ public final class LatticeEngine<
 
 	// Needed context for population evolving.
 	private final Function<? super Genotype<G>, ? extends C> _fitnessFunction;
+	private final Function<? super Genotype<G>, Map<Integer, Set<Integer>>> decodeFunction;
 	private final Function<? super C, ? extends C> _fitnessScaler;
 	private final Factory<Genotype<G>> _genotypeFactory;
 	private final Selector<G, C> _survivorsSelector;
 	private final Selector<G, C> _offspringSelector;
-	private final Alterer<G, C> _alterer;
+	private final LatticeAlterer<G, C> _alterer;
 	private final Predicate<? super Phenotype<G, C>> _validator;
 	private final Optimize _optimize;
 	private final int _offspringCount;
@@ -147,6 +155,8 @@ public final class LatticeEngine<
 
 	// Additional parameters.
 	private final int _individualCreationRetries;
+	
+	private Map<Genotype<G>, Map<Integer, Set<Integer>>> communityCache;
 
 
 	/**
@@ -175,10 +185,11 @@ public final class LatticeEngine<
 	LatticeEngine(
 		final Function<? super Genotype<G>, ? extends C> fitnessFunction,
 		final Function<? super C, ? extends C> fitnessScaler,
+		final Function<? super Genotype<G>, Map<Integer, Set<Integer>>> decodeFunction,
 		final Factory<Genotype<G>> genotypeFactory,
 		final Selector<G, C> survivorsSelector,
 		final Selector<G, C> offspringSelector,
-		final Alterer<G, C> alterer,
+		final LatticeAlterer<G, C> alterer,
 		final Predicate<? super Phenotype<G, C>> validator,
 		final Optimize optimize,
 		final int offspringCount,
@@ -203,6 +214,7 @@ public final class LatticeEngine<
 
 		_executor = new TimedExecutor(requireNonNull(executor));
 		_clock = requireNonNull(clock);
+		this.decodeFunction = decodeFunction;
 
 		if (individualCreationRetries < 0) {
 			throw new IllegalArgumentException(format(
@@ -210,6 +222,7 @@ public final class LatticeEngine<
 				individualCreationRetries
 			));
 		}
+		communityCache = new HashMap<Genotype<G>, Map<Integer, Set<Integer>>>();
 		_individualCreationRetries = individualCreationRetries;
 	}
 
@@ -261,50 +274,48 @@ public final class LatticeEngine<
 		// Initial evaluation of the population.
 		final Timer evaluateTimer = Timer.of(_clock).start();
 		evaluate(startPopulation);
+		communityCache.clear();
+		startPopulation.stream().map(pt -> pt.getGenotype()).forEach(gt -> communityCache.put(gt, decodeFunction.apply(gt)));
 		evaluateTimer.stop();
 
-		// Select the offspring population.
-		final CompletableFuture<TimedResult<Population<G, C>>> offspring =
-			_executor.async(() ->
-				selectOffspring(startPopulation),
-				_clock
-			);
-
-		// Select the survivor population.
-		final CompletableFuture<TimedResult<Population<G, C>>> survivors =
-			_executor.async(() ->
-				selectSurvivors(startPopulation),
-				_clock
-			);
+//		// Select the offspring population.
+//		final CompletableFuture<TimedResult<Population<G, C>>> offspring =
+//			_executor.async(() ->
+//				selectOffspring(startPopulation),
+//				_clock
+//			);
+//
+//		// Select the survivor population.
+//		final CompletableFuture<TimedResult<Population<G, C>>> survivors =
+//			_executor.async(() ->
+//				selectSurvivors(startPopulation),
+//				_clock
+//			);
 
 		// Altering the offspring population.
 		final CompletableFuture<TimedResult<AlterResult<G, C>>> alteredOffspring =
-			_executor.thenApply(offspring, p ->
-				alter(p.result, start.getGeneration()),
-				_clock
-			);
+	          _executor.async(() ->
+                  alter(startPopulation, start.getGeneration()),
+              _clock
+          );
 
-		// Filter and replace invalid and to old survivor individuals.
-		final CompletableFuture<TimedResult<FilterResult<G, C>>> filteredSurvivors =
-			_executor.thenApply(survivors, pop ->
-				filter(pop.result, start.getGeneration()),
-				_clock
-			);
-
-		// Filter and replace invalid and to old offspring individuals.
-		final CompletableFuture<TimedResult<FilterResult<G, C>>> filteredOffspring =
-			_executor.thenApply(alteredOffspring, pop ->
-				filter(pop.result.population, start.getGeneration()),
-				_clock
-			);
+//		// Filter and replace invalid and to old survivor individuals.
+//		final CompletableFuture<TimedResult<FilterResult<G, C>>> filteredSurvivors =
+//			_executor.thenApply(survivors, pop ->
+//				filter(pop.result, start.getGeneration()),
+//				_clock
+//			);
+//
+//		// Filter and replace invalid and to old offspring individuals.
+//		final CompletableFuture<TimedResult<FilterResult<G, C>>> filteredOffspring =
+//			_executor.thenApply(alteredOffspring, pop ->
+//				filter(pop.result.population, start.getGeneration()),
+//				_clock
+//			);
 
 		// Combining survivors and offspring to the new population.
 		final CompletableFuture<Population<G, C>> population =
-			filteredSurvivors.thenCombineAsync(filteredOffspring, (s, o) -> {
-					final Population<G, C> pop = s.result.population;
-					pop.addAll(o.result.population);
-					return pop;
-				},
+		        alteredOffspring.thenApplyAsync(s -> s.result.population, // COMBINE?????
 				_executor.get()
 			);
 
@@ -316,32 +327,39 @@ public final class LatticeEngine<
 
 
 		final EvolutionDurations durations = EvolutionDurations.of(
-			offspring.join().duration,
-			survivors.join().duration,
+			Duration.ZERO,
+			Duration.ZERO,
 			alteredOffspring.join().duration,
-			filteredOffspring.join().duration,
-			filteredSurvivors.join().duration,
+			Duration.ZERO,
+			Duration.ZERO,
 			result.duration.plus(evaluateTimer.getTime()),
 			timer.stop().getTime()
 		);
 
-		final int killCount =
-			filteredOffspring.join().result.killCount +
-			filteredSurvivors.join().result.killCount;
-
-		final int invalidCount =
-			filteredOffspring.join().result.invalidCount +
-			filteredSurvivors.join().result.invalidCount;
+//		final int killCount =
+//			filteredOffspring.join().result.killCount +
+//			filteredSurvivors.join().result.killCount;
+//
+//		final int invalidCount =
+//			filteredOffspring.join().result.invalidCount +
+//			filteredSurvivors.join().result.invalidCount;
 
 		return EvolutionResult.of(
 			_optimize,
 			result.result,
 			start.getGeneration(),
 			durations,
-			killCount,
-			invalidCount,
+			0,
+			0,
 			alteredOffspring.join().result.alterCount
 		);
+	}
+	
+	public Map<Integer, Set<Integer>> getCommunities(Genotype<G> gt){
+	    if(communityCache.containsKey(gt)) return communityCache.get(gt);
+	    Map<Integer, Set<Integer>> result = decodeFunction.apply(gt);
+	    communityCache.put(gt, result);
+	    return result;
 	}
 
 	/**
@@ -414,9 +432,10 @@ public final class LatticeEngine<
 		final Population<G,C> population,
 		final long generation
 	) {
+	    
 		return new AlterResult<>(
 			population,
-			_alterer.alter(population, generation)
+			_alterer.alter(population, generation, this::getCommunities)
 		);
 	}
 
@@ -942,7 +961,7 @@ public final class LatticeEngine<
 	 * @return a new engine builder
 	 */
 	public Builder<G, C> builder() {
-		return new Builder<G, C>(_genotypeFactory, _fitnessFunction)
+		return new Builder<G, C>(_genotypeFactory, _fitnessFunction, decodeFunction)
 			.alterers(_alterer)
 			.clock(_clock)
 			.executor(_executor.get())
@@ -956,23 +975,23 @@ public final class LatticeEngine<
 			.survivorsSelector(_survivorsSelector)
 			.individualCreationRetries(_individualCreationRetries);
 	}
-
-	/**
-	 * Create a new evolution {@code Engine.Builder} for the given
-	 * {@link Problem}.
-	 *
-	 * @since 3.4
-	 *
-	 * @param problem the problem to be solved by the evolution {@code Engine}
-	 * @param <T> the (<i>native</i>) argument type of the problem fitness function
-	 * @param <G> the gene type the evolution engine is working with
-	 * @param <C> the result type of the fitness function
-	 * @return Create a new evolution {@code Engine.Builder}
-	 */
-	public static <T, G extends Gene<?, G>, C extends Comparable<? super C>>
-	Builder<G, C> builder(final Problem<T, G, C> problem) {
-		return builder(problem.fitness(), problem.codec());
-	}
+//
+//	/**
+//	 * Create a new evolution {@code Engine.Builder} for the given
+//	 * {@link Problem}.
+//	 *
+//	 * @since 3.4
+//	 *
+//	 * @param problem the problem to be solved by the evolution {@code Engine}
+//	 * @param <T> the (<i>native</i>) argument type of the problem fitness function
+//	 * @param <G> the gene type the evolution engine is working with
+//	 * @param <C> the result type of the fitness function
+//	 * @return Create a new evolution {@code Engine.Builder}
+//	 */
+//	public static <T, G extends Gene<?, G>, C extends Comparable<? super C>>
+//	Builder<G, C> builder(final Problem<T, G, C> problem) {
+//		return builder(problem.fitness(), problem.codec());
+//	}
 
 	/**
 	 * Create a new evolution {@code Engine.Builder} with the given fitness
@@ -989,9 +1008,10 @@ public final class LatticeEngine<
 	public static <G extends Gene<?, G>, C extends Comparable<? super C>>
 	Builder<G, C> builder(
 		final Function<? super Genotype<G>, ? extends C> ff,
+		final Function<? super Genotype<G>, Map<Integer, Set<Integer>>> decodeFunction,
 		final Factory<Genotype<G>> genotypeFactory
 	) {
-		return new Builder<>(genotypeFactory, ff);
+		return new Builder<>(genotypeFactory, ff, decodeFunction);
 	}
 
 	/**
@@ -1011,10 +1031,11 @@ public final class LatticeEngine<
 	public static <G extends Gene<?, G>, C extends Comparable<? super C>>
 	Builder<G, C> builder(
 		final Function<? super Genotype<G>, ? extends C> ff,
+		final Function<? super Genotype<G>, Map<Integer, Set<Integer>>> decodeFunction,
 		final Chromosome<G> chromosome,
 		final Chromosome<G>... chromosomes
 	) {
-		return new Builder<>(Genotype.of(chromosome, chromosomes), ff);
+		return new Builder<>(Genotype.of(chromosome, chromosomes), ff, decodeFunction);
 	}
 
 	/**
@@ -1035,9 +1056,10 @@ public final class LatticeEngine<
 	public static <T, G extends Gene<?, G>, C extends Comparable<? super C>>
 	Builder<G, C> builder(
 		final Function<? super T, ? extends C> ff,
+		final Function<? super Genotype<G>, Map<Integer, Set<Integer>>> decodeFunction,
 		final Codec<T, G> codec
 	) {
-		return builder(ff.compose(codec.decoder()), codec.encoding());
+		return builder(ff.compose(codec.decoder()), decodeFunction, codec.encoding());
 	}
 
 
@@ -1069,10 +1091,7 @@ public final class LatticeEngine<
 		private Function<? super C, ? extends C> _fitnessScaler = a -> a;
 		private Selector<G, C> _survivorsSelector = new TournamentSelector<>(3);
 		private Selector<G, C> _offspringSelector = new TournamentSelector<>(3);
-		private Alterer<G, C> _alterer = Alterer.of(
-			new SinglePointCrossover<G, C>(0.2),
-			new Mutator<>(0.15)
-		);
+		private LatticeAlterer<G, C> _alterer = new InertLatticeAlterer<G, C>(0, null);
 		private Predicate<? super Phenotype<G, C>> _validator = Phenotype::isValid;
 		private Optimize _optimize = Optimize.MAXIMUM;
 		private double _offspringFraction = 0.6;
@@ -1083,13 +1102,17 @@ public final class LatticeEngine<
 		private Clock _clock = NanoClock.systemUTC();
 
 		private int _individualCreationRetries = 10;
+		
+		private Function<? super Genotype<G>, Map<Integer, Set<Integer>>> decodeFunction;
 
 		private Builder(
 			final Factory<Genotype<G>> genotypeFactory,
-			final Function<? super Genotype<G>, ? extends C> fitnessFunction
+			final Function<? super Genotype<G>, ? extends C> fitnessFunction,
+			final Function<? super Genotype<G>, Map<Integer, Set<Integer>>> decodeFunction
 		) {
 			_genotypeFactory = requireNonNull(genotypeFactory);
 			_fitnessFunction = requireNonNull(fitnessFunction);
+			this.decodeFunction = requireNonNull(decodeFunction);
 		}
 
 		/**
@@ -1190,15 +1213,15 @@ public final class LatticeEngine<
 		 */
 		@SafeVarargs
 		public final Builder<G, C> alterers(
-			final Alterer<G, C> first,
-			final Alterer<G, C>... rest
+			final LatticeAlterer<G, C> first,
+			final LatticeAlterer<G, C>... rest
 		) {
 			requireNonNull(first);
 			Stream.of(rest).forEach(Objects::requireNonNull);
 
 			_alterer = rest.length == 0 ?
 				first :
-				Alterer.of(rest).compose(first);
+				LatticeAlterer.of(rest).compose(first);
 
 			return this;
 		}
@@ -1392,6 +1415,7 @@ public final class LatticeEngine<
 			return new LatticeEngine<>(
 				_fitnessFunction,
 				_fitnessScaler,
+				decodeFunction,
 				_genotypeFactory,
 				_survivorsSelector,
 				_offspringSelector,
@@ -1568,7 +1592,7 @@ public final class LatticeEngine<
 		 */
 		@Override
 		public Builder<G, C> copy() {
-			return new Builder<G, C>(_genotypeFactory, _fitnessFunction)
+			return new Builder<G, C>(_genotypeFactory, _fitnessFunction, decodeFunction)
 				.alterers(_alterer)
 				.clock(_clock)
 				.executor(_executor)
