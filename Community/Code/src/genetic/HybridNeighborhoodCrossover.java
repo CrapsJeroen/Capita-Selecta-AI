@@ -1,6 +1,7 @@
 package genetic;
 
 import genetic.modded.LatticeAlterer;
+import genetic.modded.LatticeHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,24 +21,23 @@ import org.jenetics.util.ISeq;
 import common.Graph;
 
 
-public class HybridNeighborhoodCrossover extends LatticeAlterer<IntegerGene, Double>{
+public class HybridNeighborhoodCrossover extends LatticeAlterer{
 
     final double probCrossover;
     final double probStrat;
     
-    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeWidth, int latticeHeight, Graph graph) {
-        super(0, latticeWidth, latticeHeight, graph);
+    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeWidth, int latticeHeight, LatticeHelper helper) {
+        super(0, latticeWidth, latticeHeight, helper);
         this.probCrossover = probCrossover;
         this.probStrat = probStrat;
     }
     
-    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeSize, Graph graph) {
-        this(probCrossover, probStrat, latticeSize, latticeSize, graph);
+    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeSize, LatticeHelper helper) {
+        this(probCrossover, probStrat, latticeSize, latticeSize, helper);
     }
 
     @Override
-    public int alter(Population<IntegerGene, Double> population, final long generation, 
-            final Function<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> communityCache) {
+    public int alter(Population<IntegerGene, Double> population, final long generation) {
         final IntRef alterations = new IntRef(0);
         Population<IntegerGene, Double> initialPop = population.copy();
 

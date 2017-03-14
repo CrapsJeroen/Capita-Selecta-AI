@@ -1,6 +1,7 @@
 package genetic;
 
 import genetic.modded.LatticeAlterer;
+import genetic.modded.LatticeHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -19,19 +20,18 @@ import org.jenetics.util.ISeq;
 import common.Graph;
 
 
-public class SplitMergeOperator extends LatticeAlterer<IntegerGene, Double>{
+public class SplitMergeOperator extends LatticeAlterer{
     
-    protected SplitMergeOperator(double probability, int latticeWidth, int latticeHeight, Graph graph) {
-        super(probability, latticeWidth, latticeHeight, graph);
+    protected SplitMergeOperator(double probability, int latticeWidth, int latticeHeight, LatticeHelper helper) {
+        super(probability, latticeWidth, latticeHeight, helper);
     }
     
-    protected SplitMergeOperator(double probability, int latticeSize, Graph graph) {
-        super(probability, latticeSize, latticeSize, graph);
+    protected SplitMergeOperator(double probability, int latticeSize, LatticeHelper helper) {
+        super(probability, latticeSize, latticeSize, helper);
     }
 
     @Override
-    public int alter(Population<IntegerGene, Double> population, final long generation, 
-            final Function<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> communityCache) {
+    public int alter(Population<IntegerGene, Double> population, final long generation) {
         final IntRef alterations = new IntRef(0);
         Population<IntegerGene, Double> initialPop = population.copy();
 
@@ -40,7 +40,7 @@ public class SplitMergeOperator extends LatticeAlterer<IntegerGene, Double>{
             final Phenotype<IntegerGene, Double> maxNeighbor = getMaxNeighbor(population, i);
             if(pt.getFitness() > maxNeighbor.getFitness()) return;
             
-            final Genotype<IntegerGene> mgt = mutate(maxNeighbor.getGenotype(), alterations, communityCache.apply(maxNeighbor.getGenotype()));
+            final Genotype<IntegerGene> mgt = mutate(maxNeighbor.getGenotype(), alterations, helper.getCommunities(maxNeighbor.getGenotype()));
 
             final Phenotype<IntegerGene, Double> mpt = pt.newInstance(mgt, generation);
 

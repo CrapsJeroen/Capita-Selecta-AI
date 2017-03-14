@@ -22,34 +22,34 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import common.Graph;
 
 
-public abstract class LatticeAlterer<G extends Gene<?,G>,C extends Comparable<? super C>> extends AbstractAlterer<G, C> {
+public abstract class LatticeAlterer extends AbstractAlterer<IntegerGene, Double> {
 
     final int latticeWidth;
     final int latticeHeight;
-    final Graph graph;
+    protected final LatticeHelper helper;
     protected final Random random = RandomRegistry.getRandom();
     
-    protected LatticeAlterer(double probability, int latticeWidth, int latticeHeight, Graph graph) {
+    protected LatticeAlterer(double probability, int latticeWidth, int latticeHeight, LatticeHelper helper) {
         super(probability);
         this.latticeWidth = latticeWidth;
         this.latticeHeight = latticeHeight;
-        this.graph = graph;
+        this.helper = helper;
     }
     
-    protected LatticeAlterer(double probability, int latticeSize, Graph graph) {
-        this(probability, latticeSize, latticeSize, graph);
+    protected LatticeAlterer(double probability, int latticeSize, LatticeHelper helper) {
+        this(probability, latticeSize, latticeSize, helper);
     }
     
-    protected LatticeAlterer(int latticeWidth, int latticeHeight, Graph graph) {
-        this(0, latticeWidth, latticeHeight, graph);
+    protected LatticeAlterer(int latticeWidth, int latticeHeight, LatticeHelper helper) {
+        this(0, latticeWidth, latticeHeight, helper);
     }
     
-    protected LatticeAlterer(int latticeSize, Graph graph) {
-        this(0, latticeSize, latticeSize, graph);
+    protected LatticeAlterer(int latticeSize, LatticeHelper helper) {
+        this(0, latticeSize, latticeSize, helper);
     }
     
-    Set<Phenotype<G, C>> getNeighbors(Population<G, C> pop, int index){
-        Set<Phenotype<G, C>> result = new HashSet<Phenotype<G, C>>();
+    Set<Phenotype<IntegerGene, Double>> getNeighbors(Population<IntegerGene, Double> pop, int index){
+        Set<Phenotype<IntegerGene, Double>> result = new HashSet<Phenotype<IntegerGene, Double>>();
         
         int startX = index % latticeWidth;
         int startY = index / latticeWidth;
@@ -66,8 +66,8 @@ public abstract class LatticeAlterer<G extends Gene<?,G>,C extends Comparable<? 
         return result;
     }
     
-    protected Phenotype<G, C> getMaxNeighbor(Population<G, C> pop, int index){
-        Optional<Phenotype<G, C>> result = getNeighbors(pop, index).stream().max(Phenotype<G, C>::compareTo);
+    protected Phenotype<IntegerGene, Double> getMaxNeighbor(Population<IntegerGene, Double> pop, int index){
+        Optional<Phenotype<IntegerGene, Double>> result = getNeighbors(pop, index).stream().max(Phenotype<IntegerGene, Double>::compareTo);
         
         if(result.isPresent()){
             return result.get();
@@ -83,9 +83,10 @@ public abstract class LatticeAlterer<G extends Gene<?,G>,C extends Comparable<? 
     protected boolean areInSameCommunity(final int gene1, final int gene2, final Map<Integer, Set<Integer>> communities){
         return communities.get(gene1).contains(gene2);
     }
+    
     protected Set<Integer> getAlleles(int index){
-        return graph.getVertices().get(index).getNeighboursSet().stream()
-                .map(v -> graph.getVertexIndexById(v.getId()))
+        return helper.graph.getVertices().get(index).getNeighboursSet().stream()
+                .map(v -> helper.graph.getVertexIndexById(v.getId()))
                 .collect(Collectors.toSet());
     }
     
@@ -94,53 +95,10 @@ public abstract class LatticeAlterer<G extends Gene<?,G>,C extends Comparable<? 
                 .filter(a -> !areInSameCommunity(index, a, communities))
                 .collect(Collectors.toSet());
     }
-    
-    public abstract int alter(Population<G, C> population, final long generation, final Function<Genotype<G>, Map<Integer, Set<Integer>>> communityCache);
-    
+        
     @Override
-    public int alter(Population<G, C> population, final long generation){
+    public int alter(Population<IntegerGene, Double> population, final long generation){
         throw new NotImplementedException();
-    }
-    
-    /**
-     * Combine the given alterers.
-     *
-     * @param <G> the gene type
-     * @param <C> the fitness function result type
-     * @param alterers the alterers to combine.
-     * @return a new alterer which consists of the given one
-     * @throws NullPointerException if one of the alterers is {@code null}.
-     */
-    @SafeVarargs
-    public static <G extends Gene<?, G>, C extends Comparable<? super C>>
-    LatticeAlterer<G, C> of(final LatticeAlterer<G, C>... alterers) {
-        return alterers.length == 0
-            ? null
-            : alterers.length == 1
-                ? alterers[0]
-                : new LatticeCompositeAlterer<>(ISeq.of(alterers));
-    }
-    
-    /**
-     * Returns a composed alterer that first applies the {@code before} alterer
-     * to its input, and then applies {@code this} alterer to the result.
-     *
-     * @param before the alterer to apply first
-     * @return the new composed alterer
-     */
-    public LatticeAlterer<G, C> compose(final LatticeAlterer<G, C> before) {
-        return of(before, this);
-    }
-
-    /**
-     * Returns a composed alterer that applies the {@code this} alterer
-     * to its input, and then applies the {@code after} alterer to the result.
-     *
-     * @param after the alterer to apply first
-     * @return the new composed alterer
-     */
-    public LatticeAlterer<G, C> andThen(final LatticeAlterer<G, C> after) {
-        return of(this, after);
     }
 
 }

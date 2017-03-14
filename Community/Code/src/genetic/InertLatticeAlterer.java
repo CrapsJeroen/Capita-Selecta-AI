@@ -1,26 +1,20 @@
 package genetic;
 
 import genetic.modded.LatticeAlterer;
+import genetic.modded.LatticeHelper;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-
-import org.jenetics.Gene;
-import org.jenetics.Genotype;
+import org.jenetics.IntegerGene;
 import org.jenetics.Population;
 
-import common.Graph;
 
+public class InertLatticeAlterer extends LatticeAlterer{
 
-public class InertLatticeAlterer<G extends Gene<?,G>,C extends Comparable<? super C>> extends LatticeAlterer<G, C>{
-
-    public InertLatticeAlterer(final int size, Graph graph) {
-        super(size, graph);
+    public InertLatticeAlterer(final int size, LatticeHelper helper) {
+        super(size, helper);
     }
 
     @Override
-    public int alter(Population<G, C> population, final long generation, final Function<Genotype<G>, Map<Integer, Set<Integer>>> communityCache) {
+    public int alter(Population<IntegerGene, Double> population, final long generation) {
         return 0;
     }
 

@@ -2,6 +2,7 @@ package genetic;
 
 
 import genetic.modded.LatticeEngine;
+import genetic.modded.LatticeHelper;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -140,19 +141,22 @@ public class CommunityAlgorithm {
     }
 
     public List<Set<Vertex>> solve(int latticeSize, int generations) {
+        final LatticeHelper helper = new LatticeHelper(CommunityAlgorithm::decodePartitionMap, 
+                                                        graph);
+        
         final LatticeEngine<IntegerGene, Double> engine = LatticeEngine
                 .builder(
                         this::fitness,
-                        CommunityAlgorithm::decodePartitionMap,
+                        helper,
                         IntegerChromosome.of(0, graph.getVertices().size() - 1,
                                 graph.getVertices().size()))
                 .populationSize(latticeSize * latticeSize)
                 .alterers(
-                        new SplitMergeOperator(PROB_SPLIT_MERGE_STRAT, latticeSize, graph),
+                        new SplitMergeOperator(PROB_SPLIT_MERGE_STRAT, latticeSize, helper),
                         new HybridNeighborhoodCrossover(PROB_CROSSOVER,
-                                PROB_HYBRID_STRAT, latticeSize, graph),
-                        new AdaptiveMutator(PROB_MUTATE, latticeSize, graph),
-                        new SelfLearnOperator(SL_SIZE, latticeSize, graph))
+                                PROB_HYBRID_STRAT, latticeSize, helper),
+                        new AdaptiveMutator(PROB_MUTATE, latticeSize, helper),
+                        new SelfLearnOperator(SL_SIZE, latticeSize, helper))
                 .build();
 
         EvolutionStatistics<Double, DoubleMomentStatistics> statistics =
