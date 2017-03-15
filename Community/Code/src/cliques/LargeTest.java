@@ -17,7 +17,7 @@ public class LargeTest {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		Parser parser = new Parser();
-		graph = parser.parseFile(new File("youtube.txt"));
+		graph = parser.parseFile(new File("amazon.txt"));
 	}
 
 	@Test
@@ -31,7 +31,7 @@ public class LargeTest {
 		int newEdges = tmp.getEdges().size();
 		int diffVertices = initialVertices - newVertices;
 		int diffEdges  = initialEdges - newEdges;
-		tmp.writeOut("./youtubeReduced.txt");
+		tmp.writeOut("./amazonReduced3.txt");
 		System.out.println("Reduced vertices: " + (diffVertices) + " of " + (initialVertices) 
 		        + " (" + formatter.format(100.0 * diffVertices / initialVertices)+ "%)");
 		System.out.println("Reduced edges: " + (diffEdges) + " of " + (initialEdges)
