@@ -1,0 +1,47 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage[colorlinks, allcolors=black]{hyperref}
+\usepackage{geometry}
+\geometry{tmargin=3cm, bmargin=3cm, lmargin=2.4cm, rmargin=2.2cm}
+\usepackage{todonotes} %Used for the figure placeholders
+\usepackage{ifthen}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{tabu}
+\usepackage{rotating}
+
+\usepackage{pmboxdraw}
+\usepackage{setspace}
+\usepackage{subcaption}
+\usepackage{alltt}
+\usepackage{amsmath}
+
+\begin{document}
+\newboolean{anonymize}
+% Uncomment to create an anonymized version of your report
+%\setboolean{anonymize}{true}
+
+\input{titlepage}
+
+\tableofcontents
+
+\newpage
+\input{inleiding}
+\input{achtergrond}
+\input{relevant}
+\input{probleemstelling}
+
+
+\newpage
+
+\bibliography{bib} 
+\bibliographystyle{ieeetr}
+
+
+
+
+\end{document}
