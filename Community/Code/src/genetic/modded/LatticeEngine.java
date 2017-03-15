@@ -122,7 +122,7 @@ import org.jenetics.util.NanoClock;
  * @version 3.7
  */
 public final class LatticeEngine<
-	G extends Gene<?, G>,
+	G extends Gene<Integer, G>,
 	C extends Comparable<? super C>
 >
 	implements Function<EvolutionStart<G, C>, EvolutionResult<G, C>>
@@ -130,7 +130,7 @@ public final class LatticeEngine<
 
 	// Needed context for population evolving.
 	private final Function<? super Genotype<G>, ? extends C> _fitnessFunction;
-	private final LatticeHelper<C> helper;
+	private final LatticeHelper<G,C> helper;
 	private final Function<? super C, ? extends C> _fitnessScaler;
 	private final Factory<Genotype<G>> _genotypeFactory;
 	private final Selector<G, C> _survivorsSelector;
@@ -177,7 +177,7 @@ public final class LatticeEngine<
 	LatticeEngine(
 		final Function<? super Genotype<G>, ? extends C> fitnessFunction,
 		final Function<? super C, ? extends C> fitnessScaler,
-		final LatticeHelper<C> helper,
+		final LatticeHelper<G,C> helper,
 		final Factory<Genotype<G>> genotypeFactory,
 		final Selector<G, C> survivorsSelector,
 		final Selector<G, C> offspringSelector,
@@ -207,6 +207,7 @@ public final class LatticeEngine<
 		_executor = new TimedExecutor(requireNonNull(executor));
 		_clock = requireNonNull(clock);
 		this.helper = helper;
+		helper.setEvaluateFunction(this::evaluate);
 
 		if (individualCreationRetries < 0) {
 			throw new IllegalArgumentException(format(
@@ -215,6 +216,8 @@ public final class LatticeEngine<
 			));
 		}
 		_individualCreationRetries = individualCreationRetries;
+		
+		
 	}
 
 	/**
@@ -260,12 +263,13 @@ public final class LatticeEngine<
 	public EvolutionResult<G, C> evolve(final EvolutionStart<G, C> start) {
 		final Timer timer = Timer.of().start();
 
+		System.out.println("Gen " + (start.getGeneration()));
 		final Population<G, C> startPopulation = start.getPopulation();
-
+		helper.updated.clear();
 		// Initial evaluation of the population.
-		final Timer evaluateTimer = Timer.of(_clock).start();
-		evaluate(startPopulation);
-		evaluateTimer.stop();
+//		final Timer evaluateTimer = Timer.of(_clock).start();
+//		evaluate(startPopulation);
+//		evaluateTimer.stop();
 
 //		// Select the offspring population.
 //		final CompletableFuture<TimedResult<Population<G, C>>> offspring =
@@ -304,7 +308,7 @@ public final class LatticeEngine<
 
 		// Combining survivors and offspring to the new population.
 		final CompletableFuture<Population<G, C>> population =
-		        alteredOffspring.thenApplyAsync(s -> s.result.population, // COMBINE?????
+		        alteredOffspring.thenApplyAsync(s -> s.result.population,
 				_executor.get()
 			);
 
@@ -321,7 +325,7 @@ public final class LatticeEngine<
 			alteredOffspring.join().duration,
 			Duration.ZERO,
 			Duration.ZERO,
-			result.duration.plus(evaluateTimer.getTime()),
+			result.duration,
 			timer.stop().getTime()
 		);
 		
@@ -337,7 +341,7 @@ public final class LatticeEngine<
 		EvolutionResult<G, C> evoResult = EvolutionResult.of(
 	            _optimize,
 	            result.result,
-	            start.getGeneration(),
+	            start.getGeneration() + 1,
 	            durations,
 	            0,
 	            0,
@@ -469,9 +473,11 @@ public final class LatticeEngine<
 		final int generation = 1;
 		final int size = _offspringCount + _survivorsCount;
 
+		System.out.println("Generating population...");
 		final Population<G, C> population = new Population<G, C>(size)
 			.fill(() -> newPhenotype(generation), size);
-
+		System.out.println("Generating population... DONE");
+		
 		return EvolutionStart.of(population, generation);
 	}
 
@@ -994,10 +1000,10 @@ public final class LatticeEngine<
 	 * @throws java.lang.NullPointerException if one of the arguments is
 	 *         {@code null}.
 	 */
-	public static <G extends Gene<?, G>, C extends Comparable<? super C>>
+	public static <G extends Gene<Integer, G>, C extends Comparable<? super C>>
 	Builder<G, C> builder(
 		final Function<? super Genotype<G>, ? extends C> ff,
-		final LatticeHelper<C> helper,
+		final LatticeHelper<G,C> helper,
 		final Factory<Genotype<G>> genotypeFactory
 	) {
 		return new Builder<>(genotypeFactory, ff, helper);
@@ -1017,10 +1023,10 @@ public final class LatticeEngine<
 	 *         {@code null}.
 	 */
 	@SafeVarargs
-	public static <G extends Gene<?, G>, C extends Comparable<? super C>>
+	public static <G extends Gene<Integer, G>, C extends Comparable<? super C>>
 	Builder<G, C> builder(
 		final Function<? super Genotype<G>, ? extends C> ff,
-		final LatticeHelper<C> helper,
+		final LatticeHelper<G,C> helper,
 		final Chromosome<G> chromosome,
 		final Chromosome<G>... chromosomes
 	) {
@@ -1042,10 +1048,10 @@ public final class LatticeEngine<
 	 * @throws java.lang.NullPointerException if one of the arguments is
 	 *         {@code null}.
 	 */
-	public static <T, G extends Gene<?, G>, C extends Comparable<? super C>>
+	public static <T, G extends Gene<Integer, G>, C extends Comparable<? super C>>
 	Builder<G, C> builder(
 		final Function<? super T, ? extends C> ff,
-		final LatticeHelper<C> helper,
+		final LatticeHelper<G,C> helper,
 		final Codec<T, G> codec
 	) {
 		return builder(ff.compose(codec.decoder()), helper, codec.encoding());
@@ -1066,7 +1072,7 @@ public final class LatticeEngine<
 	 * @version 3.0
 	 */
 	public static final class Builder<
-		G extends Gene<?, G>,
+		G extends Gene<Integer, G>,
 		C extends Comparable<? super C>
 	>
 		implements Copyable<Builder<G, C>>
@@ -1095,12 +1101,12 @@ public final class LatticeEngine<
 
 		private int _individualCreationRetries = 10;
 		
-		private LatticeHelper<C> helper;
+		private LatticeHelper<G,C> helper;
 
 		private Builder(
 			final Factory<Genotype<G>> genotypeFactory,
 			final Function<? super Genotype<G>, ? extends C> fitnessFunction,
-			final LatticeHelper<C> helper
+			final LatticeHelper<G,C> helper
 		) {
 			_genotypeFactory = requireNonNull(genotypeFactory);
 			_fitnessFunction = requireNonNull(fitnessFunction);

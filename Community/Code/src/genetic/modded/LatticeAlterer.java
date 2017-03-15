@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jenetics.AbstractAlterer;
-import org.jenetics.IntegerGene;
+import org.jenetics.Gene;
 import org.jenetics.Phenotype;
 import org.jenetics.Population;
 import org.jenetics.util.RandomRegistry;
@@ -16,34 +16,34 @@ import org.jenetics.util.RandomRegistry;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
-public abstract class LatticeAlterer extends AbstractAlterer<IntegerGene, Double> {
+public abstract class LatticeAlterer<G extends Gene<Integer, G>, C extends Comparable<? super C>> extends AbstractAlterer<G, C> {
 
     final int latticeWidth;
     final int latticeHeight;
-    protected final LatticeHelper<Double> helper;
+    protected final LatticeHelper<G,C> helper;
     protected final Random random = RandomRegistry.getRandom();
     
-    protected LatticeAlterer(double probability, int latticeWidth, int latticeHeight, LatticeHelper<Double> helper) {
+    protected LatticeAlterer(double probability, int latticeWidth, int latticeHeight, LatticeHelper<G,C> helper) {
         super(probability);
         this.latticeWidth = latticeWidth;
         this.latticeHeight = latticeHeight;
         this.helper = helper;
     }
     
-    protected LatticeAlterer(double probability, int latticeSize, LatticeHelper<Double> helper) {
+    protected LatticeAlterer(double probability, int latticeSize, LatticeHelper<G,C> helper) {
         this(probability, latticeSize, latticeSize, helper);
     }
     
-    protected LatticeAlterer(int latticeWidth, int latticeHeight, LatticeHelper<Double> helper) {
+    protected LatticeAlterer(int latticeWidth, int latticeHeight, LatticeHelper<G,C> helper) {
         this(0, latticeWidth, latticeHeight, helper);
     }
     
-    protected LatticeAlterer(int latticeSize, LatticeHelper<Double> helper) {
+    protected LatticeAlterer(int latticeSize, LatticeHelper<G,C> helper) {
         this(0, latticeSize, latticeSize, helper);
     }
     
-    Set<Phenotype<IntegerGene, Double>> getNeighbors(Population<IntegerGene, Double> pop, int index){
-        Set<Phenotype<IntegerGene, Double>> result = new HashSet<Phenotype<IntegerGene, Double>>();
+    protected Set<Phenotype<G, C>> getNeighbors(Population<G, C> pop, int index){
+        Set<Phenotype<G, C>> result = new HashSet<Phenotype<G, C>>();
         
         int startX = index % latticeWidth;
         int startY = index / latticeWidth;
@@ -60,8 +60,8 @@ public abstract class LatticeAlterer extends AbstractAlterer<IntegerGene, Double
         return result;
     }
     
-    protected Phenotype<IntegerGene, Double> getMaxNeighbor(Population<IntegerGene, Double> pop, int index){
-        Optional<Phenotype<IntegerGene, Double>> result = getNeighbors(pop, index).stream().max(Phenotype<IntegerGene, Double>::compareTo);
+    protected Phenotype<G, C> getMaxNeighbor(Population<G, C> pop, int index){
+        Optional<Phenotype<G, C>> result = getNeighbors(pop, index).stream().max(Phenotype<G, C>::compareTo);
         
         if(result.isPresent()){
             return result.get();
@@ -70,28 +70,26 @@ public abstract class LatticeAlterer extends AbstractAlterer<IntegerGene, Double
         }
     }
     
-    protected boolean areInSameCommunity(final IntegerGene gene1, final IntegerGene gene2, final Map<Integer, Set<Integer>> communities){
+    protected boolean areInSameCommunity(final G gene1, final G gene2, final Map<Integer, Set<Integer>> communities){
         return areInSameCommunity(gene1.getAllele(), gene2.getAllele(), communities);
     }
     
-    protected boolean areInSameCommunity(final int gene1, final int gene2, final Map<Integer, Set<Integer>> communities){
+    protected boolean areInSameCommunity(final Integer gene1, final Integer gene2, final Map<Integer, Set<Integer>> communities){
         return communities.get(gene1).contains(gene2);
     }
     
-    protected Set<Integer> getAlleles(int index){
-        return helper.graph.getVertices().get(index).getNeighboursSet().stream()
-                .map(v -> helper.graph.getVertexIndexById(v.getId()))
-                .collect(Collectors.toSet());
+    protected Set<Integer> getAlleles(Integer index){
+        return helper.graph.getNeighborsIndexByIndex(index);
     }
     
-    protected Set<Integer> getAllelesInOtherCommunity(int index, final Map<Integer, Set<Integer>> communities){
+    protected Set<Integer> getAllelesInOtherCommunity(Integer index, final Map<Integer, Set<Integer>> communities){
         return getAlleles(index).stream()
                 .filter(a -> !areInSameCommunity(index, a, communities))
                 .collect(Collectors.toSet());
     }
         
     @Override
-    public int alter(Population<IntegerGene, Double> population, final long generation){
+    public int alter(Population<G, C> population, final long generation){
         throw new NotImplementedException();
     }
 

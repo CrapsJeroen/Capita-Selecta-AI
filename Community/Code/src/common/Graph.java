@@ -64,11 +64,11 @@ public class Graph {
         return verticesMap.get(vertexId);
     }
 
-    public int getVertexIndex(Vertex vertex) {
+    public Integer getVertexIndex(Vertex vertex) {
         return getVertexIndexById(vertex.getId());
     }
 
-    public int getVertexIndexById(int vertexId) {
+    public Integer getVertexIndexById(int vertexId) {
         return indexMap.get(vertexId);
     }
 
@@ -86,6 +86,12 @@ public class Graph {
             result.append(edge.toString() + "\n");
 
         Files.write(Paths.get(path), result.toString().getBytes());
+    }
+    
+    public Set<Integer> getNeighborsIndexByIndex(int index){
+        return getVertices().get(index).getNeighboursSet().stream()
+                .map(v -> getVertexIndexById(v.getId()))
+                .collect(Collectors.toSet());
     }
 
     @Override

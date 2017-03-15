@@ -8,56 +8,56 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.jenetics.Gene;
 import org.jenetics.Genotype;
-import org.jenetics.IntegerGene;
 import org.jenetics.Phenotype;
 import org.jenetics.Population;
 import org.jenetics.internal.util.IntRef;
 import org.jenetics.util.ISeq;
 
 
-public class HybridNeighborhoodCrossover extends LatticeAlterer{
+public class HybridNeighborhoodCrossover<G extends Gene<Integer, G>, C extends Comparable<? super C>> extends LatticeAlterer<G,C>{
 
     final double probCrossover;
     final double probStrat;
     
-    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeWidth, int latticeHeight, LatticeHelper<Double> helper) {
+    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeWidth, int latticeHeight, LatticeHelper<G,C> helper) {
         super(0, latticeWidth, latticeHeight, helper);
         this.probCrossover = probCrossover;
         this.probStrat = probStrat;
     }
     
-    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeSize, LatticeHelper<Double> helper) {
+    protected HybridNeighborhoodCrossover(final double probCrossover, final double probStrat, int latticeSize, LatticeHelper<G,C> helper) {
         this(probCrossover, probStrat, latticeSize, latticeSize, helper);
     }
 
     @Override
-    public int alter(Population<IntegerGene, Double> population, final long generation) {
+    public int alter(Population<G, C> population, final long generation) {
         final IntRef alterations = new IntRef(0);
-        Population<IntegerGene, Double> initialPop = population.copy();
+        Population<G, C> initialPop = population.copy();
 
         IntStream.range(0, population.size()).forEach(i -> {
-            final Phenotype<IntegerGene, Double> pt = initialPop.get(i);
-            final Phenotype<IntegerGene, Double> maxNeighbor = getMaxNeighbor(population, i);
+            final Phenotype<G, C> pt = initialPop.get(i);
+            final Phenotype<G, C> maxNeighbor = getMaxNeighbor(population, i);
             if(random.nextDouble() >= probCrossover) return;
-            if(pt.getFitness() > maxNeighbor.getFitness()) return;
+            if(pt.getFitness().compareTo(maxNeighbor.getFitness()) > 0) return;
             
-            final Genotype<IntegerGene> mgt = mutate(pt.getGenotype(), maxNeighbor.getGenotype(), alterations);
-
-            final Phenotype<IntegerGene, Double> mpt = pt.newInstance(mgt, generation);
+            final Genotype<G> mgt = mutate(pt.getGenotype(), maxNeighbor.getGenotype(), alterations);
+            if(alterations.value > 0) helper.updated.add(i);
+            final Phenotype<G, C> mpt = pt.newInstance(mgt, generation);
 
             population.set(i, mpt);
         });
         return alterations.value;     
     }
     
-    private Genotype<IntegerGene> mutate(
-            final Genotype<IntegerGene> gt1,
-            final Genotype<IntegerGene> gt2, 
+    private Genotype<G> mutate(
+            final Genotype<G> gt1,
+            final Genotype<G> gt2, 
             IntRef alterations){
         double r = random.nextDouble();
         
-        List<IntegerGene> genes;
+        List<G> genes;
         if(r < probStrat){
             genes = uniformCrossover(gt1, gt2);
         }else{
@@ -68,10 +68,10 @@ public class HybridNeighborhoodCrossover extends LatticeAlterer{
         return Genotype.of(gt1.getChromosome().newInstance( ISeq.of(genes)));
     }
     
-    private List<IntegerGene> uniformCrossover(Genotype<IntegerGene> gt1, Genotype<IntegerGene> gt2){
-        List<IntegerGene> genes1 = gt1.getChromosome().stream().collect(Collectors.toList());
-        List<IntegerGene> genes2 = gt2.getChromosome().stream().collect(Collectors.toList());
-        List<IntegerGene> result = new ArrayList<IntegerGene>();
+    private List<G> uniformCrossover(Genotype<G> gt1, Genotype<G> gt2){
+        List<G> genes1 = gt1.getChromosome().stream().collect(Collectors.toList());
+        List<G> genes2 = gt2.getChromosome().stream().collect(Collectors.toList());
+        List<G> result = new ArrayList<G>();
         for(int i = 0; i < genes1.size(); i++){
             if(random.nextBoolean()){
                 result.add(genes1.get(i));
@@ -83,11 +83,11 @@ public class HybridNeighborhoodCrossover extends LatticeAlterer{
         
     }
     
-    private List<IntegerGene> twoPointCrossover(Genotype<IntegerGene> gt1, Genotype<IntegerGene> gt2){
-        List<IntegerGene> genes1 = gt1.getChromosome().stream().collect(Collectors.toList());
-        List<IntegerGene> genes2 = gt2.getChromosome().stream().collect(Collectors.toList());
-        List<IntegerGene> result;
-        List<IntegerGene> other;
+    private List<G> twoPointCrossover(Genotype<G> gt1, Genotype<G> gt2){
+        List<G> genes1 = gt1.getChromosome().stream().collect(Collectors.toList());
+        List<G> genes2 = gt2.getChromosome().stream().collect(Collectors.toList());
+        List<G> result;
+        List<G> other;
         
         int min = random.nextInt(genes1.size());
         int max = random.nextInt(genes1.size());

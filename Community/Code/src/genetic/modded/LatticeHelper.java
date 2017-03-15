@@ -1,29 +1,34 @@
 package genetic.modded;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.jenetics.Gene;
 import org.jenetics.Genotype;
-import org.jenetics.IntegerGene;
+import org.jenetics.Population;
 
 import common.Graph;
 
 
-public class LatticeHelper<C extends Comparable<? super C>> {
+public class LatticeHelper<G extends Gene<Integer, G>, C extends Comparable<? super C>> {
     private int steadyGenerations = 0;
     private C lastBestFitness;
-    private Map<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> communityCache;
-    final Function<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> decodeFunction;
-    public final Function<Genotype<IntegerGene>, C> fitnessFunction;
+    private Map<Genotype<G>, Map<Integer, Set<Integer>>> communityCache;
+    public final Function<Genotype<G>, Map<Integer, Set<Integer>>> decodeFunction;
+    private Function<Population<G, C>, Population<G, C>> evaluate = (pop -> pop);
+    public final Function<Genotype<G>, C> fitnessFunction;
+    public final Set<Integer> updated = new HashSet<Integer>();
     public final Graph graph;
     public final int maxSteadyGenerations;
+    public final C initialFitness;
     
-    public LatticeHelper(C initialFitness, final Function<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> decodeFunction,
-                    Graph graph, int maxSteadyGenerations, Function<Genotype<IntegerGene>, C> fitnessFunction){
-        communityCache = new HashMap<Genotype<IntegerGene>, Map<Integer,Set<Integer>>>();
+    public LatticeHelper(C initialFitness, final Function<Genotype<G>, Map<Integer, Set<Integer>>> decodeFunction,
+                    Graph graph, int maxSteadyGenerations, Function<Genotype<G>, C> fitnessFunction){
+        communityCache = new HashMap<Genotype<G>, Map<Integer,Set<Integer>>>();
+        this.initialFitness = initialFitness;
         this.lastBestFitness = initialFitness;
         this.decodeFunction = decodeFunction;
         this.graph = graph;
@@ -31,15 +36,23 @@ public class LatticeHelper<C extends Comparable<? super C>> {
         this.fitnessFunction = fitnessFunction;
     }
     
-    public Map<Integer, Set<Integer>> getCommunities(Genotype<IntegerGene> gt){
+    public Map<Integer, Set<Integer>> getCommunities(Genotype<G> gt){
         if(communityCache.containsKey(gt)) return communityCache.get(gt);
         Map<Integer, Set<Integer>> result = decodeFunction.apply(gt);
         communityCache.put(gt, result);
         return result;
     }
     
-    public Map<Integer, Set<Integer>> decode(Genotype<IntegerGene> gt){
+    public Map<Integer, Set<Integer>> decode(Genotype<G> gt){
         return decodeFunction.apply(gt);
+    }
+    
+    public void setEvaluateFunction(Function<Population<G, C>, Population<G, C>> eval){
+        this.evaluate = eval;
+    }
+    
+    public Population<G, C> evaluate(Population<G, C> pop){
+        return evaluate.apply(pop);
     }
     
     public void updateLastFitness(C fitness){

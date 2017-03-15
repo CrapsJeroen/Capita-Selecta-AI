@@ -4,12 +4,15 @@ package genetic;
 import genetic.modded.LatticeEngine;
 import genetic.modded.LatticeHelper;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.jenetics.Chromosome;
 import org.jenetics.Genotype;
@@ -18,7 +21,9 @@ import org.jenetics.IntegerGene;
 import org.jenetics.engine.EvolutionResult;
 import org.jenetics.engine.EvolutionStatistics;
 import org.jenetics.engine.limit;
+import org.jenetics.internal.util.IntRef;
 import org.jenetics.stat.DoubleMomentStatistics;
+import org.jenetics.util.Factory;
 
 import common.Graph;
 import common.Vertex;
@@ -48,6 +53,7 @@ public class CommunityAlgorithm {
                 .reduce(0, (count, current) -> count + current);
 
         numEdges = tmp;
+        System.out.println("Genetic Algorithm constructed");
     }
 
     public static Map<Integer, Set<Integer>> decodePartitionMap(
@@ -140,29 +146,50 @@ public class CommunityAlgorithm {
     }
 
     public List<Set<Vertex>> solve(int latticeSize, int generations) {
-        final LatticeHelper<Double> helper = new LatticeHelper<Double>(0.0, 
+        Random rand = new Random();
+        final LatticeHelper<IntegerGene, Double> helper = new LatticeHelper<IntegerGene, Double>(0.0, 
                                                         CommunityAlgorithm::decodePartitionMap, 
                                                         graph,
                                                         MAX_STEADY_GENS,
                                                         this::fitness);
-        
+        final Factory<Genotype<IntegerGene>> ENCODING = () -> {
+            System.out.println("Generating individual...");
+            final IntRef progress = new IntRef(0);
+            final IntRef lastValue = new IntRef(-1);
+            List<IntegerGene> genes = IntStream.range(0, graph.getVertices().size())
+                .map(i -> {
+                    progress.value = (int)((double) i / graph.getVertices().size() * 100);
+                    if( lastValue.value != progress.value && progress.value % 5 == 0) {System.out.print((progress.value) + "..."); lastValue.value = progress.value;}
+                    List<Integer> options = graph.getNeighborsIndexByIndex(i).stream().collect(Collectors.toList());
+                    if(options.isEmpty()) return i;
+                    return options.get(rand.nextInt(options.size()));
+                    })
+                .mapToObj(val -> IntegerGene.of(val, 0, graph.getVertices().size()))
+                .collect(Collectors.toList());
+            System.out.println("");
+            return Genotype.of(IntegerChromosome.of(Arrays.copyOf(genes.toArray(), genes.size(), IntegerGene[].class)));
+        };
         final LatticeEngine<IntegerGene, Double> engine = LatticeEngine
                 .builder(
                         this::fitness,
                         helper,
-                        IntegerChromosome.of(0, graph.getVertices().size() - 1,
-                                graph.getVertices().size()))
+                        ENCODING
+                        )
                 .populationSize(latticeSize * latticeSize)
                 .alterers(
-                        new SplitMergeOperator(PROB_SPLIT_MERGE_STRAT, latticeSize, helper),
-                        new HybridNeighborhoodCrossover(PROB_CROSSOVER,
+                        new SplitMergeOperator<IntegerGene, Double>(PROB_SPLIT_MERGE_STRAT, latticeSize, helper),
+                        new HybridNeighborhoodCrossover<IntegerGene, Double>(PROB_CROSSOVER,
                                 PROB_HYBRID_STRAT, latticeSize, helper),
-                        new AdaptiveMutator(PROB_MUTATE, latticeSize, helper),
-                        new SelfLearnOperator(SL_SIZE, latticeSize, helper))
+                        new AdaptiveMutator<IntegerGene, Double>(PROB_MUTATE, latticeSize, helper),
+                        new SelfLearnOperator<IntegerGene, Double>(SL_SIZE, latticeSize, helper))
                 .build();
+        
+        System.out.println("Built Engine");
+
 
         EvolutionStatistics<Double, DoubleMomentStatistics> statistics =
                 EvolutionStatistics.ofNumber();
+        System.out.println("Starting...");
 
         EvolutionResult<IntegerGene, Double> result = engine.stream()
                 .limit(limit.bySteadyFitness(MAX_STEADY_GENS))
@@ -170,7 +197,9 @@ public class CommunityAlgorithm {
                 .peek(statistics)
                 .collect(EvolutionResult.toBestEvolutionResult());
 
+        System.out.println(statistics);        
         System.out.println("Best Modularity:" + (result.getBestFitness()));
+        System.out.println("Time: " + statistics.getEvolveDuration().getSum());
         System.out.println("Generations: " + (result.getGeneration()));
         return decodePartitions(result.getBestPhenotype().getGenotype())
                 .stream()

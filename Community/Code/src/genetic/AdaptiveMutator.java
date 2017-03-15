@@ -5,63 +5,60 @@ import genetic.modded.LatticeAlterer;
 import genetic.modded.LatticeHelper;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.jenetics.Gene;
 import org.jenetics.Genotype;
-import org.jenetics.IntegerGene;
 import org.jenetics.Phenotype;
 import org.jenetics.Population;
 import org.jenetics.internal.util.IntRef;
 import org.jenetics.util.ISeq;
 
 
-public class AdaptiveMutator extends LatticeAlterer{
+public class AdaptiveMutator<G extends Gene<Integer, G>, C extends Comparable<? super C>> extends LatticeAlterer<G,C>{
 
-    protected AdaptiveMutator(double probability, int latticeWidth, int latticeHeight, LatticeHelper<Double> helper) {
+    protected AdaptiveMutator(double probability, int latticeWidth, int latticeHeight, LatticeHelper<G,C> helper) {
         super(probability, latticeWidth, latticeHeight, helper);
     }
     
-    protected AdaptiveMutator(double probability, int latticeSize, LatticeHelper<Double> helper) {
+    protected AdaptiveMutator(double probability, int latticeSize, LatticeHelper<G,C> helper) {
         super(probability, latticeSize, latticeSize, helper);
     }
     
     @Override
-    public int alter(Population<IntegerGene, Double> population, final long generation) {
+    public int alter(Population<G, C> population, final long generation) {
         double adaptedProb = ((helper.getSteadyGenerations() / helper.maxSteadyGenerations) + 1) * _probability;
         final IntRef alterations = new IntRef(0);
 
         IntStream.range(0, population.size()).forEach(i -> {
-            final Phenotype<IntegerGene, Double> pt = population.get(i);            
-            final Genotype<IntegerGene> mgt = mutate(pt.getGenotype(), alterations, adaptedProb);
-
-            final Phenotype<IntegerGene, Double> mpt = pt.newInstance(mgt, generation);
+            final Phenotype<G, C> pt = population.get(i); 
+            List<Genotype<G>> neighbors = getNeighbors(population, i).stream()
+                    .map(ph -> ph.getGenotype())
+                    .collect(Collectors.toList());
+            
+            final Genotype<G> mgt = mutate(pt.getGenotype(), neighbors, alterations, adaptedProb);
+            if(alterations.value > 0) helper.updated.add(i);
+            final Phenotype<G, C> mpt = pt.newInstance(mgt, generation);
 
             population.set(i, mpt);
         });
         return alterations.value;     
     }
     
-    private Genotype<IntegerGene> mutate(
-            final Genotype<IntegerGene> gt1, IntRef alterations, double adaptedProb){
+    private Genotype<G> mutate(
+            final Genotype<G> gt1, 
+            final List<Genotype<G>> neighbors,
+            IntRef alterations, 
+            double adaptedProb){
         
-        List<IntegerGene> genes = gt1.getChromosome().stream().collect(Collectors.toList());
+        List<G> genes = gt1.getChromosome().stream().collect(Collectors.toList());
         
         alterations.value += (int)indexes(random, genes.size(), adaptedProb)
-                .peek(i -> genes.set(i, mutate(genes.get(i), i)))
+                .peek(i -> genes.set(i, neighbors.get(random.nextInt(neighbors.size())).getChromosome().getGene(i)))
                 .count();
         
         return Genotype.of(gt1.getChromosome().newInstance( ISeq.of(genes)));
-    }
-    
-    private IntegerGene mutate(IntegerGene current, int index){
-        Optional<Integer> result = getAlleles(index).stream().findAny();
-        if(result.isPresent()){
-            return current.newInstance(result.get());
-        }else{
-            return current;
-        }
     }
 
 }
