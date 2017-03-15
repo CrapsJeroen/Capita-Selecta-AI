@@ -1,6 +1,7 @@
 package genetic.modded;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -16,16 +17,18 @@ public class LatticeHelper<C extends Comparable<? super C>> {
     private C lastBestFitness;
     private Map<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> communityCache;
     final Function<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> decodeFunction;
+    public final Function<Genotype<IntegerGene>, C> fitnessFunction;
     public final Graph graph;
     public final int maxSteadyGenerations;
     
     public LatticeHelper(C initialFitness, final Function<Genotype<IntegerGene>, Map<Integer, Set<Integer>>> decodeFunction,
-                    Graph graph, int maxSteadyGenerations){
+                    Graph graph, int maxSteadyGenerations, Function<Genotype<IntegerGene>, C> fitnessFunction){
         communityCache = new HashMap<Genotype<IntegerGene>, Map<Integer,Set<Integer>>>();
         this.lastBestFitness = initialFitness;
         this.decodeFunction = decodeFunction;
         this.graph = graph;
         this.maxSteadyGenerations = maxSteadyGenerations;
+        this.fitnessFunction = fitnessFunction;
     }
     
     public Map<Integer, Set<Integer>> getCommunities(Genotype<IntegerGene> gt){

@@ -143,7 +143,8 @@ public class CommunityAlgorithm {
         final LatticeHelper<Double> helper = new LatticeHelper<Double>(0.0, 
                                                         CommunityAlgorithm::decodePartitionMap, 
                                                         graph,
-                                                        MAX_STEADY_GENS);
+                                                        MAX_STEADY_GENS,
+                                                        this::fitness);
         
         final LatticeEngine<IntegerGene, Double> engine = LatticeEngine
                 .builder(
