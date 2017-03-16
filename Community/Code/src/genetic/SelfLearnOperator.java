@@ -5,23 +5,16 @@ import genetic.modded.LatticeAlterer;
 import genetic.modded.LatticeEngine;
 import genetic.modded.LatticeHelper;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.PriorityQueue;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.jenetics.Gene;
 import org.jenetics.Genotype;
-import org.jenetics.IntegerChromosome;
-import org.jenetics.IntegerGene;
 import org.jenetics.Phenotype;
 import org.jenetics.Population;
 import org.jenetics.engine.EvolutionResult;
-import org.jenetics.engine.EvolutionStatistics;
 import org.jenetics.engine.limit;
 import org.jenetics.internal.util.IntRef;
-import org.jenetics.stat.DoubleMomentStatistics;
 import org.jenetics.util.Factory;
 
 
@@ -29,6 +22,7 @@ public class SelfLearnOperator<G extends Gene<Integer, G>, C extends Comparable<
 
     private final int          size;
     public static final int    MAX_STEADY_GENS = 50;
+    public static final int    MAX_GENS = 1000;
     public static final double PROB_MUTATE     = 0.02;
     private final double PROB_SPLIT_MERGE_STRAT = 0.5;
     
@@ -50,7 +44,6 @@ public class SelfLearnOperator<G extends Gene<Integer, G>, C extends Comparable<
         final Population<G, C> newPop = helper.evaluate(population);
         PriorityQueue<Phenotype<G, C>> queue = new PriorityQueue<Phenotype<G,C>>(newPop);
         IntStream.range(0, size*size).mapToObj(i -> queue.poll()).forEach(pt -> {
-//            System.out.println(pt.getFitness());
             int index = population.indexOf(pt);
             if(!helper.updated.contains(index)) return;
             Genotype<G> mgt = selfLearn(population, index);
@@ -82,6 +75,7 @@ public class SelfLearnOperator<G extends Gene<Integer, G>, C extends Comparable<
                 helper.graph,
                 MAX_STEADY_GENS,
                 helper.fitnessFunction);
+        newHelper.master = true;
         final LatticeEngine<G, C> engine = LatticeEngine
                 .builder(
                         helper.fitnessFunction,
@@ -97,6 +91,7 @@ public class SelfLearnOperator<G extends Gene<Integer, G>, C extends Comparable<
 
         EvolutionResult<G, C> result = engine.stream()
                 .limit(limit.bySteadyFitness(MAX_STEADY_GENS))
+                .limit(MAX_GENS)
                 .collect(EvolutionResult.toBestEvolutionResult());
         return result.getBestPhenotype().getGenotype();
 

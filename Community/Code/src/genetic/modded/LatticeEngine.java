@@ -263,7 +263,6 @@ public final class LatticeEngine<
 	public EvolutionResult<G, C> evolve(final EvolutionStart<G, C> start) {
 		final Timer timer = Timer.of().start();
 
-		System.out.println("Gen " + (start.getGeneration()));
 		final Population<G, C> startPopulation = start.getPopulation();
 		helper.updated.clear();
 		// Initial evaluation of the population.
@@ -341,7 +340,7 @@ public final class LatticeEngine<
 		EvolutionResult<G, C> evoResult = EvolutionResult.of(
 	            _optimize,
 	            result.result,
-	            start.getGeneration() + 1,
+	            start.getGeneration(),
 	            durations,
 	            0,
 	            0,
@@ -349,6 +348,8 @@ public final class LatticeEngine<
 	        );
 		
 	      helper.updateLastFitness(evoResult.getBestFitness());
+	      if(helper.master) System.out.println("Gen " + (start.getGeneration()) + ": " + (evoResult.getBestFitness()) 
+	              + " in " + (((double) durations.getEvolveDuration().toMillis()) / 1000) + "s");
 
 		return evoResult; 
 	}
@@ -473,10 +474,10 @@ public final class LatticeEngine<
 		final int generation = 1;
 		final int size = _offspringCount + _survivorsCount;
 
-		System.out.println("Generating population...");
+		if(helper.master) System.out.println("Generating population...");
 		final Population<G, C> population = new Population<G, C>(size)
 			.fill(() -> newPhenotype(generation), size);
-		System.out.println("Generating population... DONE");
+		if(helper.master) System.out.println("Generating population... DONE");
 		
 		return EvolutionStart.of(population, generation);
 	}

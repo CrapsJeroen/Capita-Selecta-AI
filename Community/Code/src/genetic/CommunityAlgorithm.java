@@ -4,6 +4,7 @@ package genetic;
 import genetic.modded.LatticeEngine;
 import genetic.modded.LatticeHelper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,7 +13,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.jenetics.Chromosome;
 import org.jenetics.Genotype;
@@ -38,7 +38,7 @@ public class CommunityAlgorithm {
     private final double PROB_HYBRID_STRAT      = 0.5;
     private final double PROB_MUTATE            = 0.05;
     private final int    MAX_STEADY_GENS        = 10;
-    private final int    SL_SIZE                = 3;
+    private final int    SL_SIZE                = 2;
 
     public CommunityAlgorithm(Graph graph) {
         this.graph = graph;
@@ -152,21 +152,29 @@ public class CommunityAlgorithm {
                                                         graph,
                                                         MAX_STEADY_GENS,
                                                         this::fitness);
+        
+        helper.master = true;
         final Factory<Genotype<IntegerGene>> ENCODING = () -> {
-            System.out.println("Generating individual...");
+            System.out.print("Generating individual...");
             final IntRef progress = new IntRef(0);
-            final IntRef lastValue = new IntRef(-1);
-            List<IntegerGene> genes = IntStream.range(0, graph.getVertices().size())
-                .map(i -> {
-                    progress.value = (int)((double) i / graph.getVertices().size() * 100);
-                    if( lastValue.value != progress.value && progress.value % 5 == 0) {System.out.print((progress.value) + "..."); lastValue.value = progress.value;}
-                    List<Integer> options = graph.getNeighborsIndexByIndex(i).stream().collect(Collectors.toList());
-                    if(options.isEmpty()) return i;
-                    return options.get(rand.nextInt(options.size()));
-                    })
-                .mapToObj(val -> IntegerGene.of(val, 0, graph.getVertices().size()))
-                .collect(Collectors.toList());
-            System.out.println("");
+            final IntRef lastValue = new IntRef(-1);             
+            int size = graph.getVertices().size();
+            List<IntegerGene> genes = new ArrayList<IntegerGene>(size);
+            List<Integer> options;
+            for(int i = 0; i < size; i++){
+                progress.value = (int)((double) i / size * 100);
+                if( lastValue.value != progress.value && progress.value % 10 == 0) {
+                    System.out.print((progress.value) + "..."); 
+                    lastValue.value = progress.value;
+                }
+                options = graph.getNeighborsIndexByIndex(i).stream().collect(Collectors.toList());
+                if(options.isEmpty()){
+                    genes.add(IntegerGene.of(i, 0, size));
+                    continue;
+                }
+                genes.add(IntegerGene.of(options.get(rand.nextInt(options.size())), 0, size));
+            }
+            System.out.println("100");          
             return Genotype.of(IntegerChromosome.of(Arrays.copyOf(genes.toArray(), genes.size(), IntegerGene[].class)));
         };
         final LatticeEngine<IntegerGene, Double> engine = LatticeEngine
@@ -181,7 +189,8 @@ public class CommunityAlgorithm {
                         new HybridNeighborhoodCrossover<IntegerGene, Double>(PROB_CROSSOVER,
                                 PROB_HYBRID_STRAT, latticeSize, helper),
                         new AdaptiveMutator<IntegerGene, Double>(PROB_MUTATE, latticeSize, helper),
-                        new SelfLearnOperator<IntegerGene, Double>(SL_SIZE, latticeSize, helper))
+                        new SelfLearnOperator<IntegerGene, Double>(SL_SIZE, latticeSize, helper)
+                        )
                 .build();
         
         System.out.println("Built Engine");

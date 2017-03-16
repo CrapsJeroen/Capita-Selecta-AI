@@ -54,6 +54,12 @@ public class AdaptiveMutator<G extends Gene<Integer, G>, C extends Comparable<? 
         
         List<G> genes = gt1.getChromosome().stream().collect(Collectors.toList());
         
+//        for(int i = 0; i < genes.size(); i++){
+//            if(random.nextFloat() >= adaptedProb) continue;
+//            genes.set(i, neighbors.get(random.nextInt(neighbors.size())).getChromosome().getGene(i));
+//            alterations.value++;
+//        }
+        
         alterations.value += (int)indexes(random, genes.size(), adaptedProb)
                 .peek(i -> genes.set(i, neighbors.get(random.nextInt(neighbors.size())).getChromosome().getGene(i)))
                 .count();

@@ -1,9 +1,6 @@
 package genetic;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +18,7 @@ public class AmazonTest {
 	@Before
 	public void setUp() throws Exception {
 		Parser parser = new Parser();
-		graph = parser.parseFile(new File("amazon.txt"));
+		graph = parser.parseFile(new File("amazonReduced.txt"));
 		System.out.println("Parsed");
 	}
 
@@ -29,7 +26,7 @@ public class AmazonTest {
 	public void findCommunities() throws IOException {
 		CommunityAlgorithm algo = new CommunityAlgorithm(graph);
 		
-		List<Set<Vertex>> result = algo.solve(5, 1000);
+		List<Set<Vertex>> result = algo.solve(2, 1000);
 		System.out.println("Communities found: " + (result.size()));
 		result.stream().forEach(set -> System.out.println(set.toString()));
 	}

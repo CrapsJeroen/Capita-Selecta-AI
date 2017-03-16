@@ -24,6 +24,7 @@ public class LatticeHelper<G extends Gene<Integer, G>, C extends Comparable<? su
     public final Graph graph;
     public final int maxSteadyGenerations;
     public final C initialFitness;
+    public boolean master = false;
     
     public LatticeHelper(C initialFitness, final Function<Genotype<G>, Map<Integer, Set<Integer>>> decodeFunction,
                     Graph graph, int maxSteadyGenerations, Function<Genotype<G>, C> fitnessFunction){
