@@ -22,9 +22,10 @@ public class SelfLearnOperator<G extends Gene<Integer, G>, C extends Comparable<
 
     private final int          size;
     public static final int    MAX_STEADY_GENS = 50;
-    public static final int    MAX_GENS = 1000;
+    public static final int    MAX_GENS = 100;
     public static final double PROB_MUTATE     = 0.02;
     private final double PROB_SPLIT_MERGE_STRAT = 0.5;
+    private static final boolean ENABLED = false;
     
 
     protected SelfLearnOperator(int size, int latticeWidth, int latticeHeight,
@@ -41,6 +42,8 @@ public class SelfLearnOperator<G extends Gene<Integer, G>, C extends Comparable<
     @Override
     public int alter(final Population<G, C> population,
             final long generation) {
+        if(!ENABLED) return 0;
+        helper.startTimer(helper.selfLearnTimer);
         final Population<G, C> newPop = helper.evaluate(population);
         PriorityQueue<Phenotype<G, C>> queue = new PriorityQueue<Phenotype<G,C>>(newPop);
         IntStream.range(0, size*size).mapToObj(i -> queue.poll()).forEach(pt -> {
@@ -50,6 +53,7 @@ public class SelfLearnOperator<G extends Gene<Integer, G>, C extends Comparable<
             population.set(index, pt.newInstance(mgt));
         });
         
+        helper.stopTimer(helper.selfLearnTimer);
         return size * size;
         
     }
@@ -75,7 +79,7 @@ public class SelfLearnOperator<G extends Gene<Integer, G>, C extends Comparable<
                 helper.graph,
                 MAX_STEADY_GENS,
                 helper.fitnessFunction);
-        newHelper.master = true;
+//        newHelper.master = true;
         final LatticeEngine<G, C> engine = LatticeEngine
                 .builder(
                         helper.fitnessFunction,

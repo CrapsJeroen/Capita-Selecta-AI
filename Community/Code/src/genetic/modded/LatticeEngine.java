@@ -261,7 +261,9 @@ public final class LatticeEngine<
 	 *         {@code start} is {@code null}
 	 */
 	public EvolutionResult<G, C> evolve(final EvolutionStart<G, C> start) {
-		final Timer timer = Timer.of().start();
+	    if(start.getGeneration() == 1 && helper.master) System.out.println("Starting Evolution Process...");
+	    
+	    final Timer timer = Timer.of().start();
 
 		final Population<G, C> startPopulation = start.getPopulation();
 		helper.updated.clear();
@@ -319,11 +321,11 @@ public final class LatticeEngine<
 
 
 		final EvolutionDurations durations = EvolutionDurations.of(
-			Duration.ZERO,
-			Duration.ZERO,
+			helper.getDuration(helper.splitMergeTimer),
+			helper.getDuration(helper.crossOverTimer),
+			helper.getDuration(helper.mutateTimer),
+            helper.getDuration(helper.selfLearnTimer),
 			alteredOffspring.join().duration,
-			Duration.ZERO,
-			Duration.ZERO,
 			result.duration,
 			timer.stop().getTime()
 		);

@@ -17,7 +17,8 @@ import org.jenetics.util.ISeq;
 
 
 public class HybridNeighborhoodCrossover<G extends Gene<Integer, G>, C extends Comparable<? super C>> extends LatticeAlterer<G,C>{
-
+    
+    private static final boolean ENABLED = true;
     final double probCrossover;
     final double probStrat;
     
@@ -33,6 +34,8 @@ public class HybridNeighborhoodCrossover<G extends Gene<Integer, G>, C extends C
 
     @Override
     public int alter(Population<G, C> population, final long generation) {
+        if(!ENABLED) return 0;
+        helper.startTimer(helper.crossOverTimer);
         final IntRef alterations = new IntRef(0);
         Population<G, C> initialPop = population.copy();
 
@@ -47,7 +50,9 @@ public class HybridNeighborhoodCrossover<G extends Gene<Integer, G>, C extends C
             final Phenotype<G, C> mpt = pt.newInstance(mgt, generation);
 
             population.set(i, mpt);
-        });
+        });  
+        
+        helper.stopTimer(helper.crossOverTimer);
         return alterations.value;     
     }
     
@@ -69,14 +74,15 @@ public class HybridNeighborhoodCrossover<G extends Gene<Integer, G>, C extends C
     }
     
     private List<G> uniformCrossover(Genotype<G> gt1, Genotype<G> gt2){
-        List<G> genes1 = gt1.getChromosome().stream().collect(Collectors.toList());
-        List<G> genes2 = gt2.getChromosome().stream().collect(Collectors.toList());
-        List<G> result = new ArrayList<G>();
-        for(int i = 0; i < genes1.size(); i++){
+//        List<G> genes1 = gt1.getChromosome().stream().collect(Collectors.toList());
+//        List<G> genes2 = gt2.getChromosome().stream().collect(Collectors.toList());
+        int size = gt1.getNumberOfGenes();
+        List<G> result = new ArrayList<G>(size);
+        for(int i = 0; i < size; i++){
             if(random.nextBoolean()){
-                result.add(genes1.get(i));
+                result.add(gt1.get(0, i));
             }else{
-                result.add(genes2.get(i));
+                result.add(gt2.get(0, i));
             }
         }
         return result;
@@ -84,13 +90,13 @@ public class HybridNeighborhoodCrossover<G extends Gene<Integer, G>, C extends C
     }
     
     private List<G> twoPointCrossover(Genotype<G> gt1, Genotype<G> gt2){
-        List<G> genes1 = gt1.getChromosome().stream().collect(Collectors.toList());
-        List<G> genes2 = gt2.getChromosome().stream().collect(Collectors.toList());
+        
+        int size = gt1.getNumberOfGenes();
         List<G> result;
         List<G> other;
         
-        int min = random.nextInt(genes1.size());
-        int max = random.nextInt(genes1.size());
+        int min = random.nextInt(size);
+        int max = random.nextInt(size);
         if(min > max){
             int tmp = max;
             max = min;
@@ -98,11 +104,11 @@ public class HybridNeighborhoodCrossover<G extends Gene<Integer, G>, C extends C
         }
         
         if(random.nextBoolean()){
-            result = genes1;
-            other = genes2;
+            result = new ArrayList<G>(gt1.getChromosome().toSeq().asList());
+            other = new ArrayList<G>(gt2.getChromosome().toSeq().asList());
         }else{
-            result = genes2; 
-            other = genes1;
+            result = new ArrayList<G>(gt2.getChromosome().toSeq().asList());
+            other = new ArrayList<G>(gt1.getChromosome().toSeq().asList());
         }
         
         for(int i = min; i < max; i++){

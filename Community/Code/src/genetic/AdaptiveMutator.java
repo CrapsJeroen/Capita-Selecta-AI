@@ -17,6 +17,7 @@ import org.jenetics.util.ISeq;
 
 
 public class AdaptiveMutator<G extends Gene<Integer, G>, C extends Comparable<? super C>> extends LatticeAlterer<G,C>{
+    private static final boolean ENABLED = true;
 
     protected AdaptiveMutator(double probability, int latticeWidth, int latticeHeight, LatticeHelper<G,C> helper) {
         super(probability, latticeWidth, latticeHeight, helper);
@@ -28,6 +29,9 @@ public class AdaptiveMutator<G extends Gene<Integer, G>, C extends Comparable<? 
     
     @Override
     public int alter(Population<G, C> population, final long generation) {
+        if(!ENABLED) return 0;
+        helper.startTimer(helper.mutateTimer);
+
         double adaptedProb = ((helper.getSteadyGenerations() / helper.maxSteadyGenerations) + 1) * _probability;
         final IntRef alterations = new IntRef(0);
 
@@ -43,6 +47,7 @@ public class AdaptiveMutator<G extends Gene<Integer, G>, C extends Comparable<? 
 
             population.set(i, mpt);
         });
+        helper.stopTimer(helper.mutateTimer);
         return alterations.value;     
     }
     

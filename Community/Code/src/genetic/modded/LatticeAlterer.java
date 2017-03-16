@@ -87,7 +87,7 @@ public abstract class LatticeAlterer<G extends Gene<Integer, G>, C extends Compa
                 .filter(a -> !areInSameCommunity(index, a, communities))
                 .collect(Collectors.toSet());
     }
-        
+            
     @Override
     public int alter(Population<G, C> population, final long generation){
         throw new NotImplementedException();

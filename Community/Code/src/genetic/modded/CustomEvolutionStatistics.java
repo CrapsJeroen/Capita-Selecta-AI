@@ -96,16 +96,22 @@ public abstract class CustomEvolutionStatistics<
     implements Consumer<EvolutionResult<?, C>>
 {
 
+    
     // The duration statistics values.
     private final DoubleMomentStatistics
-        _selectionDuration = new DoubleMomentStatistics();
+        _splitMergeDuration = new DoubleMomentStatistics();
+    private final DoubleMomentStatistics
+        _crossOverDuration = new DoubleMomentStatistics();
+    private final DoubleMomentStatistics
+        _mutateDuration = new DoubleMomentStatistics();
+    private final DoubleMomentStatistics
+        _selfLearnDuration = new DoubleMomentStatistics();
     private final DoubleMomentStatistics
         _alterDuration = new DoubleMomentStatistics();
     private final DoubleMomentStatistics
-        _evaluationDuration = new DoubleMomentStatistics();
+        _evaluationDuration = new DoubleMomentStatistics();    
     private final DoubleMomentStatistics
         _evolveDuration = new DoubleMomentStatistics();
-
     // The evolution statistics values.
     private final IntMomentStatistics _killed = new IntMomentStatistics();
     private final IntMomentStatistics _invalids = new IntMomentStatistics();
@@ -136,15 +142,11 @@ public abstract class CustomEvolutionStatistics<
 
     // Calculate duration statistics
     private void accept(final EvolutionDurations durations) {
-        final double selection =
-            toSeconds(durations.getOffspringSelectionDuration()) +
-                toSeconds(durations.getSurvivorsSelectionDuration());
-        final double alter =
-            toSeconds(durations.getOffspringAlterDuration()) +
-                toSeconds(durations.getOffspringFilterDuration());
-
-        _selectionDuration.accept(selection);
-        _alterDuration.accept(alter);
+        _splitMergeDuration.accept(toSeconds(durations.getOffspringSelectionDuration()));
+        _crossOverDuration.accept(toSeconds(durations.getSurvivorsSelectionDuration()));
+        _mutateDuration.accept(toSeconds(durations.getOffspringAlterDuration()));
+        _selfLearnDuration.accept(toSeconds(durations.getOffspringFilterDuration()));
+        _alterDuration.accept(toSeconds(durations.getSurvivorFilterDuration()));
         _evaluationDuration
             .accept(toSeconds(durations.getEvaluationDuration()));
         _evolveDuration
@@ -159,14 +161,20 @@ public abstract class CustomEvolutionStatistics<
      * Evaluation timing statistics
      * ************************************************************************/
 
-    /**
-     * Return the duration statistics needed for selecting the population, in
-     * seconds.
-     *
-     * @return the duration statistics needed for selecting the population
-     */
-    public DoubleMomentStatistics getSelectionDuration() {
-        return _selectionDuration;
+    public DoubleMomentStatistics getSplitMergeDuration() {
+        return _splitMergeDuration;
+    }
+    
+    public DoubleMomentStatistics getCrossOverDuration() {
+        return _crossOverDuration;
+    }
+    
+    public DoubleMomentStatistics getMutateDuration() {
+        return _mutateDuration;
+    }
+    
+    public DoubleMomentStatistics getSelfLearnDuration() {
+        return _selfLearnDuration;
     }
 
     /**
@@ -257,14 +265,19 @@ public abstract class CustomEvolutionStatistics<
     final String cpattern = "| %22s %-51s|\n";
     final String spattern = "| %27s %-46s|\n";
 
+    
+
     @Override
     public String toString() {
         return
             "+---------------------------------------------------------------------------+\n" +
             "|  Time statistics                                                          |\n" +
             "+---------------------------------------------------------------------------+\n" +
-            format(cpattern, "Selection:", d(_selectionDuration)) +
-            format(cpattern, "Altering:", d(_alterDuration)) +
+            format(cpattern, "Split/Merge:", d(_splitMergeDuration)) +
+            format(cpattern, "Crossover:", d(_crossOverDuration)) +
+            format(cpattern, "Mutate:", d(_mutateDuration)) +
+            format(cpattern, "SelfLearn:", d(_selfLearnDuration)) +
+            format(cpattern, "Total Altering:", d(_alterDuration)) +
             format(cpattern, "Fitness calculation:", d(_evaluationDuration)) +
             format(cpattern, "Overall execution:", d(_evolveDuration)) +
             "+---------------------------------------------------------------------------+\n" +

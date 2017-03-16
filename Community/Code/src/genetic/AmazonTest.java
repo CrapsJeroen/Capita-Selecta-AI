@@ -26,7 +26,7 @@ public class AmazonTest {
 	public void findCommunities() throws IOException {
 		CommunityAlgorithm algo = new CommunityAlgorithm(graph);
 		
-		List<Set<Vertex>> result = algo.solve(2, 1000);
+		List<Set<Vertex>> result = algo.solve(2, 1000, 600);
 		System.out.println("Communities found: " + (result.size()));
 		result.stream().forEach(set -> System.out.println(set.toString()));
 	}

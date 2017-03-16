@@ -1,9 +1,11 @@
 package genetic;
 
 
+import genetic.modded.CustomEvolutionStatistics;
 import genetic.modded.LatticeEngine;
 import genetic.modded.LatticeHelper;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -145,7 +147,7 @@ public class CommunityAlgorithm {
         return result;
     }
 
-    public List<Set<Vertex>> solve(int latticeSize, int generations) {
+    public List<Set<Vertex>> solve(int latticeSize, int generations, double maxTime) {
         Random rand = new Random();
         final LatticeHelper<IntegerGene, Double> helper = new LatticeHelper<IntegerGene, Double>(0.0, 
                                                         CommunityAlgorithm::decodePartitionMap, 
@@ -196,12 +198,13 @@ public class CommunityAlgorithm {
         System.out.println("Built Engine");
 
 
-        EvolutionStatistics<Double, DoubleMomentStatistics> statistics =
-                EvolutionStatistics.ofNumber();
+        CustomEvolutionStatistics<Double, DoubleMomentStatistics> statistics =
+                CustomEvolutionStatistics.ofNumber();
         System.out.println("Starting...");
 
         EvolutionResult<IntegerGene, Double> result = engine.stream()
                 .limit(limit.bySteadyFitness(MAX_STEADY_GENS))
+                .limit(limit.byExecutionTime(Duration.ofSeconds((long) maxTime)))
                 .limit(generations)
                 .peek(statistics)
                 .collect(EvolutionResult.toBestEvolutionResult());

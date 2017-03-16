@@ -26,8 +26,8 @@ public class PowerTest {
 	public void findCommunities() throws IOException {
 		CommunityAlgorithm algo = new CommunityAlgorithm(graph);
 		
-		List<Set<Vertex>> result = algo.solve(5, 1000);
+		List<Set<Vertex>> result = algo.solve(5, 1000, 300);
 		System.out.println("Communities found: " + (result.size()));
-		result.stream().forEach(set -> System.out.println(set.toString()));
+//		result.stream().forEach(set -> System.out.println(set.toString()));
 	}
 }

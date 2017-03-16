@@ -19,6 +19,8 @@ import org.jenetics.util.ISeq;
 
 public class SplitMergeOperator<G extends Gene<Integer, G>, C extends Comparable<? super C>> extends LatticeAlterer<G,C>{
     
+    private static final boolean ENABLED = true;
+
     protected SplitMergeOperator(double probability, int latticeWidth, int latticeHeight, LatticeHelper<G,C> helper) {
         super(probability, latticeWidth, latticeHeight, helper);
     }
@@ -29,6 +31,8 @@ public class SplitMergeOperator<G extends Gene<Integer, G>, C extends Comparable
 
     @Override
     public int alter(Population<G, C> population, final long generation) {
+        if(!ENABLED) return 0;
+        helper.startTimer(helper.splitMergeTimer);
         final IntRef alterations = new IntRef(0);
         Population<G, C> initialPop = population.copy();
 
@@ -42,7 +46,9 @@ public class SplitMergeOperator<G extends Gene<Integer, G>, C extends Comparable
             final Phenotype<G, C> mpt = pt.newInstance(mgt, generation);
 
             population.set(i, mpt);
-        });
+        });   
+        
+        helper.stopTimer(helper.splitMergeTimer);
         return alterations.value;     
     }
     

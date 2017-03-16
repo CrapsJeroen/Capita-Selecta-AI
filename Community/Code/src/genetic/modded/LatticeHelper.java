@@ -1,5 +1,6 @@
 package genetic.modded;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -25,6 +26,11 @@ public class LatticeHelper<G extends Gene<Integer, G>, C extends Comparable<? su
     public final int maxSteadyGenerations;
     public final C initialFitness;
     public boolean master = false;
+    public final Timer splitMergeTimer = Timer.of();
+    public final Timer crossOverTimer = Timer.of();
+    public final Timer mutateTimer = Timer.of();
+    public final Timer selfLearnTimer = Timer.of();
+    
     
     public LatticeHelper(C initialFitness, final Function<Genotype<G>, Map<Integer, Set<Integer>>> decodeFunction,
                     Graph graph, int maxSteadyGenerations, Function<Genotype<G>, C> fitnessFunction){
@@ -70,5 +76,17 @@ public class LatticeHelper<G extends Gene<Integer, G>, C extends Comparable<? su
     }
     public int getMaxSteadyGenerations(){
         return maxSteadyGenerations;
+    }
+    
+    public void startTimer(Timer timer){
+        timer.start();
+    }
+    
+    public void stopTimer(Timer timer){
+        timer.stop();
+    }
+    
+    public Duration getDuration(Timer timer){
+        return timer.getTime();
     }
 }
