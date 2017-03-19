@@ -1,15 +1,24 @@
 \section{Background}
 \label{chapter:background}
+This chapter will explain some elements to be able to understand the contents of this scientific report.
+The focus will be put on graph theory and genetic algorithms.
+For both of these the basics will be shortly mentioned and the reasoning behind why they are important for this work.
 
+\subsection{Graph Theory}
+Graph theory is the mathematical theory of the properties and applications of graphs.
+A graph $G=\left[V,E\right[$ is a collection of vertices (points) and edges (lines).
+An edge connects two vertices or creates a loop for one vertice.
+Graphs can have a certain properties, e.g. directed, undirected, weighted or complete.
+Certain combinations of these properties are also possible.
 
-\subsection{Introduction}
-This chapter contains some information to be able to understand the contents of this scientific report.
-The 
+In directed graphs an edge has an orientation, e.g. $A \rightarrow B$. This says that A has a connection to B, but B does not have a connection to A.
+Normally in an undirected graph an edge might look like $A - B$, which implies a connection in both ways.
 
+Edges in the graph can contain a certain scoring-function, if this is the case then it's called a weighted graph.
+An common example of this is the euclidean distance between the two vertices the edge connects together.
+A graph is complete when all nodes are connected to eachother.
+A graph $G'=\left[V',E'\right[$ is a subgraph of $G$ if $V' \subset V$, $E' \subset E$ and $E'$ only including edges between the vertices of $V'$.
+A complete subgraph is called a \textbf{clique}.
+There are other properties for graphs, but they are not required for the understanding of this report.
 
-
-
-%%% Local Variables: 
-%%% mode: latex
-%%% TeX-master: "masterproef"
-%%% End: 
+\subsection{Genetic Algorithm}

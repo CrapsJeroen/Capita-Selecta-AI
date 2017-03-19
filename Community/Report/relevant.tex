@@ -1,11 +1,34 @@
 \section{Relevant research}
 \label{chapter:relevantResearch}
-Een grondige bespreking van relevant onderzoek is nodig om het onderzoek te kunnen plaatsen in het onderzoeksdomein.
-Vooreerst zal er een algemene bespreking zijn van onderzoek in verband met sport analyse, waarna er specifieker ingegaan wordt op relevanter onderzoek dat rechtstreeks de inspiratie was voor dit onderzoek.
+A large amount of research has gone into community detection in the last several decades. 
+Finding a good way to approach this issue has been particularly hard because it is not trivial to come up with an exact definition of a community and a metric to compare different methods of partitioning. 
+As the amount of data being gathered grows at an incredible pace, so has the size of the networks which need to be analysed. 
+After a short introduction for both domains that are being combined, some relevant papers are mentioned and discussed. \\
+
+\subsection{Genetic Algorithms}
+Traditional approaches simply do not scale to many thousands, let alone millions, of nodes. 
+Because the problem is NP-hard, calculating the optimal solution for large networks is an unreachable goal.
+Genetic algorithms provide a way to still find solutions in such large networks. 
+One such algorithm was introduced in a recent paper by Li et al. \cite{multiagent2016}, using a multi-agent approach. 
+Most algorithms for community detection assume that each node can only be a part of a single community. 
+In many cases, this is simply not true. 
+Overlapping community detection algorithms can be divided into two groups: node-based algorithms and link-based algorithms \cite{linkclus2013}.\\
+
+\subsubsection{MagMaNet}
+In the paper by Li et al. \cite{multiagent2016} every agent is a candidate solution for the community detection problem.
+Each agent ``lives'' in a lattice structure. 
+In this lattice, candidate solutions compete with their direct neighbours.
+Due to this reasoning, agents can perceive and react to their direct environment.
+All agents work together to achieve the common goal, which is to optimize the fitness function.
+A candidate solution is in this case a division of the network in communities.
+
+This paper brings the interesting element of local searches which slowly get adapted by their surroundings.
+A missing element is the fact that vertices can be a part of multiple communities.
+This problem will be tackled by some of the 
 
 
+\subsubsection{Overlapping communities}
 
-%%% Local Variables: 
-%%% mode: latex
-%%% TeX-master: "masterproef"
-%%% End: 
+The node-based algorithms focus directly on the nodes and try to detect communities by looking at how nodes are related. The link-based algorithms are built with the assumption that the links between nodes are actually more important than the nodes themselves. Not the individuals, but the relations between the individuals define the community. The links are divided into communities, and only afterwards is that translated to the nodes. Generally, link-based algorithms have been shown to yield superior results, but at a much higher computational cost. Ding et al. \cite{Ding2016} have proposed a new approach which attempts to improve on the computational cost typically associated with a link-based algorithm using network decomposition. This algorithm is not genetic,  but others have proposed several different genetic overlapping community detection algorithms \cite{linkclus2013, Pizzuti2009, Dickinson2013}.\\
+
+\subsection{Graph Theory}
