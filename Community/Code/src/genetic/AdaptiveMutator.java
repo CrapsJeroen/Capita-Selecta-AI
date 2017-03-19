@@ -40,7 +40,8 @@ public class AdaptiveMutator<G extends Gene<Integer, G>, C extends Comparable<? 
             List<Genotype<G>> neighbors = getNeighbors(population, i).stream()
                     .map(ph -> ph.getGenotype())
                     .collect(Collectors.toList());
-            
+            final Phenotype<G, C> maxNeighbor = getMaxNeighbor(population, i);
+            if(pt.getFitness().compareTo(maxNeighbor.getFitness()) > 0) return;
             final Genotype<G> mgt = mutate(pt.getGenotype(), neighbors, alterations, adaptedProb);
             if(alterations.value > 0) helper.updated.add(i);
             final Phenotype<G, C> mpt = pt.newInstance(mgt, generation);

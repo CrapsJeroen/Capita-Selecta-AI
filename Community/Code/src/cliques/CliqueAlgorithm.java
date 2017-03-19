@@ -1,10 +1,14 @@
 package cliques;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import common.Clique;
 import common.Graph;
@@ -33,9 +37,10 @@ public class CliqueAlgorithm {
 			    failedAttempts++;
 				continue;
 			}
-			List<Vertex> start = new ArrayList<Vertex>();
-			start.add(seed);
-			search(start);
+//			List<Vertex> start = new ArrayList<Vertex>();
+//			start.add(seed);
+//			search(start);
+			search(seed);
 			if(cliques.size() == 0){
 	             failedAttempts++;
 				 continue;
@@ -55,7 +60,7 @@ public class CliqueAlgorithm {
 	        // Remove vertices from the clique from neighbours
 			neighbours.removeAll(largestClique);
 			System.out.println("Found neighbours: " + neighbours.size());
-			
+		
 			// Create new clique and add to the list
 			Clique clique = new Clique(vertexId++,largestClique);
 			vertices.add(clique);
@@ -73,16 +78,44 @@ public class CliqueAlgorithm {
 		return new Graph(this.vertices);
 	}
 
-
-	public void search(List<Vertex> vertices){
-		for(Vertex vertex: vertices.get(vertices.size()-1).getNeighbours()){
-			if(vertex.getNeighbours().containsAll(vertices)){
+    public void search(Vertex vertex){
+        vertex.getNeighbours().stream().forEach(v -> searchSingle(v, vertex));
+//        for(Vertex vertex: vertices.get(vertices.size()-1).getNeighbours()){
+//            searchSingle(vertex);
+//        }
+    }
+    
+    
+	public void searchSingle(Vertex startVertex, Vertex center){
+	    List<Vertex> clique = new ArrayList<Vertex>(Arrays.asList(center));
+//        Set<Vertex> done = startVertex.getNeighbours().stream().collect(Collectors.toSet());
+	    Set<Vertex> done = new HashSet<Vertex>();
+	    done.add(startVertex);
+	    done.add(center);
+	    Queue<Vertex> toSearch = new LinkedList<Vertex>();
+	    toSearch.add(startVertex); // done.stream().filter(v -> v != center).collect(Collectors.toSet())
+		while(!toSearch.isEmpty()){
+		    Vertex vertex = toSearch.poll();
+			if(vertex.getNeighbours().containsAll(clique)){
 			    if(vertex.getClass() == Clique.class) continue;
-				vertices.add(vertex);
-				search(vertices);
-			} else if(vertices.size() >= 3 && !cliques.contains(vertices)) {
-				cliques.add(vertices);
+			    clique.add(vertex);
+				toSearch.addAll(vertex.getNeighbours().stream().filter(v -> !done.contains(v)).collect(Collectors.toSet()));
+                done.addAll(vertex.getNeighbours());
 			}
 		}
+		if(clique.size() >= 3)
+		    cliques.add(clique);
 	}
+	
+	   public void search(List<Vertex> vertices){
+	        for(Vertex vertex: vertices.get(vertices.size()-1).getNeighbours()){
+	            if(vertex.getNeighbours().containsAll(vertices)){
+	                if(vertex.getClass() == Clique.class) continue;
+	                vertices.add(vertex);
+	                search(vertices);
+	            } else if(vertices.size() >= 3 && !cliques.contains(vertices)) {
+	                cliques.add(vertices);
+	            }
+	        }
+	   }
 }

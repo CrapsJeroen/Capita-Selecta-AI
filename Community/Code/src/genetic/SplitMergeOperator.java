@@ -63,6 +63,7 @@ public class SplitMergeOperator<G extends Gene<Integer, G>, C extends Comparable
             options = getAllelesInOtherCommunity(index, communities);
         }else{
             options = getAlleles(index);
+            options.add(index);
         }
         if(options.isEmpty())
             return max;

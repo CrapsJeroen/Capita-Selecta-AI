@@ -25,7 +25,7 @@ public class SelfLearnOperator<G extends Gene<Integer, G>, C extends Comparable<
     public static final int    MAX_GENS = 100;
     public static final double PROB_MUTATE     = 0.02;
     private final double PROB_SPLIT_MERGE_STRAT = 0.5;
-    private static final boolean ENABLED = false;
+    private static final boolean ENABLED = true;
     
 
     protected SelfLearnOperator(int size, int latticeWidth, int latticeHeight,

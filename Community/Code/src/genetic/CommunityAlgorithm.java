@@ -40,7 +40,7 @@ public class CommunityAlgorithm {
     private final double PROB_HYBRID_STRAT      = 0.5;
     private final double PROB_MUTATE            = 0.05;
     private final int    MAX_STEADY_GENS        = 10;
-    private final int    SL_SIZE                = 2;
+    private final int    SL_SIZE                = 3;
 
     public CommunityAlgorithm(Graph graph) {
         this.graph = graph;
@@ -148,6 +148,9 @@ public class CommunityAlgorithm {
     }
 
     public List<Set<Vertex>> solve(int latticeSize, int generations, double maxTime) {
+        if(maxTime == 0){
+            maxTime = 60 * 60 * 24 * 365; // Max runtime: 1 year if none is given.
+        }
         Random rand = new Random();
         final LatticeHelper<IntegerGene, Double> helper = new LatticeHelper<IntegerGene, Double>(0.0, 
                                                         CommunityAlgorithm::decodePartitionMap, 
@@ -170,6 +173,7 @@ public class CommunityAlgorithm {
                     lastValue.value = progress.value;
                 }
                 options = graph.getNeighborsIndexByIndex(i).stream().collect(Collectors.toList());
+                options.add(i);
                 if(options.isEmpty()){
                     genes.add(IntegerGene.of(i, 0, size));
                     continue;

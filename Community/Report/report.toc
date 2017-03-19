@@ -9,3 +9,5 @@
 \contentsline {subsection}{\numberline {4.3}Research questions}{2}{subsection.4.3}
 \contentsline {subsubsection}{\numberline {4.3.1}Main research question}{2}{subsubsection.4.3.1}
 \contentsline {subsubsection}{\numberline {4.3.2}Other research questions}{2}{subsubsection.4.3.2}
+\contentsline {section}{\numberline {5}Implementation}{3}{section.5}
+\contentsline {section}{\numberline {6}Results and reflection}{3}{section.6}
