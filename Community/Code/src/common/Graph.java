@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -92,6 +93,17 @@ public class Graph {
         return getVertices().get(index).getNeighboursSet().stream()
                 .map(v -> getVertexIndexById(v.getId()))
                 .collect(Collectors.toSet());
+    }
+    
+    public int amountOfInternalConnections(Collection<Vertex> vertices){
+        Set<Edge> intEdges = vertices.stream().flatMap(v -> getEdgesFrom(v).stream()
+                                    .filter(e -> vertices.contains(e.connectsTo(v)))
+                                )
+                                .collect(Collectors.toSet());
+        
+        intEdges.addAll(vertices.stream().flatMap(v -> v.getInternalEdges().stream()).collect(Collectors.toSet()));
+        
+        return intEdges.stream().map(e -> e.getWeight()).reduce(0, (count, current) -> count + current);
     }
 
     @Override

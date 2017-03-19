@@ -58,11 +58,11 @@ public class SplitMergeOperator<G extends Gene<Integer, G>, C extends Comparable
         
         int index = random.nextInt(max.getNumberOfGenes());
         
-        Set<Integer> options;
+        List<Integer> options;
         if(r >= _probability){
-            options = getAllelesInOtherCommunity(index, communities);
+            options = helper.getAllelesInOtherCommunityProportional(index, communities);
         }else{
-            options = getAlleles(index);
+            options = helper.getAllelesProportional(index);
             options.add(index);
         }
         if(options.isEmpty())

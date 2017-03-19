@@ -1,17 +1,21 @@
 package genetic.modded;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.jenetics.Gene;
 import org.jenetics.Genotype;
 import org.jenetics.Population;
 
 import common.Graph;
+import common.Vertex;
 
 
 public class LatticeHelper<G extends Gene<Integer, G>, C extends Comparable<? super C>> {
@@ -88,5 +92,41 @@ public class LatticeHelper<G extends Gene<Integer, G>, C extends Comparable<? su
     
     public Duration getDuration(Timer timer){
         return timer.getTime();
+    }
+    
+    public List<Integer> getAlleles(Integer index){
+        return new ArrayList<Integer>(graph.getNeighborsIndexByIndex(index));
+    }
+    
+    public List<Integer> getAllelesProportional(Integer index){
+        List<Integer> result = new ArrayList<Integer>();
+        Vertex current = graph.getVertices().get(index);
+        for(Vertex vertex: current.getNeighbours()){
+            for(int i = 0; i < current.getConnectionWeight(vertex); i++){
+                result.add(graph.getVertexIndexById(vertex.getId()));
+            }
+        }
+        
+        return result;
+    }
+    
+    public List<Integer> getAllelesInOtherCommunity(Integer index, final Map<Integer, Set<Integer>> communities){
+        return getAlleles(index).stream()
+                .filter(a -> !areInSameCommunity(index, a, communities))
+                .collect(Collectors.toList());
+    }
+    
+    public List<Integer> getAllelesInOtherCommunityProportional(Integer index, final Map<Integer, Set<Integer>> communities){
+        return getAllelesProportional(index).stream()
+                .filter(a -> !areInSameCommunity(index, a, communities))
+                .collect(Collectors.toList());
+    }
+    
+    public boolean areInSameCommunity(final G gene1, final G gene2, final Map<Integer, Set<Integer>> communities){
+        return areInSameCommunity(gene1.getAllele(), gene2.getAllele(), communities);
+    }
+    
+    public boolean areInSameCommunity(final Integer gene1, final Integer gene2, final Map<Integer, Set<Integer>> communities){
+        return communities.get(gene1).contains(gene2);
     }
 }

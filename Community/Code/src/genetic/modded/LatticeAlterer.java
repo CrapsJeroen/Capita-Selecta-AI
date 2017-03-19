@@ -1,6 +1,8 @@
 package genetic.modded;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -14,6 +16,8 @@ import org.jenetics.Population;
 import org.jenetics.util.RandomRegistry;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import common.Vertex;
 
 
 public abstract class LatticeAlterer<G extends Gene<Integer, G>, C extends Comparable<? super C>> extends AbstractAlterer<G, C> {
@@ -70,23 +74,9 @@ public abstract class LatticeAlterer<G extends Gene<Integer, G>, C extends Compa
         }
     }
     
-    protected boolean areInSameCommunity(final G gene1, final G gene2, final Map<Integer, Set<Integer>> communities){
-        return areInSameCommunity(gene1.getAllele(), gene2.getAllele(), communities);
-    }
+
     
-    protected boolean areInSameCommunity(final Integer gene1, final Integer gene2, final Map<Integer, Set<Integer>> communities){
-        return communities.get(gene1).contains(gene2);
-    }
-    
-    protected Set<Integer> getAlleles(Integer index){
-        return helper.graph.getNeighborsIndexByIndex(index);
-    }
-    
-    protected Set<Integer> getAllelesInOtherCommunity(Integer index, final Map<Integer, Set<Integer>> communities){
-        return getAlleles(index).stream()
-                .filter(a -> !areInSameCommunity(index, a, communities))
-                .collect(Collectors.toSet());
-    }
+
             
     @Override
     public int alter(Population<G, C> population, final long generation){

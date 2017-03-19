@@ -18,10 +18,12 @@ public class CliqueAlgorithm {
     
     private List<Vertex> vertices;
     private List<List<Vertex>> cliques;
+    private Graph graph;
 
 	public CliqueAlgorithm(Graph graph){
 		this.vertices = graph.getVertices();
 		this.cliques = new ArrayList<List<Vertex>>();
+		this.graph = graph;
 	}
 
 
@@ -37,17 +39,17 @@ public class CliqueAlgorithm {
 			    failedAttempts++;
 				continue;
 			}
-//			List<Vertex> start = new ArrayList<Vertex>();
-//			start.add(seed);
-//			search(start);
+			
+			
 			search(seed);
 			if(cliques.size() == 0){
 	             failedAttempts++;
 				 continue;
 			}
-	         System.out.println("Progress: " + i);
+//	         System.out.println("Progress: " + i);
 			// Largest element first
-			Collections.sort(cliques, (c1,c2) -> c1.size() < c2.size() ? +1 : c1.size() > c2.size() ? -1 : 0); 
+			Collections.sort(cliques, (c1,c2) -> c1.size() < c2.size() ? +1 : c1.size() > c2.size() ? -1 : 0);
+			
 			// Retrieve the largest
 			List<Vertex> largestClique = cliques.get(0);
 			
@@ -59,7 +61,7 @@ public class CliqueAlgorithm {
 			
 	        // Remove vertices from the clique from neighbours
 			neighbours.removeAll(largestClique);
-			System.out.println("Found neighbours: " + neighbours.size());
+//			System.out.println("Found neighbours: " + neighbours.size());
 		
 			// Create new clique and add to the list
 			Clique clique = new Clique(vertexId++,largestClique);
@@ -103,6 +105,7 @@ public class CliqueAlgorithm {
                 done.addAll(vertex.getNeighbours());
 			}
 		}
+		
 		if(clique.size() >= 3)
 		    cliques.add(clique);
 	}

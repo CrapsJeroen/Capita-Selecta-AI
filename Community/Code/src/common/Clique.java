@@ -1,6 +1,7 @@
 package common;
 
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,8 +13,8 @@ public class Clique extends Vertex {
 
     public Clique(int id, List<Vertex> nodes) {
         super(id, new HashSet<Vertex>());
-        nodes.stream().flatMap(v -> v.getNeighbours().stream())
-                .filter(v -> !nodes.contains(v)).forEach(v -> addNeighbour(v));
+        nodes.stream().flatMap(v -> v.getNeighbours().stream()).distinct()
+                .filter(v -> !nodes.contains(v)).forEach(v -> addNeighbour(v, v.amountOfConnectionsTo(nodes)));
         this.nodes = nodes;
     }
 
@@ -32,7 +33,7 @@ public class Clique extends Vertex {
     }
 
     @Override
-    public int amountOfConnectionsTo(Set<Vertex> vertices) {
+    public int amountOfConnectionsTo(Collection<Vertex> vertices) {
         int external = super.amountOfConnectionsTo(vertices);
         int internal = 0;
         
@@ -55,6 +56,11 @@ public class Clique extends Vertex {
             }
         }
         return result;
+    }
+    
+    @Override
+    public String toString(){
+        return ""+getId() + ":" + nodes.toString();
     }
 
 }

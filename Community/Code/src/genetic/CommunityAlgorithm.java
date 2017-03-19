@@ -27,6 +27,7 @@ import org.jenetics.internal.util.IntRef;
 import org.jenetics.stat.DoubleMomentStatistics;
 import org.jenetics.util.Factory;
 
+import test.Data;
 import common.Graph;
 import common.Vertex;
 
@@ -51,11 +52,12 @@ public class CommunityAlgorithm {
 
         // internal edges (within cliques)
         tmp += graph.getVertices().stream()
-                .map(v -> v.getInternalEdges().size())
+                .flatMap(v -> v.getInternalEdges().stream())
+                .map(e -> e.getWeight())
                 .reduce(0, (count, current) -> count + current);
 
         numEdges = tmp;
-        System.out.println("Genetic Algorithm constructed");
+        
     }
 
     public static Map<Integer, Set<Integer>> decodePartitionMap(
@@ -132,9 +134,14 @@ public class CommunityAlgorithm {
         for (Set<Integer> community : communities) {
             Set<Vertex> vertexCommunity = intSetToVertexSet(community);
 
-            double edgesInCommunity = vertexCommunity.stream()
-                    .map(v -> v.amountOfConnectionsTo(vertexCommunity))
-                    .reduce(0, (count, current) -> count + current) / 2;
+//            double edgesInCommunity = vertexCommunity.stream()
+//                    .map(v -> v.amountOfConnectionsTo(vertexCommunity))
+//                    .reduce(0, (count, current) -> count + current) / 2;
+            double edgesInCommunity = graph.amountOfInternalConnections(vertexCommunity);
+//            
+//            edgesInCommunity += vertexCommunity.stream()
+//                    .map(v -> v.getInternalEdges().size())
+//                    .reduce(0, (count, current) -> count + current);
 
             double degreeInCommunity = vertexCommunity.stream()
                     .map(v -> v.degree())
@@ -147,7 +154,7 @@ public class CommunityAlgorithm {
         return result;
     }
 
-    public List<Set<Vertex>> solve(int latticeSize, int generations, double maxTime) {
+    public List<Set<Vertex>> solve(int latticeSize, int generations, double maxTime, Data data, boolean printInfo) {
         if(maxTime == 0){
             maxTime = 60 * 60 * 24 * 365; // Max runtime: 1 year if none is given.
         }
@@ -158,9 +165,10 @@ public class CommunityAlgorithm {
                                                         MAX_STEADY_GENS,
                                                         this::fitness);
         
-        helper.master = true;
+        helper.master = printInfo;
         final Factory<Genotype<IntegerGene>> ENCODING = () -> {
-            System.out.print("Generating individual...");
+            if( helper.master)
+                System.out.print("Generating individual...");
             final IntRef progress = new IntRef(0);
             final IntRef lastValue = new IntRef(-1);             
             int size = graph.getVertices().size();
@@ -168,19 +176,19 @@ public class CommunityAlgorithm {
             List<Integer> options;
             for(int i = 0; i < size; i++){
                 progress.value = (int)((double) i / size * 100);
-                if( lastValue.value != progress.value && progress.value % 10 == 0) {
+                if( helper.master && lastValue.value != progress.value && progress.value % 10 == 0) {
                     System.out.print((progress.value) + "..."); 
                     lastValue.value = progress.value;
                 }
-                options = graph.getNeighborsIndexByIndex(i).stream().collect(Collectors.toList());
-                options.add(i);
+                options = helper.getAllelesProportional(i);
                 if(options.isEmpty()){
                     genes.add(IntegerGene.of(i, 0, size));
                     continue;
                 }
                 genes.add(IntegerGene.of(options.get(rand.nextInt(options.size())), 0, size));
             }
-            System.out.println("100");          
+            if( helper.master)
+                System.out.println("100");          
             return Genotype.of(IntegerChromosome.of(Arrays.copyOf(genes.toArray(), genes.size(), IntegerGene[].class)));
         };
         final LatticeEngine<IntegerGene, Double> engine = LatticeEngine
@@ -198,25 +206,35 @@ public class CommunityAlgorithm {
                         new SelfLearnOperator<IntegerGene, Double>(SL_SIZE, latticeSize, helper)
                         )
                 .build();
-        
-        System.out.println("Built Engine");
+        if( helper.master)
+            System.out.println("Built Engine");
 
 
         CustomEvolutionStatistics<Double, DoubleMomentStatistics> statistics =
                 CustomEvolutionStatistics.ofNumber();
-        System.out.println("Starting...");
+        if( helper.master)
+            System.out.println("Starting...");
 
         EvolutionResult<IntegerGene, Double> result = engine.stream()
                 .limit(limit.bySteadyFitness(MAX_STEADY_GENS))
                 .limit(limit.byExecutionTime(Duration.ofSeconds((long) maxTime)))
+                .limit(limit.byFitnessConvergence(3, 10, 10E-3))
                 .limit(generations)
                 .peek(statistics)
                 .collect(EvolutionResult.toBestEvolutionResult());
 
-        System.out.println(statistics);        
-        System.out.println("Best Modularity:" + (result.getBestFitness()));
-        System.out.println("Time: " + statistics.getEvolveDuration().getSum());
-        System.out.println("Generations: " + (result.getGeneration()));
+        if( helper.master){
+            System.out.println(statistics);        
+            System.out.println("Best Modularity:" + (result.getBestFitness()));
+            System.out.println("Time: " + statistics.getEvolveDuration().getSum());
+            System.out.println("Generations: " + (result.getGeneration()));
+        }        
+        if(data != null) data.addData(
+                statistics.getEvolveDuration().getSum(),
+                result.getBestFitness(),
+                (int) result.getGeneration(),
+                decodePartitions(result.getBestPhenotype().getGenotype()).size());
+        
         return decodePartitions(result.getBestPhenotype().getGenotype())
                 .stream()
                 .map(s -> intSetToVertexSet(s))

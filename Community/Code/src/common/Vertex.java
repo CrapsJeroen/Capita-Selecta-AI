@@ -1,5 +1,6 @@
 package common;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +31,16 @@ public class Vertex {
 	
 	
 	public void addNeighbour(Vertex vertex){
-	    if(neighbours.containsKey(vertex)){
-	        neighbours.put(vertex, neighbours.get(vertex) + 1);
-	    }else{
-	           neighbours.put(vertex, 1);
-	    }
+	    addNeighbour(vertex, 1);
 	}
+	
+	   public void addNeighbour(Vertex vertex, int amount){
+	        if(neighbours.containsKey(vertex)){
+	            neighbours.put(vertex, neighbours.get(vertex) + amount);
+	        }else{
+	               neighbours.put(vertex, amount);
+	        }
+	    }
 	
 	public boolean isConnectedTo(Vertex vertex){
 		return this.neighbours.keySet().contains(vertex);
@@ -43,7 +48,7 @@ public class Vertex {
 	
 	public void replaceNeighbours(Clique clique){
 	    List<Vertex> nbInClique = clique.getNodes().stream().filter(neighbours.keySet()::contains).collect(Collectors.toList());
-	    int connections = nbInClique.size();
+	    int connections = amountOfConnectionsTo(nbInClique);
 	    nbInClique.stream().forEach(v -> neighbours.remove(v));
 	    neighbours.put(clique, connections);
 	    
@@ -61,7 +66,7 @@ public class Vertex {
 	    return neighbours.values().stream().reduce(0, (count, current) -> count + current);
 	}
 	
-	public int amountOfConnectionsTo(Set<Vertex> vertices){
+	public int amountOfConnectionsTo(Collection<Vertex> vertices){
 	    return neighbours.entrySet().stream()
 	            .filter(entry -> vertices.contains(entry.getKey()))
 	            .map(entry -> entry.getValue())

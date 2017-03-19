@@ -1,37 +1,18 @@
 package test;
-import genetic.CommunityAlgorithm;
-
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
-import org.junit.Test;
 
-import common.Graph;
 import common.Parser;
-import common.Vertex;
 
-public class AmazonTest {
+public class AmazonTest extends ParentTest{
     
     // 334863 nodes, 925872 edges, 75149 communities
-
-	private Graph graph;
 	
 	@Before
 	public void setUp() throws Exception {
 		Parser parser = new Parser();
-		graph = parser.parseFile(new File("data/amazonReduced.txt"));
-		System.out.println("Parsed");
+		graph = parser.parseFile(new File("data/amazon.txt"));
 	}
 
-	@Test
-	public void findCommunities() throws IOException {
-		CommunityAlgorithm algo = new CommunityAlgorithm(graph);
-		
-		List<Set<Vertex>> result = algo.solve(5, 1000, 1800);
-		System.out.println("Communities found: " + (result.size()));
-		result.stream().forEach(set -> System.out.println(set.toString()));
-	}
 }
