@@ -1,11 +1,16 @@
 \select@language {english}
 \contentsline {section}{\numberline {1}introduction}{2}{section.1}
 \contentsline {section}{\numberline {2}Background}{2}{section.2}
-\contentsline {subsection}{\numberline {2.1}Introduction}{2}{subsection.2.1}
-\contentsline {section}{\numberline {3}Relevant research}{2}{section.3}
-\contentsline {section}{\numberline {4}Hypothesis}{2}{section.4}
-\contentsline {subsection}{\numberline {4.1}Hypothesis}{2}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Goal}{2}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Research questions}{2}{subsection.4.3}
-\contentsline {subsubsection}{\numberline {4.3.1}Main research question}{2}{subsubsection.4.3.1}
-\contentsline {subsubsection}{\numberline {4.3.2}Other research questions}{2}{subsubsection.4.3.2}
+\contentsline {subsection}{\numberline {2.1}Graph Theory}{2}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Genetic Algorithm}{2}{subsection.2.2}
+\contentsline {section}{\numberline {3}Relevant research}{3}{section.3}
+\contentsline {subsection}{\numberline {3.1}Genetic Algorithms}{3}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}MagMaNet}{3}{subsubsection.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.2}Overlapping communities}{3}{subsubsection.3.1.2}
+\contentsline {subsection}{\numberline {3.2}Graph Theory}{3}{subsection.3.2}
+\contentsline {section}{\numberline {4}Hypothesis}{4}{section.4}
+\contentsline {subsection}{\numberline {4.1}Hypothesis}{4}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Goal}{4}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Research questions}{4}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}Main research question}{4}{subsubsection.4.3.1}
+\contentsline {subsubsection}{\numberline {4.3.2}Other research questions}{4}{subsubsection.4.3.2}
