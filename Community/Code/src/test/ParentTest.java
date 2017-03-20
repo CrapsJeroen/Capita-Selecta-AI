@@ -22,7 +22,8 @@ public abstract class ParentTest {
 	protected final int RUNS = 5;
 	protected boolean feedback = false;
 	protected double maxTime = 300;
-	protected boolean skip = false;
+	protected boolean skipClique = false;
+	protected boolean skipRegular = false;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -33,7 +34,7 @@ public abstract class ParentTest {
 	
     protected List<Set<Vertex>> find(Graph graph, Data data) {
         CommunityAlgorithm algo = new CommunityAlgorithm(graph);
-        List<Set<Vertex>> result = algo.solve(5, 1000, maxTime, data, feedback);
+        List<Set<Vertex>> result = algo.solve(3, 1000, maxTime, data, feedback);
         
         return result;
     }
@@ -46,7 +47,7 @@ public abstract class ParentTest {
 
 	@Test
 	public void findCommunities() throws IOException {	
-	    if(skip) return;
+	    if(skipRegular) return;
 	    Data data = new Data();
 	    System.out.println("REGULAR:");
 		IntStream.range(0, RUNS)
@@ -61,7 +62,7 @@ public abstract class ParentTest {
 	
    @Test
     public void findCommunitiesWithCliques() throws IOException {
-       if(skip) return;
+       if(skipClique) return;
         Graph clique = getCliqueGraph();
         Data data = new Data();
         System.out.println("CLIQUES:");
