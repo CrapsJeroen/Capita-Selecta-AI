@@ -40,6 +40,7 @@ public class HybridNeighborhoodCrossover<G extends Gene<Integer, G>, C extends C
         Population<G, C> initialPop = population.copy();
 
         IntStream.range(0, population.size()).forEach(i -> {
+//            System.out.println("CROSS " + (i));
             final Phenotype<G, C> pt = initialPop.get(i);
             final Phenotype<G, C> maxNeighbor = getMaxNeighbor(population, i);
             if(random.nextDouble() >= probCrossover) return;

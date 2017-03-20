@@ -82,15 +82,12 @@ public class CliqueAlgorithm {
 
     public void search(Vertex vertex){
         vertex.getNeighbours().stream().forEach(v -> searchSingle(v, vertex));
-//        for(Vertex vertex: vertices.get(vertices.size()-1).getNeighbours()){
-//            searchSingle(vertex);
-//        }
+
     }
     
     
 	public void searchSingle(Vertex startVertex, Vertex center){
 	    List<Vertex> clique = new ArrayList<Vertex>(Arrays.asList(center));
-//        Set<Vertex> done = startVertex.getNeighbours().stream().collect(Collectors.toSet());
 	    Set<Vertex> done = new HashSet<Vertex>();
 	    done.add(startVertex);
 	    done.add(center);
@@ -109,16 +106,4 @@ public class CliqueAlgorithm {
 		if(clique.size() >= 3)
 		    cliques.add(clique);
 	}
-	
-	   public void search(List<Vertex> vertices){
-	        for(Vertex vertex: vertices.get(vertices.size()-1).getNeighbours()){
-	            if(vertex.getNeighbours().containsAll(vertices)){
-	                if(vertex.getClass() == Clique.class) continue;
-	                vertices.add(vertex);
-	                search(vertices);
-	            } else if(vertices.size() >= 3 && !cliques.contains(vertices)) {
-	                cliques.add(vertices);
-	            }
-	        }
-	   }
 }

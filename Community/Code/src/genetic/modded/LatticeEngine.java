@@ -268,9 +268,9 @@ public final class LatticeEngine<
 		final Population<G, C> startPopulation = start.getPopulation();
 		helper.updated.clear();
 		// Initial evaluation of the population.
-//		final Timer evaluateTimer = Timer.of(_clock).start();
-//		evaluate(startPopulation);
-//		evaluateTimer.stop();
+		final Timer evaluateTimer = Timer.of(_clock).start();
+		evaluate(startPopulation);
+		evaluateTimer.stop();
 
 //		// Select the offspring population.
 //		final CompletableFuture<TimedResult<Population<G, C>>> offspring =
@@ -326,7 +326,7 @@ public final class LatticeEngine<
 			helper.getDuration(helper.mutateTimer),
             helper.getDuration(helper.selfLearnTimer),
 			alteredOffspring.join().duration,
-			result.duration,
+			evaluateTimer.getTime().plus(result.duration),
 			timer.stop().getTime()
 		);
 		

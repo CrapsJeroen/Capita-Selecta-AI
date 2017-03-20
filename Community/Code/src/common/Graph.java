@@ -26,6 +26,8 @@ public class Graph {
     private HashMap<Integer, Integer> indexMap;
 
     private Set<Edge> edges;
+    
+    private HashMap<Vertex, Set<Edge>> edgeMap;
 
     public Graph(List<Vertex> vertices) {
         super();
@@ -33,10 +35,12 @@ public class Graph {
         verticesMap = new HashMap<Integer, Vertex>();
         indexMap = new HashMap<Integer, Integer>();
         edges = new HashSet<Edge>();
+        edgeMap = new HashMap<Vertex, Set<Edge>>();
         vertices.stream().forEach(v -> verticesMap.put(v.getId(), v));
         IntStream.range(0, vertices.size()).forEach(
                 i -> indexMap.put(vertices.get(i).getId(), i));
         vertices.stream().forEach(v -> edges.addAll(v.getEdges()));
+        vertices.stream().forEach(v -> edgeMap.put(v, v.getEdges()));
 
     }
 
@@ -56,9 +60,8 @@ public class Graph {
         return new HashSet<Edge>(edges);
     }
 
-    public List<Edge> getEdgesFrom(Vertex vertex) {
-        return edges.stream().filter(e -> e.getNeighbours().contains(vertex))
-                .collect(Collectors.toList());
+    public Set<Edge> getEdgesFrom(Vertex vertex) {
+        return edgeMap.get(vertex);
     }
 
     public Vertex getVertexById(int vertexId) {
@@ -95,13 +98,26 @@ public class Graph {
                 .collect(Collectors.toSet());
     }
     
-    public int amountOfInternalConnections(Collection<Vertex> vertices){
-        Set<Edge> intEdges = vertices.stream().flatMap(v -> getEdgesFrom(v).stream()
-                                    .filter(e -> vertices.contains(e.connectsTo(v)))
-                                )
-                                .collect(Collectors.toSet());
+    public int amountOfInternalConnections(Set<Vertex> vertices){
+        Set<Edge> intEdges = new HashSet<Edge>();
         
-        intEdges.addAll(vertices.stream().flatMap(v -> v.getInternalEdges().stream()).collect(Collectors.toSet()));
+        for(Vertex v : vertices){
+            for(Edge e : getEdgesFrom(v)){
+                if(!vertices.contains(e.connectsTo(v))) continue;
+                intEdges.add(e);
+            }
+            
+            for(Edge e : v.getInternalEdges()){
+                intEdges.add(e);
+            }
+        }
+        
+//        Set<Edge> intEdges = vertices.stream().flatMap(v -> getEdgesFrom(v).stream()
+//                                    .filter(e -> vertices.contains(e.connectsTo(v)))
+//                                )
+//                                .collect(Collectors.toSet());
+        
+//        intEdges.addAll(vertices.stream().flatMap(v -> v.getInternalEdges().stream()).collect(Collectors.toSet()));
         
         return intEdges.stream().map(e -> e.getWeight()).reduce(0, (count, current) -> count + current);
     }

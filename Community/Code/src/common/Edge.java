@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Edge {
-//	private final List<Vertex> neighbours;
 	private final Vertex first;
 	private final Vertex second;
 	private final int weight;

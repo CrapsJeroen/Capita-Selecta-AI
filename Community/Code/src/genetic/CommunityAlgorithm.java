@@ -62,7 +62,7 @@ public class CommunityAlgorithm {
 
     public static Map<Integer, Set<Integer>> decodePartitionMap(
             Genotype<IntegerGene> individual) {
-        Map<Integer, Set<Integer>> communityMap = new HashMap<Integer, Set<Integer>>();
+        Map<Integer, Set<Integer>> communityMap = new HashMap<Integer, Set<Integer>>(individual.getNumberOfGenes());
         Chromosome<IntegerGene> chrom = individual.getChromosome();
 
         // Iterate over every gene
@@ -134,14 +134,7 @@ public class CommunityAlgorithm {
         for (Set<Integer> community : communities) {
             Set<Vertex> vertexCommunity = intSetToVertexSet(community);
 
-//            double edgesInCommunity = vertexCommunity.stream()
-//                    .map(v -> v.amountOfConnectionsTo(vertexCommunity))
-//                    .reduce(0, (count, current) -> count + current) / 2;
-            double edgesInCommunity = graph.amountOfInternalConnections(vertexCommunity);
-//            
-//            edgesInCommunity += vertexCommunity.stream()
-//                    .map(v -> v.getInternalEdges().size())
-//                    .reduce(0, (count, current) -> count + current);
+            double edgesInCommunity = graph.amountOfInternalConnections(vertexCommunity);           
 
             double degreeInCommunity = vertexCommunity.stream()
                     .map(v -> v.degree())
@@ -218,7 +211,7 @@ public class CommunityAlgorithm {
         EvolutionResult<IntegerGene, Double> result = engine.stream()
                 .limit(limit.bySteadyFitness(MAX_STEADY_GENS))
                 .limit(limit.byExecutionTime(Duration.ofSeconds((long) maxTime)))
-                .limit(limit.byFitnessConvergence(3, 10, 10E-3))
+                .limit(limit.byFitnessConvergence(5, 15, 10E-4))
                 .limit(generations)
                 .peek(statistics)
                 .collect(EvolutionResult.toBestEvolutionResult());

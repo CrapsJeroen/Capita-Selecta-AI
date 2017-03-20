@@ -36,6 +36,7 @@ public class AdaptiveMutator<G extends Gene<Integer, G>, C extends Comparable<? 
         final IntRef alterations = new IntRef(0);
 
         IntStream.range(0, population.size()).forEach(i -> {
+//            System.out.println("MUTATE " + (i));
             final Phenotype<G, C> pt = population.get(i); 
             List<Genotype<G>> neighbors = getNeighbors(population, i).stream()
                     .map(ph -> ph.getGenotype())

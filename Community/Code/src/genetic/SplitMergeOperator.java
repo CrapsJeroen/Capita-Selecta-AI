@@ -37,6 +37,7 @@ public class SplitMergeOperator<G extends Gene<Integer, G>, C extends Comparable
         Population<G, C> initialPop = population.copy();
 
         IntStream.range(0, population.size()).forEach(i -> {
+//            System.out.println("SPLIT " + (i));
             final Phenotype<G, C> pt = initialPop.get(i);
             final Phenotype<G, C> maxNeighbor = getMaxNeighbor(population, i);
             if(pt.getFitness().compareTo(maxNeighbor.getFitness()) > 0) return;
