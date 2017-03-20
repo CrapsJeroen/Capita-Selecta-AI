@@ -39,6 +39,31 @@ The chromosome\footnote{Also known as the genotype.} is the set parameters which
 A set of chromosomes is called a population.
 By iteratively updating the population by using certain operators, the algorithm attempts to find the optimal solution for the specified problem.
 
+\subsubsection{Representation}
+The most commonly used representation in genetic algorithms is the binary representation.
+But this isn't always a good choice, because the translation to a representation that we can easily understand (phenotype) might be very difficult.
+That is why for the problem that will be discussed in this report we will be using a locus based representation.
+An example of this can be seen in Fig. \ref{figure:locus}.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{locus.png}
+\caption{The locus representation of a graph.}\label{figure:locus}
+\end{center}
+\end{figure}
+
+An individual is represented as an array of numbers. 
+The index represents the identification number of a vertice in the graph.
+The value in the array stands for the vertice it is connected to.
+While decoding the representation we say that a set of vertices are in a group if there is a link between any of the vertices.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{encode.png}
+\caption{The visualisation of Fig. \ref{figure:locus}.}\label{figure:encode}
+\end{center}
+\end{figure}
+
 \subsubsection{Operators}
 The goal of the algorithm is to improve on the initial population which can be initiated randomly or with a heuristic.
 To do so some operators are required.
@@ -46,27 +71,19 @@ Exploring the search space in usually done by using mutation which will randomly
 Exploitation is done by combining information of two (or more) individuals to one (or more) new individual(s).
 For both of these a short explanation will be given.
 
-\subsubsubsection{Crossover}
+\subsubsection*{Crossover}
 Crossover is the operator that will take care of find the optimum in the current population by combining high scoring individuals with eachother.
 By doing this an attempt to select the superior parameters will be taken from both and used to form an even better individual to the problem.
 Combining two good solutions doesn't always lead to a better one, but combining one good solution with a bad one might do so.
 
-\subsubsubsection{Mutation}
+Some example of these on binary representations are the following:
+\begin{itemize}
+\item One-point crossover
+\item
+\end{itemize}
+
+\subsubsection*{Mutation}
 Mutation normally allows for new sections of the search space to be explored by creating a new value for a parameter that previously wasn't present in the population.
 An expample of this is a bit flip on a binary representation for a possible solution.
 By doing this a bit that is always $0$ in the population can be changed to $1$ and thus introducing new ``DNA'' into the population.
 This is necessary to keep the population from going into a local optima instead of exploring the entire search space and potentially missing out on a better solution.
-
-\subsubsection{Representation}
-The most commonly used representation in genetic algorithms is the binary representation.
-But this isn't always a good choice, because the translation to a representation that we can easily understand (phenotype) might be very difficult.
-That is why for the problem that will be discussed in this report we will be using a locus based representation.
-An example of this can be seen in Fig. \ref{figure:locus}.
-
-ADD SOME FIGURES HERE
-
-An individual is represented as an array of numbers. 
-The index represents the identification number of a vertice in a graph.
-The value in the array stands for the vertice it is connected to.
-While decoding the representation we say that a set of vertices are in a group if there is a link between any of the vertices.
-

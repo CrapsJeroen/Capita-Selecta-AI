@@ -3,23 +3,27 @@
 \contentsline {section}{\numberline {2}Background}{2}{section.2}
 \contentsline {subsection}{\numberline {2.1}Graph Theory}{2}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}Genetic Algorithm}{2}{subsection.2.2}
-\contentsline {section}{\numberline {3}Relevant research}{3}{section.3}
-\contentsline {subsection}{\numberline {3.1}Genetic Algorithms}{3}{subsection.3.1}
-\contentsline {subsubsection}{\numberline {3.1.1}MagMaNet}{3}{subsubsection.3.1.1}
-\contentsline {subsubsection}{\numberline {3.1.2}Overlapping communities}{3}{subsubsection.3.1.2}
-\contentsline {subsection}{\numberline {3.2}Graph Theory}{3}{subsection.3.2}
-\contentsline {section}{\numberline {4}Hypothesis}{4}{section.4}
-\contentsline {subsection}{\numberline {4.1}Hypothesis}{4}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Goal}{4}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Research questions}{4}{subsection.4.3}
-\contentsline {subsubsection}{\numberline {4.3.1}Main research question}{4}{subsubsection.4.3.1}
-\contentsline {subsubsection}{\numberline {4.3.2}Other research questions}{4}{subsubsection.4.3.2}
-\contentsline {section}{\numberline {5}Implementation}{4}{section.5}
-\contentsline {subsection}{\numberline {5.1}Clique algorithm}{4}{subsection.5.1}
-\contentsline {subsection}{\numberline {5.2}Genetic Algorithm}{5}{subsection.5.2}
-\contentsline {subsubsection}{\numberline {5.2.1}Core}{5}{subsubsection.5.2.1}
-\contentsline {subsubsection}{\numberline {5.2.2}Split/Merge Neighborhood Competition Operator}{5}{subsubsection.5.2.2}
-\contentsline {subsubsection}{\numberline {5.2.3}Hybrid Neighborhood Crossover Operator}{5}{subsubsection.5.2.3}
-\contentsline {subsubsection}{\numberline {5.2.4}Adaptive Mutation Operator}{5}{subsubsection.5.2.4}
-\contentsline {subsubsection}{\numberline {5.2.5}Self-Learning Operator}{5}{subsubsection.5.2.5}
-\contentsline {section}{\numberline {6}Results and reflection}{5}{section.6}
+\contentsline {subsubsection}{\numberline {2.2.1}Basics}{3}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.2.2}Representation}{3}{subsubsection.2.2.2}
+\contentsline {subsubsection}{\numberline {2.2.3}Operators}{3}{subsubsection.2.2.3}
+\contentsline {section}{\numberline {3}Relevant research}{5}{section.3}
+\contentsline {subsection}{\numberline {3.1}Genetic Algorithms}{5}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}MAGA-Net}{5}{subsubsection.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.2}Overlapping communities}{5}{subsubsection.3.1.2}
+\contentsline {subsection}{\numberline {3.2}Graph Theory}{5}{subsection.3.2}
+\contentsline {section}{\numberline {4}Hypothesis}{6}{section.4}
+\contentsline {subsection}{\numberline {4.1}Hypothesis}{6}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Goal}{6}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Research questions}{6}{subsection.4.3}
+\contentsline {section}{\numberline {5}Method}{6}{section.5}
+\contentsline {subsection}{\numberline {5.1}Preprocessing}{6}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Genetic Algorithm}{6}{subsection.5.2}
+\contentsline {section}{\numberline {6}Implementation}{6}{section.6}
+\contentsline {subsection}{\numberline {6.1}Clique algorithm}{7}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Genetic Algorithm}{7}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}Core}{7}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}Split/Merge Neighborhood Competition Operator}{7}{subsubsection.6.2.2}
+\contentsline {subsubsection}{\numberline {6.2.3}Hybrid Neighborhood Crossover Operator}{7}{subsubsection.6.2.3}
+\contentsline {subsubsection}{\numberline {6.2.4}Adaptive Mutation Operator}{7}{subsubsection.6.2.4}
+\contentsline {subsubsection}{\numberline {6.2.5}Self-Learning Operator}{7}{subsubsection.6.2.5}
+\contentsline {section}{\numberline {7}Results and reflection}{7}{section.7}
