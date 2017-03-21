@@ -111,6 +111,40 @@ n'' =
 $
 \end{center}
 
-\subsubsection{Crossover}
+\subsubsection{Competition operator}
+While dividing a network by using a locus-based representation, we can see that every vertex can only link to one other vertex and that in each community there can only be one loop.
+The value of which a gene have to be different from all of the values from its current community.
+If the value of an gene in an agent is changed, there are two possible outcomes.
+Either that two communities will be merged together or that the community to which the gene belonged is split in two with one of them joining another community.
+
+\subsubsection{Hybrid neighbourhood crossover}
+In the paper by Li et al \cite{Li2016} a new crossover is introduced.
+While doing crossover the best solution is never changed.
+In practice this means that some of the values from the $MAX_{m,n}$ can be copied to the selected agent.
+This is done to avoid losing good solutions and to avoid random recombinations.
+This is completely different from the two-point crossover that was seen in section \ref{sec:background}.
+There the two agents would exchange their information with each other. 
+
 
 \subsubsection{Mutation}
+\subsubsection*{Adaptive mutation}
+In order to keep exploring the search space and retaining diversity in the population. We apply the neighbor-based mutation operator mentioned by C. Pizzuti \cite{Pizzuti2012}.
+For each gene with some probability $p_{m}$ will it change its value to the allele of one of his neighbours.
+This adaptive version of probability $p_{m}$ is used in \cite{Li2016}.
+If no improvement is found, this parameter will increase to further stimulate the exploration of the search space.
+Escaping local optima should be made easier by doing so.
+After a certain amount of generations without improvements the algorithm will stop.
+The exact function for the adaptive parameter is the following: \\
+\begin{center}
+$p_{m}' = (t/N_{s} + 1) \times p_{m}$
+\end{center}
+
+\subsection*{Self-Learning operator}
+Excellent agents should be explored further.
+To do so a local search method is applied.
+Essentially a small-scale agent lattice is generated.
+This is done by using the information in the selected agent and creating neighbours for this agent by using neighbour-based mutation.
+This will create its own genetic algorithm and run for a certain amount of generations.
+The best solution of this local genetic algorithm will replace the original one in the larger net.
+All of the operators will be explained in more detail in section \ref{sec:implementation}.
+

@@ -10,7 +10,6 @@
 \contentsline {subsection}{\numberline {3.1}Genetic Algorithms}{5}{subsection.3.1}
 \contentsline {subsubsection}{\numberline {3.1.1}MAGA-Net}{5}{subsubsection.3.1.1}
 \contentsline {subsubsection}{\numberline {3.1.2}Overlapping communities}{5}{subsubsection.3.1.2}
-\contentsline {subsection}{\numberline {3.2}Graph Theory}{5}{subsection.3.2}
 \contentsline {section}{\numberline {4}Hypothesis}{6}{section.4}
 \contentsline {subsection}{\numberline {4.1}Hypothesis}{6}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Goal}{6}{subsection.4.2}
@@ -20,15 +19,17 @@
 \contentsline {subsection}{\numberline {5.2}Genetic Algorithm}{8}{subsection.5.2}
 \contentsline {subsubsection}{\numberline {5.2.1}Representation}{8}{subsubsection.5.2.1}
 \contentsline {subsubsection}{\numberline {5.2.2}Selection}{8}{subsubsection.5.2.2}
-\contentsline {subsubsection}{\numberline {5.2.3}Crossover}{9}{subsubsection.5.2.3}
-\contentsline {subsubsection}{\numberline {5.2.4}Mutation}{9}{subsubsection.5.2.4}
+\contentsline {subsubsection}{\numberline {5.2.3}Competition operator}{9}{subsubsection.5.2.3}
+\contentsline {subsubsection}{\numberline {5.2.4}Hybrid neighbourhood crossover}{9}{subsubsection.5.2.4}
+\contentsline {subsubsection}{\numberline {5.2.5}Mutation}{9}{subsubsection.5.2.5}
 \contentsline {section}{\numberline {6}Implementation}{10}{section.6}
 \contentsline {subsection}{\numberline {6.1}Clique algorithm}{10}{subsection.6.1}
 \contentsline {subsection}{\numberline {6.2}Genetic Algorithm}{11}{subsection.6.2}
 \contentsline {subsubsection}{\numberline {6.2.1}The Jenetics library}{11}{subsubsection.6.2.1}
 \contentsline {subsubsection}{\numberline {6.2.2}Core}{11}{subsubsection.6.2.2}
-\contentsline {subsubsection}{\numberline {6.2.3}Split/Merge Neighborhood Competition Operator}{11}{subsubsection.6.2.3}
-\contentsline {subsubsection}{\numberline {6.2.4}Hybrid Neighborhood Crossover Operator}{11}{subsubsection.6.2.4}
-\contentsline {subsubsection}{\numberline {6.2.5}Adaptive Mutation Operator}{11}{subsubsection.6.2.5}
-\contentsline {subsubsection}{\numberline {6.2.6}Self-Learning Operator}{11}{subsubsection.6.2.6}
-\contentsline {section}{\numberline {7}Results and reflection}{12}{section.7}
+\contentsline {subsubsection}{\numberline {6.2.3}Fitness Function}{12}{subsubsection.6.2.3}
+\contentsline {subsubsection}{\numberline {6.2.4}Split/Merge Neighborhood Competition Operator}{12}{subsubsection.6.2.4}
+\contentsline {subsubsection}{\numberline {6.2.5}Hybrid Neighborhood Crossover Operator}{12}{subsubsection.6.2.5}
+\contentsline {subsubsection}{\numberline {6.2.6}Adaptive Mutation Operator}{12}{subsubsection.6.2.6}
+\contentsline {subsubsection}{\numberline {6.2.7}Self-Learning Operator}{12}{subsubsection.6.2.7}
+\contentsline {section}{\numberline {7}Results and reflection}{13}{section.7}
