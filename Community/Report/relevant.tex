@@ -10,11 +10,9 @@ Traditional approaches simply do not scale to many thousands, let alone millions
 Because the problem is NP-hard, calculating the optimal solution for large networks is an unreachable goal.
 Genetic algorithms provide a way to still find solutions in such large networks. 
 One such algorithm was introduced in a recent paper by Li et al. \cite{multiagent2016}, using a multi-agent approach. 
-Most algorithms for community detection assume that each node can only be a part of a single community. 
-In many cases, this is simply not true. 
-Overlapping community detection algorithms can be divided into two groups: node-based algorithms and link-based algorithms \cite{linkclus2013}.\\
 
-\subsubsection{MagMaNet}
+
+\subsubsection{MAGA-Net}
 In the paper by Li et al. \cite{multiagent2016} every agent is a candidate solution for the community detection problem.
 Each agent ``lives'' in a lattice structure. 
 In this lattice, candidate solutions compete with their direct neighbours.
@@ -22,13 +20,17 @@ Due to this reasoning, agents can perceive and react to their direct environment
 All agents work together to achieve the common goal, which is to optimize the fitness function.
 A candidate solution is in this case a division of the network in communities.
 
-This paper brings the interesting element of local searches which slowly get adapted by their surroundings.
-A missing element is the fact that vertices can be a part of multiple communities.
-This problem will be tackled by some of the 
-
+The solution proposed in the paper avoids getting trapped in a local optima by increasing modularity as much as possible.
+Mainly done by the implementation of their operators: split and merging based neighborhood competition operator, hybrid neighborhood crossover, adaptive mutation and self-learning operator.
+The experiments show that the algorithm is able to find the global optima and can solve large-scale social networks.
 
 \subsubsection{Overlapping communities}
+Most algorithms for community detection assume that each node can only be a part of a single community. 
+In many cases, this is simply not true. 
+Overlapping community detection algorithms can be divided into two groups: node-based algorithms and link-based algorithms \cite{linkclus2013}.\\
 
 The node-based algorithms focus directly on the nodes and try to detect communities by looking at how nodes are related. The link-based algorithms are built with the assumption that the links between nodes are actually more important than the nodes themselves. Not the individuals, but the relations between the individuals define the community. The links are divided into communities, and only afterwards is that translated to the nodes. Generally, link-based algorithms have been shown to yield superior results, but at a much higher computational cost. Ding et al. \cite{Ding2016} have proposed a new approach which attempts to improve on the computational cost typically associated with a link-based algorithm using network decomposition. This algorithm is not genetic,  but others have proposed several different genetic overlapping community detection algorithms \cite{linkclus2013, Pizzuti2009, Dickinson2013}.\\
 
 \subsection{Graph Theory}
+
+
