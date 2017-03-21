@@ -60,7 +60,7 @@ We note that this is not a lossless compression, but a lossy compression.
 The method of a genetic algorithm is straighforward.
 Define a representation, find a valid parent selection method and the corresponding operators (which are defined by their representation).
 Choosing the right options is more difficult.
-This section will therefor explain which options have been chosen for this report.
+This section will therefor explain which options have been chosen for this report, all of these will come from the paper by Li et al \cite{Li2016}.
 
 \subsubsection{Representation}
 For the representation of a graph we are utilising a locus based representation (e.g. Fig. \ref{figure:locus}) as previously mentioned in Section \ref{sec:background}.
@@ -70,7 +70,7 @@ Due to the limitations by the representation a vertex can only be in one communi
 There are other representation that make this possible, but we have decided to limit our research to cases where this is not possible.
 
 \subsubsection{Selection}
-In the paper by Li et al \cite{•} they suggest a network of agents to do the partner selection.
+In the paper by Li et al \cite{Li2016} they suggest a network of agents to do the partner selection.
 The network can be seen as a matrix of agents.
 Only agents that are direct neighbours of the current agent are eligible partners.
 From these neighbours the one with the highest fitness score will be chosen to reproduce with.
@@ -79,7 +79,7 @@ This is done to prevent agents from converging too quickly.
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.5\textwidth]{images/neighbours.png}
-\caption{An example of possible partners for an agent $m,n$ from the paper by Li. et al \cite{•}.}\label{fig:neighbours}
+\caption{An example of possible partners for an agent $m,n$ from the paper by Li. et al \cite{Li2016}.}\label{fig:neighbours}
 \end{center}
 \end{figure}
 \newpage

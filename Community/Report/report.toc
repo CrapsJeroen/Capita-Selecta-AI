@@ -29,7 +29,7 @@
 \contentsline {subsubsection}{\numberline {6.2.2}Core}{11}{subsubsection.6.2.2}
 \contentsline {subsubsection}{\numberline {6.2.3}Fitness Function}{12}{subsubsection.6.2.3}
 \contentsline {subsubsection}{\numberline {6.2.4}Split/Merge Neighborhood Competition Operator}{12}{subsubsection.6.2.4}
-\contentsline {subsubsection}{\numberline {6.2.5}Hybrid Neighborhood Crossover Operator}{12}{subsubsection.6.2.5}
-\contentsline {subsubsection}{\numberline {6.2.6}Adaptive Mutation Operator}{12}{subsubsection.6.2.6}
-\contentsline {subsubsection}{\numberline {6.2.7}Self-Learning Operator}{12}{subsubsection.6.2.7}
-\contentsline {section}{\numberline {7}Results and reflection}{13}{section.7}
+\contentsline {subsubsection}{\numberline {6.2.5}Hybrid Neighborhood Crossover Operator}{13}{subsubsection.6.2.5}
+\contentsline {subsubsection}{\numberline {6.2.6}Adaptive Mutation Operator}{13}{subsubsection.6.2.6}
+\contentsline {subsubsection}{\numberline {6.2.7}Self-Learning Operator}{13}{subsubsection.6.2.7}
+\contentsline {section}{\numberline {7}Results and reflection}{14}{section.7}
