@@ -211,7 +211,7 @@ public class CommunityAlgorithm {
         EvolutionResult<IntegerGene, Double> result = engine.stream()
                 .limit(limit.bySteadyFitness(MAX_STEADY_GENS))
                 .limit(limit.byExecutionTime(Duration.ofSeconds((long) maxTime)))
-                .limit(limit.byFitnessConvergence(5, 15, 10E-4))
+//                .limit(limit.byFitnessConvergence(5, 15, 10E-4))
                 .limit(generations)
                 .peek(statistics)
                 .collect(EvolutionResult.toBestEvolutionResult());

@@ -2,7 +2,6 @@ package test;
 import java.io.File;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import common.Parser;
 
@@ -14,13 +13,13 @@ public class ArxivTest  extends ParentTest{
 	public void setUp() throws Exception {
 		Parser parser = new Parser();
 		graph = parser.parseFile(new File("data/arxiv.txt"));
-	      feedback = true;
-	      skip = true;
+//	      feedback = true;
+	      skipClique = true;
 //	      maxTime = 1;
 	      }
 	      
-	      @Test
-	      public void customtest(){
-	          find(getCliqueGraph(), null);
-	      }
+//	      @Test
+//	      public void customtest(){
+//	          find(getCliqueGraph(), null);
+//	      }
 }

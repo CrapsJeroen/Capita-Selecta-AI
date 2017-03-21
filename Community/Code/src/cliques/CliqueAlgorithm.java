@@ -92,7 +92,7 @@ public class CliqueAlgorithm {
 	    done.add(startVertex);
 	    done.add(center);
 	    Queue<Vertex> toSearch = new LinkedList<Vertex>();
-	    toSearch.add(startVertex); // done.stream().filter(v -> v != center).collect(Collectors.toSet())
+	    toSearch.add(startVertex);
 		while(!toSearch.isEmpty()){
 		    Vertex vertex = toSearch.poll();
 			if(vertex.getNeighbours().containsAll(clique)){

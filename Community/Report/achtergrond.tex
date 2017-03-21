@@ -1,5 +1,5 @@
 \section{Background}
-\label{chapter:background}
+\label{sec:background}
 This chapter will explain some elements to be able to understand the contents of this scientific report.
 The focus will be put on graph theory and genetic algorithms.
 For both of these the basics will be shortly mentioned and the reasoning behind why they are important for this work.
@@ -56,6 +56,8 @@ An individual is represented as an array of numbers.
 The index represents the identification number of a vertice in the graph.
 The value in the array stands for the vertice it is connected to.
 While decoding the representation we say that a set of vertices are in a group if there is a link between any of the vertices.
+A restriction of this representation is that vertices can only be part of a single community.
+While it is common for communities to have overlap, it remains something that is very hard to deal with.
 
 \begin{figure}
 \begin{center}
@@ -70,20 +72,72 @@ To do so some operators are required.
 Exploring the search space in usually done by using mutation which will randomly change an individual.
 Exploitation is done by combining information of two (or more) individuals to one (or more) new individual(s).
 For both of these a short explanation will be given.
-
+\newpage
 \subsubsection*{Crossover}
 Crossover is the operator that will take care of find the optimum in the current population by combining high scoring individuals with eachother.
 By doing this an attempt to select the superior parameters will be taken from both and used to form an even better individual to the problem.
 Combining two good solutions doesn't always lead to a better one, but combining one good solution with a bad one might do so.
 
-Some example of these on binary representations are the following:
+Some example of crossovers on binary representations are the following:
 \begin{itemize}
-\item One-point crossover
-\item
+\item In one-point crossover a random crossover point is selected. All of the information on the left side of the first individual will be combined with the information on the right side of this point of the second individual. A simple example of this can be seen below.
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+0 & 1 & 0 & \textbf{0} & \textbf{0} & \textbf{1} \\ \hline \hline
+0 & 1 & 0 & \textbf{1} & \textbf{1} & \textbf{0} \\ \hline
+\end{tabular}
+\\
+$\downarrow$
+\\
+\begin{tabular}{|c|c|c||c|c|c|}
+\hline
+0 & 1 & 0 & \textbf{1} & \textbf{1} & \textbf{0} \\ \hline \hline
+0 & 1 & 0 & \textbf{0} & \textbf{0} & \textbf{1} \\ \hline
+\end{tabular}
+\end{center}
+\item In two-point crossover two random crossover points are selected. All of the information between these two points will be exchanged between the two individuals. Again a simple example is shown here.
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+1 & 0 & \textbf{1} & \textbf{1} & 0 & 0 \\ \hline \hline
+0 & 1 & \textbf{0} & \textbf{1} & 1 & 0 \\ \hline
+\end{tabular}
+\\
+$\downarrow \qquad \quad \downarrow$
+\\
+\begin{tabular}{|c|c||c|c||c|c|}
+\hline
+1 & 0 & \textbf{0} & \textbf{1} & 0 & 0 \\ \hline \hline
+0 & 1 & \textbf{1} & \textbf{1} & 1 & 0 \\ \hline
+\end{tabular}
+\end{center}
 \end{itemize}
+
+The probability of crossover is in practice chosen quite high, because this is the main exploiting operator.
+Without crossover it seems to be very difficult to keep improving on the current population.
 
 \subsubsection*{Mutation}
 Mutation normally allows for new sections of the search space to be explored by creating a new value for a parameter that previously wasn't present in the population.
 An expample of this is a bit flip on a binary representation for a possible solution.
 By doing this a bit that is always $0$ in the population can be changed to $1$ and thus introducing new ``DNA'' into the population.
-This is necessary to keep the population from going into a local optima instead of exploring the entire search space and potentially missing out on a better solution.
+This is necessary to keep the population from going into a local optima instead of exploring the entire search space and potentially missing out on a better solution. \\
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+1 & 0 & \textbf{1} & 1 & 0 & 0 \\ 
+\hline
+\end{tabular}
+\\
+$\quad \downarrow \: \qquad \:$
+\\
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+1 & 0 & \textbf{0} & 1 & 0 & 0 \\ \hline
+\end{tabular}
+\end{center}
+
+In practice the amount of mutations is randomly chosen as well as the bits that are being flipped.
+The example shows only a single bit flip.
+Probablity of a mutation happening is normally chosen quite low as it can disrupt the current exploitation process.
