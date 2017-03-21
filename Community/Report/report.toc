@@ -18,13 +18,17 @@
 \contentsline {section}{\numberline {5}Method}{7}{section.5}
 \contentsline {subsection}{\numberline {5.1}Graph Reduction}{7}{subsection.5.1}
 \contentsline {subsection}{\numberline {5.2}Genetic Algorithm}{8}{subsection.5.2}
-\contentsline {section}{\numberline {6}Implementation}{9}{section.6}
-\contentsline {subsection}{\numberline {6.1}Clique algorithm}{9}{subsection.6.1}
-\contentsline {subsection}{\numberline {6.2}Genetic Algorithm}{10}{subsection.6.2}
-\contentsline {subsubsection}{\numberline {6.2.1}The Jenetics library}{10}{subsubsection.6.2.1}
-\contentsline {subsubsection}{\numberline {6.2.2}Core}{10}{subsubsection.6.2.2}
-\contentsline {subsubsection}{\numberline {6.2.3}Split/Merge Neighborhood Competition Operator}{10}{subsubsection.6.2.3}
-\contentsline {subsubsection}{\numberline {6.2.4}Hybrid Neighborhood Crossover Operator}{10}{subsubsection.6.2.4}
-\contentsline {subsubsection}{\numberline {6.2.5}Adaptive Mutation Operator}{10}{subsubsection.6.2.5}
-\contentsline {subsubsection}{\numberline {6.2.6}Self-Learning Operator}{10}{subsubsection.6.2.6}
-\contentsline {section}{\numberline {7}Results and reflection}{11}{section.7}
+\contentsline {subsubsection}{\numberline {5.2.1}Representation}{8}{subsubsection.5.2.1}
+\contentsline {subsubsection}{\numberline {5.2.2}Selection}{8}{subsubsection.5.2.2}
+\contentsline {subsubsection}{\numberline {5.2.3}Crossover}{9}{subsubsection.5.2.3}
+\contentsline {subsubsection}{\numberline {5.2.4}Mutation}{9}{subsubsection.5.2.4}
+\contentsline {section}{\numberline {6}Implementation}{10}{section.6}
+\contentsline {subsection}{\numberline {6.1}Clique algorithm}{10}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Genetic Algorithm}{11}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}The Jenetics library}{11}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}Core}{11}{subsubsection.6.2.2}
+\contentsline {subsubsection}{\numberline {6.2.3}Split/Merge Neighborhood Competition Operator}{11}{subsubsection.6.2.3}
+\contentsline {subsubsection}{\numberline {6.2.4}Hybrid Neighborhood Crossover Operator}{11}{subsubsection.6.2.4}
+\contentsline {subsubsection}{\numberline {6.2.5}Adaptive Mutation Operator}{11}{subsubsection.6.2.5}
+\contentsline {subsubsection}{\numberline {6.2.6}Self-Learning Operator}{11}{subsubsection.6.2.6}
+\contentsline {section}{\numberline {7}Results and reflection}{12}{section.7}

@@ -57,3 +57,60 @@ The reasoning behind still applying this step is that when vertices are highly c
 We note that this is not a lossless compression, but a lossy compression.
 
 \subsection{Genetic Algorithm}
+The method of a genetic algorithm is straighforward.
+Define a representation, find a valid parent selection method and the corresponding operators (which are defined by their representation).
+Choosing the right options is more difficult.
+This section will therefor explain which options have been chosen for this report.
+
+\subsubsection{Representation}
+For the representation of a graph we are utilising a locus based representation (e.g. Fig. \ref{figure:locus}) as previously mentioned in Section \ref{sec:background}.
+A graph will be represented by an array of vertex identifiers.
+Having the value $5$ at index $3$ implies a connection $3 \rightarrow 5$.
+Due to the limitations by the representation a vertex can only be in one community at the same time.
+There are other representation that make this possible, but we have decided to limit our research to cases where this is not possible.
+
+\subsubsection{Selection}
+In the paper by Li et al \cite{•} they suggest a network of agents to do the partner selection.
+The network can be seen as a matrix of agents.
+Only agents that are direct neighbours of the current agent are eligible partners.
+From these neighbours the one with the highest fitness score will be chosen to reproduce with.
+This is done to prevent agents from converging too quickly.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{images/neighbours.png}
+\caption{An example of possible partners for an agent $m,n$ from the paper by Li. et al \cite{•}.}\label{fig:neighbours}
+\end{center}
+\end{figure}
+\newpage
+As can be seen in the Fig. \ref{fig:neighbours} for an agent $m,n$ the neighbours are the following:\\
+$neighbours_{m,n} = \lbrace L_{m',n},L_{m,n'},L_{m'',n},L_{m,n''} \rbrace$
+\begin{center}
+$ m' =
+  \begin{cases}
+    m-1       & \quad \text{if } m \neq 1\\
+    L_{SIZE}  & \quad \text{if } m = 1\\
+  \end{cases}\:,\qquad
+n' =
+  \begin{cases}
+    n-1       & \quad \text{if } n \neq 1\\
+    L_{SIZE}  & \quad \text{if } n = 1\\
+  \end{cases}
+$
+
+$ m'' =
+  \begin{cases}
+    m+1       & \quad \text{if } m \neq L_{SIZE}\\
+    1  & \quad \text{if } m = L_{SIZE}\\
+  \end{cases}\:,\qquad
+n'' =
+  \begin{cases}
+    n+1       & \quad \text{if } n \neq L_{SIZE}\\
+    1  & \quad \text{if } n = L_{SIZE}\\
+  \end{cases}
+$
+\end{center}
+
+\subsubsection{Crossover}
+
+\subsubsection{Mutation}
