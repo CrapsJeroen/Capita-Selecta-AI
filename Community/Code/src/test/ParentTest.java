@@ -34,7 +34,7 @@ public abstract class ParentTest {
 	
     protected List<Set<Vertex>> find(Graph graph, Data data) {
         CommunityAlgorithm algo = new CommunityAlgorithm(graph);
-        List<Set<Vertex>> result = algo.solve(3, 1000, maxTime, data, feedback);
+        List<Set<Vertex>> result = algo.solve(2, 1000, maxTime, data, feedback);
         
         return result;
     }

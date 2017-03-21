@@ -14,7 +14,7 @@ public class ArxivTest  extends ParentTest{
 		Parser parser = new Parser();
 		graph = parser.parseFile(new File("data/arxiv.txt"));
 //	      feedback = true;
-	      skipRegular = true;
+	      skipClique = true;
 //	      maxTime = 1;
 	      }
 	      
