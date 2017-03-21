@@ -47,12 +47,30 @@ This function is executed for every neighbor of the sampled vertex. The largest 
 For performance reasons, each vertex keeps track of its own edges. During the execution of this algorithm there is no global set containing all edges. This means that whenever an edge is added or removed, this action needs to take place on both sides of that edge. To make sure this happens correctly at sufficient speed, special care needs to be taken. When the algorithm terminates, the complete set of edges is calculated by looping over all the vertices.
 \subsection{Genetic Algorithm}
 \subsubsection{The Jenetics library}
-To implement the genetic algorithm, we decide to use a library to help with the basic structure of the algorithm. The library we used is ``Jenetics''\footnote{\url{http://jenetics.io/}} version 3.7.0. This is a modern library making full use of the features of Java 8 like Streams and Lambda functions. Our hope was that this would speed up development time by allowing us to focus on the implementation of the fitness function and genetic operators. !!!TODO!!! PARALLEL !!!TODO!!!
+To implement the genetic algorithm, we decide to use a library to help with the basic structure of the algorithm. The library we used is ``Jenetics''\footnote{\url{http://jenetics.io/}} version 3.7.0. This is a modern library making full use of the features of Java 8 like Streams and Lambda functions. Our hope was that this would speed up development time by allowing us to focus on the implementation of the fitness function and genetic operators. The library is also heavily multithreaded when evaluating the fitness of phenotypes. The speed of genetic algorithms is usually limited by the fitness evaluation, so having a solution that could parallelize that was another factor in this decision.
 \par
 However, the library turned out to be just a little bit too inflexible to deal with a lattice structure. More specifically: The ``Engine'' class that drives the flow of the algorithm is marked as a final class so we could not extend it to our wishes..The full use of Java's features made things a bit harder in this case. Since the other parts of the library still seemed very useful, and the library is open source, we decided to copy the ``Engine'' class (and some other related classes) to our project so we can access and modify them to our needs. 
 \par
 Quite a bit of time was spent understanding and modifying this library to our needs. In hindsight we should probably have looked for another library, but at the time solving the final hurdle always seemed right around the corner.
 \subsubsection{Core}
+Before we can talk about how the algorithm works, there are a few important pieces of information to keep in mind. 
+\par
+First of all there is the concept of a ``neighbor''. In the previous parts of this report, ``neighbor'' always meant ``a vertex which shares and edge with another vertex''. It is a relation between vertices in context of the graph. The lattice structure of the genetic algorithm means that a candidate solution (i.e. a possible way to divide the graph into communities) also has neighbors. We'll call this candidate solutions ``agents''. In context of the genetic algorithm ``neighbor'' represents a relation between two agents. Of course we still want to be able to talk about the structure of the graph itself. Since our locus-based representation maps each gene to a specific vertex, we'll use the term from biologic evolution and call the neighbors of that vertex (in context of the graph) the alleles of that gene.
+\par
+The second thing to keep in mind is related to cliques. For the genetic algorithm, cliques are treated exactly the same as vertices. A clique is also mapped to a single gene and all operators will generally treat cliques in exactly the same way. However there are some important differences. The common idea behind these changes is to make cliques essentially transparent to the algorithm. This is most obvious in the fitness function, which should return the same score for equivalent community partitionings, no matter how many cliques are present. Two partitionings are equivalent if they are the same when all cliques are replaced again by their members. There are some other cases where this comes into play.
+\par
+With that in mind, the core flow of the genetic algorithm is as follows:
+\begin{algorithmic}[1]
+\STATE Evaluate the population
+\STATE Apply the Split/Merge Neighborhood Competition operator
+\STATE Apply the Hybrid Neighborhood Crossover operator
+\STATE Apply the Adaptive Mutation operator
+\STATE Evaluate the population
+\STATE Apply the Self-Learning operator
+\end{algorithmic}
+Note how there is no notion of selectors, parents and offspring. Selection and offspring generation still happens in this algorithm, but the details of this process are embedded within each of the operators.
+\subsubsection{Fitness Function}
+The fitness function is the measure that drives the evolution process towards better solutions. The fitness measure typically used when evaluating the partitioning of a graph is the modularity measure from Newman and Girvan\cite{Newman2004}.
 \subsubsection{Split/Merge Neighborhood Competition Operator}
 \subsubsection{Hybrid Neighborhood Crossover Operator}
 \subsubsection{Adaptive Mutation Operator}
