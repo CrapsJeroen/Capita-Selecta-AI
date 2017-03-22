@@ -7,9 +7,6 @@
 \contentsline {subsubsection}{\numberline {2.2.2}Representation}{3}{subsubsection.2.2.2}
 \contentsline {subsubsection}{\numberline {2.2.3}Operators}{3}{subsubsection.2.2.3}
 \contentsline {section}{\numberline {3}Relevant research}{5}{section.3}
-\contentsline {subsection}{\numberline {3.1}Genetic Algorithms}{5}{subsection.3.1}
-\contentsline {subsubsection}{\numberline {3.1.1}MAGA-Net}{5}{subsubsection.3.1.1}
-\contentsline {subsubsection}{\numberline {3.1.2}Overlapping communities}{5}{subsubsection.3.1.2}
 \contentsline {section}{\numberline {4}Hypothesis}{6}{section.4}
 \contentsline {subsection}{\numberline {4.1}Hypothesis}{6}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Goal}{6}{subsection.4.2}
@@ -20,7 +17,7 @@
 \contentsline {subsubsection}{\numberline {5.2.1}Representation}{8}{subsubsection.5.2.1}
 \contentsline {subsubsection}{\numberline {5.2.2}Selection}{8}{subsubsection.5.2.2}
 \contentsline {subsubsection}{\numberline {5.2.3}Competition operator}{9}{subsubsection.5.2.3}
-\contentsline {subsubsection}{\numberline {5.2.4}Hybrid neighbourhood crossover}{9}{subsubsection.5.2.4}
+\contentsline {subsubsection}{\numberline {5.2.4}Hybrid neighborhood crossover}{9}{subsubsection.5.2.4}
 \contentsline {subsubsection}{\numberline {5.2.5}Mutation}{9}{subsubsection.5.2.5}
 \contentsline {section}{\numberline {6}Implementation}{10}{section.6}
 \contentsline {subsection}{\numberline {6.1}Clique algorithm}{10}{subsection.6.1}
