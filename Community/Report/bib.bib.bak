@@ -1,0 +1,15 @@
+% Encoding: UTF-8
+
+@Article{Newman2004,
+  author        = {Newman, Mark EJ and Girvan, Michelle},
+  title         = {Finding and evaluating community structure in networks},
+  journal       = {Physical review E},
+  year          = {2004},
+  volume        = {69},
+  number        = {2},
+  pages         = {026113},
+  __markedentry = {[Jorik:6]},
+  publisher     = {APS},
+}
+
+@Comment{jabref-meta: databaseType:bibtex;}

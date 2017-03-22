@@ -29,6 +29,14 @@
 \contentsline {subsubsection}{\numberline {6.2.5}Hybrid Neighborhood Crossover Operator}{13}{subsubsection.6.2.5}
 \contentsline {subsubsection}{\numberline {6.2.6}Adaptive Mutation Operator}{13}{subsubsection.6.2.6}
 \contentsline {subsubsection}{\numberline {6.2.7}Self-Learning Operator}{13}{subsubsection.6.2.7}
-\contentsline {section}{\numberline {7}Results and reflection}{14}{section.7}
+\contentsline {section}{\numberline {7}Results}{14}{section.7}
 \contentsline {subsection}{\numberline {7.1}Pre-processing}{14}{subsection.7.1}
 \contentsline {subsection}{\numberline {7.2}Community detection}{15}{subsection.7.2}
+\contentsline {subsubsection}{\numberline {7.2.1}Karate}{16}{subsubsection.7.2.1}
+\contentsline {subsubsection}{\numberline {7.2.2}Football}{16}{subsubsection.7.2.2}
+\contentsline {subsubsection}{\numberline {7.2.3}Facebook}{17}{subsubsection.7.2.3}
+\contentsline {subsubsection}{\numberline {7.2.4}Power}{17}{subsubsection.7.2.4}
+\contentsline {subsubsection}{\numberline {7.2.5}Arxiv}{18}{subsubsection.7.2.5}
+\contentsline {subsubsection}{\numberline {7.2.6}Internet}{18}{subsubsection.7.2.6}
+\contentsline {subsubsection}{\numberline {7.2.7}Enron}{19}{subsubsection.7.2.7}
+\contentsline {section}{\numberline {8}Conclusion}{19}{section.8}

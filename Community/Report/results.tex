@@ -1,4 +1,4 @@
-\section{Results and reflection}
+\section{Results}
 \label{chapter:results}
 \subsection{Pre-processing}
 To evaluate whether or not our graph reduction technique works, we have used nine different datasets. These datasets vary between 34 and well over a million vertexes. The amount of edges varies between 78 to almost 3 million edges. There's also a significant variety in the ratio between edges and vertexes. At the low end, the edges-to-vertexes ratio is around 1.3, while the highest ratio is above 20. Figure \ref{fig:datasets} gives an overview of the different datasets.
@@ -36,47 +36,128 @@ During testing we found that the self-learning operator took a very long time to
 \par
 Even with the reduced graphs, the Amazon and YouTube graphs were still too large to solve in a reasonable amount of time. The Enron dataset was just barely possible, but we had to increase the maximum time to 10 minutes per run, and reduce the population size from 25 to 9.
 
+\subsubsection{Karate}
 
+\begin{figure}[H]
+\begin{center}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/karatetime.png}
+    \end{center}
+    \end{subfigure}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/karatefitness.png}
+    \end{center}
+    \end{subfigure}
+\caption{Results for the Karate graph}\label{fig:karate}
+\end{center}
+\end{figure}
 
+The Karate graph is the smallest in the dataset. The reason why we have tested all the graphs with both the self-learning operator enabled and disable becomes immediatly clear, as the execution time goes from tens of milliseconds to seconds. However, we do see slightly better results in the modularity score with self-learning enabled. For this graph, reducing the graph seems to have a slightly negative effect. In all cases (including the random population average modularity), the reduced graph scores slightly worse than the regular graph. We expect this is due to the limited search space due to the reduction. In this small example, it is possible to properly explore the search space. We believe that the smallest cliques of size 3 may need to be split up for the best score.
+\subsubsection{Football}
+\begin{figure}[H]
+\begin{center}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/footballtime.png}
+    \end{center}
+    \end{subfigure}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/footballfitness.png}
+    \end{center}
+    \end{subfigure}
+\caption{Results for the Football graph}\label{fig:football}
+\end{center}
+\end{figure}
+The football graph is significantly larger and the advantages of reducing the graph are starting to show. The self-learning operator is still very slow, but no matter if it is enabled or disabled, the reduced graph significantly speeds up the algorithm. Without the self-learning operator we see a slight edge for the reduced graph, but with the operator enabled the edge goes back to the regular graph. With more than triple the execution time, the self-learning operator still manages to find a better solution than is possible with the reduced graph. The random scores give a signficant advantage to reduced graph. The football graph shows relations between players of several different football teams. Reducing parts of those teams to cliques makes sure that they stay together, even the communities are randomized, leading to the higher score.
 
-karate: 
--slightly worse than regular due to bad clique, can search complete search space ==> larger minimum clique size? trade-off vs speed?
--performance similar
--SL much slower, slightly better results
-- much better than baseline, regular has slight edge in baseline
+\subsubsection{Facebook}
+\begin{figure}[H]
+\begin{center}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/facebooktime.png}
+    \end{center}
+    \end{subfigure}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/facebookfitness.png}
+    \end{center}
+    \end{subfigure}
+\caption{Results for the Facebook graph}\label{fig:facebook}
+\end{center}
+\end{figure}
+The Facebook graph is the best-case scenario for our algorithm. There are over 20 times as many edges as vertices, which left only around a third of the vertices and a sixth of the edges after reduction. There is a large lead in processing time for the reduced graph, and the scores are better across the board. Especially the random score is impressive: The random, initial population for the genetic algorithm is already significantly better with the reduced graph. The self-learning operator for the regular graph actually makes the score worse. The execution time got so high that only 2 or 3 generations can be processed. This is why we no longer include it in the larger graphs.
 
-football:
-- performance edge for clique, slightly better result
-- SL: regular better but much slower: SL causes premature convergence with clique
-- much better than baseline, clique has slight edge in baseline
+\subsubsection{Power}
+\begin{figure}[H]
+\begin{center}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/powertime.png}
+    \end{center}
+    \end{subfigure}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/powerfitness.png}
+    \end{center}
+    \end{subfigure}
+\caption{Results for the Power graph}\label{fig:power}
+\end{center}
+\end{figure}
+The Power graph is a relatively bad case for our algorithm. The graph is only reduced by around 10\% of the vertices. However, there still is a large advantage for the reduced graph when it comes to execution time. The modularity of the 2 graphs is almost identical, but the random scores show a slight improvement for the reduced graph. For this graph, the reduction leads to a better start. This allows the algorithm to converge faster on roughly the same solution.
 
-facebook:
--best case scenario
--clique is much faster and much better result
--SL for regular takes a very long time, worse result! only 2-3 gens --> SL too slow to add anything
--SL also very slow for clique, but the result is slightly better.
-- huge baseline advantage for clique
+\subsubsection{Arxiv}
+\begin{figure}[H]
+\begin{center}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/arxivtime.png}
+    \end{center}
+    \end{subfigure}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/arxivfitness.png}
+    \end{center}
+    \end{subfigure}
+\caption{Results for the Arxiv graph}\label{fig:arxiv}
+\end{center}
+\end{figure}
+The Arxiv graph is another best-case example for the algorithm. There is a huge lead for the reduced graph both in execution time and score. However, most of the difference comes from the much better initial random population. The improvement on top of the baseline random score is roughly the same for both graphs. The effectiveness of the genetic algorithm is starting to suffer for graphs of this size.
+\subsubsection{Internet}
+\begin{figure}[H]
+\begin{center}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/internettime.png}
+    \end{center}
+    \end{subfigure}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/internetfitness.png}
+    \end{center}
+    \end{subfigure}
+\caption{Results for the Internet graph}\label{fig:internet}
+\end{center}
+\end{figure}
+The Internet graph could not be reduced much at all. Unsurprisingly, the results are almost identical. There is a slight modularity advantage for the reduced graph, but both scores are just slightly above the baseline score. The genetic algorithm is almost ineffective at this point.
+\subsubsection{Enron}
+\begin{figure}[H]
+\begin{center}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/enrontime.png}
+    \end{center}
+    \end{subfigure}
+    \begin{subfigure}{0.47\textwidth}
+    \begin{center}
+    \includegraphics[height=5.4cm]{images/enronfitness.png}
+    \end{center}
+    \end{subfigure}
+\caption{Results for the Enron graph}\label{fig:enron}
+\end{center}
+\end{figure}
+The Enron graph is the largest graph we were able to process with the genetic algorithm, but we did give it a lower population size and twice the amount of time. The Enron graph could be reduced by about a third, and this expresses itself as an advantage in the random baseline score. The genetic algorithm just barely produces better results than the random baseline.
 
-power:
-- only around 10\% reduction in graph, still almost twice as fast for a similar score.
-- slight edge for clique baseline
-
-arxiv:
-- another best case scenario
-- huge advantage for clique both in time and score
-- both are just slightly above random --> algo needs more time to work (only around 30 gens)
-- huge advantage for clique is due to baseline
-
-internet:
-- bad case
-- clique only slightly better
-- baselines almost identical
-
-enron:
--similar to arxiv
-- better result for clique, due to better baseline
-- both only slightly above baseline
-
-genetic algorithm can't do anything meaningful in 5/10 minutes for arxiv and up, advantage for clique is due to better initialization. Still good result!
-
-Large graphs: effect of bad cliques offset by huge increase in speed.... Definitely could be a useful step for heavily interconnected graphs
