@@ -20,7 +20,8 @@ public abstract class ParentTest {
 
 	protected Graph graph;
 	protected final int RUNS = 5;
-	protected boolean feedback = false;
+	protected int lSize = 5;
+	protected boolean feedback = true;
 	protected double maxTime = 300;
 	protected boolean skipClique = false;
 	protected boolean skipRegular = false;
@@ -34,7 +35,7 @@ public abstract class ParentTest {
 	
     protected List<Set<Vertex>> find(Graph graph, Data data) {
         CommunityAlgorithm algo = new CommunityAlgorithm(graph);
-        List<Set<Vertex>> result = algo.solve(2, 1000, maxTime, data, feedback);
+        List<Set<Vertex>> result = algo.solve(lSize, 1000, maxTime, data, feedback);
         
         return result;
     }

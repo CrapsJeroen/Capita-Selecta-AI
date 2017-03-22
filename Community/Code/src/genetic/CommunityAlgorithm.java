@@ -21,13 +21,13 @@ import org.jenetics.Genotype;
 import org.jenetics.IntegerChromosome;
 import org.jenetics.IntegerGene;
 import org.jenetics.engine.EvolutionResult;
-import org.jenetics.engine.EvolutionStatistics;
 import org.jenetics.engine.limit;
 import org.jenetics.internal.util.IntRef;
 import org.jenetics.stat.DoubleMomentStatistics;
 import org.jenetics.util.Factory;
 
 import test.Data;
+
 import common.Graph;
 import common.Vertex;
 
@@ -211,7 +211,7 @@ public class CommunityAlgorithm {
         EvolutionResult<IntegerGene, Double> result = engine.stream()
                 .limit(limit.bySteadyFitness(MAX_STEADY_GENS))
                 .limit(limit.byExecutionTime(Duration.ofSeconds((long) maxTime)))
-//                .limit(limit.byFitnessConvergence(5, 15, 10E-4))
+                .limit(limit.byFitnessConvergence(5, 15, 10E-4))
                 .limit(generations)
                 .peek(statistics)
                 .collect(EvolutionResult.toBestEvolutionResult());

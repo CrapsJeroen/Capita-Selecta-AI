@@ -13,13 +13,6 @@ public class ArxivTest  extends ParentTest{
 	public void setUp() throws Exception {
 		Parser parser = new Parser();
 		graph = parser.parseFile(new File("data/arxiv.txt"));
-//	      feedback = true;
-	      skipClique = true;
-//	      maxTime = 1;
 	      }
 	      
-//	      @Test
-//	      public void customtest(){
-//	          find(getCliqueGraph(), null);
-//	      }
 }

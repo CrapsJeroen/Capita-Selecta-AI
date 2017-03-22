@@ -309,6 +309,7 @@ public abstract class CustomEvolutionStatistics<
         return nf.format(value);
     }
 
+    @SuppressWarnings("unused")
     private static String p(final IntMomentStatistics statistics) {
         final NumberFormat nf = NumberFormat.getIntegerInstance();
         return format(

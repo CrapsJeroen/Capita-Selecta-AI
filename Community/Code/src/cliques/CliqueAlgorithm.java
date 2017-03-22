@@ -18,12 +18,10 @@ public class CliqueAlgorithm {
     
     private List<Vertex> vertices;
     private List<List<Vertex>> cliques;
-    private Graph graph;
 
 	public CliqueAlgorithm(Graph graph){
 		this.vertices = graph.getVertices();
 		this.cliques = new ArrayList<List<Vertex>>();
-		this.graph = graph;
 	}
 
 

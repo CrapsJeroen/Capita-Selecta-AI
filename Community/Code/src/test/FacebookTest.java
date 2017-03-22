@@ -2,9 +2,7 @@ package test;
 import java.io.File;
 
 import org.junit.Before;
-import org.junit.Test;
 
-import common.Graph;
 import common.Parser;
 
 public class FacebookTest  extends ParentTest{

@@ -2,7 +2,6 @@ package test;
 import java.io.File;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import common.Parser;
 

@@ -1,13 +1,9 @@
 package genetic.modded;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.jenetics.AbstractAlterer;
 import org.jenetics.Gene;
@@ -16,8 +12,6 @@ import org.jenetics.Population;
 import org.jenetics.util.RandomRegistry;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import common.Vertex;
 
 
 public abstract class LatticeAlterer<G extends Gene<Integer, G>, C extends Comparable<? super C>> extends AbstractAlterer<G, C> {

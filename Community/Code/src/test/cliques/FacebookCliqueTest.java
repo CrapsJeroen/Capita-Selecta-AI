@@ -9,9 +9,8 @@ import java.time.Instant;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.sun.glass.ui.Timer;
-
 import cliques.CliqueAlgorithm;
+
 import common.Graph;
 import common.Parser;
 
