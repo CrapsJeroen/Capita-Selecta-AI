@@ -2,15 +2,15 @@
 \label{sec:implementation}
 This section outlines how the algorithms are implemented. All the code is written in Java 8.
 \par
- The first algorithm reads a graph from a text file and generates useful data structures for this graph. Afterwards, it searches for cliques in the graph and combines the vertices in those cliques into a single vertex. This reduces the amount of vertices and edges in the graph.
+ The first algorithm reads a graph from a text file and generates useful data structures for this graph. Afterwards, it searches for cliques in the graph and combines the vertexes in those cliques into a single vertex. This reduces the amount of vertexes and edges in the graph.
 \par
 The second algorithm takes a graph and divides it into communities using a genetic algorithm. It uses several genetic operators, including a special self-learning operator.
 \subsection{Clique algorithm}
-Before we can describe the clique algorithm, we will describe the data structures used by this algorithm. A Graph object is a collection of Vertex objects and Edge objects. An edge connects two vertices and also contains a weight value. When a graph is imported, these weights are usually equal to one. However, when the algorithm replaces vertices with cliques, edges with higher weights will be constructed. 
+Before we can describe the clique algorithm, we will describe the data structures used by this algorithm. A Graph object is a collection of Vertex objects and Edge objects. An edge connects two vertexes and also contains a weight value. When a graph is imported, these weights are usually equal to one. However, when the algorithm replaces vertexes with cliques, edges with higher weights will be constructed. 
 \par
-When the algorithm finds a clique, the vertices in that clique will be replaced by a Clique object. All edges to members of that clique are replaced by edges to the clique as a whole. This often leads to duplicate edges, which is modeled using the edge weight. This allows the algorithm to significantly reduce the amount of edges and vertices in the graph, while preserving all relevant information about the structure of the graph.
+When the algorithm finds a clique, the vertexes in that clique will be replaced by a Clique object. All edges to members of that clique are replaced by edges to the clique as a whole. This often leads to duplicate edges, which is modeled using the edge weight. This allows the algorithm to significantly reduce the amount of edges and vertexes in the graph, while preserving all relevant information about the structure of the graph.
 \par
-Cliques are found by randomly sampling vertices from the graph. For each of the neighbors of this selected vertex, the following iterative function is executed:
+Cliques are found by randomly sampling vertexes from the graph. For each of the neighbors of this selected vertex, the following iterative function is executed:
 \\
 \begin{algorithmic}
 \STATE $clique \leftarrow \{sampleVertex\}$
@@ -36,28 +36,28 @@ This function starts adding the sampled vertex to the $clique$ set, the neighbor
 \par
 This function is executed for every neighbor of the sampled vertex. The largest clique produced this way is selected. If all cliques are empty, pick another sample and repeat. The algorithm is stopped after a maximum amount of iterations, or if no clique could be constructed for a certain amount of iterations.
 \par
- To replace the vertices in the largest clique with a \textbf{Clique}\footnote{In this section, when referencing the object, and not the set of vertices, \textbf{Clique} will be in \textbf{bold}.} object. the following steps are followed:
+ To replace the vertexes in the largest clique with a \textbf{Clique}\footnote{In this section, when referencing the object, and not the set of vertexes, \textbf{Clique} will be in \textbf{bold}.} object. the following steps are followed:
 \begin{algorithmic}[1]
-\STATE Build a $neighbors$ set containing all vertices that are neighbors to a vertex in $clique$
-\STATE This set will contain the vertices which are elements of $clique$ as well, remove those from $neighbors$
-\STATE Construct the $\textbf{Clique}$ object, with $neighbors$ as its neighbors. Note that when multiple vertices in $clique$ share a neighbor, the edge connecting \textbf{Clique} to that neighbor has a weight equal to the sum of the weights of the edges to that neighbor.
-\STATE Remove all vertices in $clique$, and all edges connected to those, from the graph.
+\STATE Build a $neighbors$ set containing all vertexes that are neighbors to a vertex in $clique$
+\STATE This set will contain the vertexes which are elements of $clique$ as well, remove those from $neighbors$
+\STATE Construct the $\textbf{Clique}$ object, with $neighbors$ as its neighbors. Note that when multiple vertexes in $clique$ share a neighbor, the edge connecting \textbf{Clique} to that neighbor has a weight equal to the sum of the weights of the edges to that neighbor.
+\STATE Remove all vertexes in $clique$, and all edges connected to those, from the graph.
 \end{algorithmic}
 \par
-For performance reasons, each vertex keeps track of its own edges. During the execution of this algorithm there is no global set containing all edges. This means that whenever an edge is added or removed, this action needs to take place on both sides of that edge. To make sure this happens correctly at sufficient speed, special care needs to be taken. When the algorithm terminates, the complete set of edges is calculated by looping over all the vertices.
+For performance reasons, each vertex keeps track of its own edges. During the execution of this algorithm there is no global set containing all edges. This means that whenever an edge is added or removed, this action needs to take place on both sides of that edge. To make sure this happens correctly at sufficient speed, special care needs to be taken. When the algorithm terminates, the complete set of edges is calculated by looping over all the vertexes.
 \subsection{Genetic Algorithm}
 \subsubsection{The Jenetics library}
 To implement the genetic algorithm, we decide to use a library to help with the basic structure of the algorithm. The library we used is ``Jenetics''\footnote{\url{http://jenetics.io/}} version 3.7.0. This is a modern library making full use of the features of Java 8 like Streams and Lambda functions. Our hope was that this would speed up development time by allowing us to focus on the implementation of the fitness function and genetic operators. The library is also heavily multithreaded when evaluating the fitness of phenotypes. The speed of genetic algorithms is usually limited by the fitness evaluation, so having a solution that could parallelize that was another factor in this decision.
 \par
-However, the library turned out to be just a little bit too inflexible to deal with a lattice structure. More specifically: The ``Engine'' class that drives the flow of the algorithm is marked as a final class so we could not extend it to our wishes..The full use of Java's features made things a bit harder in this case. Since the other parts of the library still seemed very useful, and the library is open source, we decided to copy the ``Engine'' class (and some other related classes) to our project so we can access and modify them to our needs. 
+However, the library turned out to be just a little bit too inflexible to deal with a lattice structure. More specifically: The ``Engine'' class that drives the flow of the algorithm is marked as a final class so we could not extend it to our wishes. The full use of Java's features made things a bit harder in this case. Since the other parts of the library still seemed very useful, and the library is open source, we decided to copy the ``Engine'' class (and some other related classes) to our project so we can access and modify them to our needs. 
 \par
 Quite a bit of time was spent understanding and modifying this library to our needs. In hindsight we should probably have looked for another library, but at the time solving the final hurdle always seemed right around the corner.
 \subsubsection{Core}
 Before we can talk about how the algorithm works, there are a few important pieces of information to keep in mind. 
 \par
-First of all there is the concept of a ``neighbor''. In the previous parts of this report, ``neighbor'' always meant ``a vertex which shares and edge with another vertex''. It is a relation between vertices in context of the graph. The lattice structure of the genetic algorithm means that a candidate solution (i.e. a possible way to divide the graph into communities) also has neighbors. We'll call this candidate solutions ``agents''. In context of the genetic algorithm ``neighbor'' represents a relation between two agents. Of course we still want to be able to talk about the structure of the graph itself. Since our locus-based representation maps each gene to a specific vertex, we'll use the term from biologic evolution and call the neighbors of that vertex (in context of the graph) the alleles of that gene.
+First of all there is the concept of a ``neighbor''. In the previous parts of this report, ``neighbor'' always meant ``a vertex which shares and edge with another vertex''. It is a relation between vertexes in context of the graph. The lattice structure of the genetic algorithm means that a candidate solution (i.e. a possible way to divide the graph into communities) also has neighbors. We'll call this candidate solutions ``agents''. In context of the genetic algorithm ``neighbor'' represents a relation between two agents. Of course we still want to be able to talk about the structure of the graph itself. Since our locus-based representation maps each gene to a specific vertex, we'll use the term from biologic evolution and call the neighbors of that vertex (in context of the graph) the alleles of that gene.
 \par
-The second thing to keep in mind is related to cliques. For the genetic algorithm, cliques are treated exactly the same as vertices. A clique is also mapped to a single gene and all operators will generally treat cliques in exactly the same way. However there are some important differences. The common idea behind these changes is to make cliques essentially transparent to the algorithm. This is most obvious in the fitness function, which should return the same score for equivalent community partitionings, no matter how many cliques are present. Two partitionings are equivalent if they are the same when all cliques are replaced again by their members. There are some other cases where this comes into play.
+The second thing to keep in mind is related to cliques. For the genetic algorithm, cliques are treated exactly the same as vertexes. A clique is also mapped to a single gene and all operators will generally treat cliques in exactly the same way. However there are some important differences. The common idea behind these changes is to make cliques essentially transparent to the algorithm. This is most obvious in the fitness function, which should return the same score for equivalent community partitionings, no matter how many cliques are present. Two partitionings are equivalent if they are the same when all cliques are replaced again by their members. There are some other cases where this comes into play.
 \par
 With that in mind, the core flow of the genetic algorithm is as follows:
 \begin{algorithmic}[1]
@@ -68,19 +68,19 @@ With that in mind, the core flow of the genetic algorithm is as follows:
 \STATE Evaluate the population
 \STATE Apply the Self-Learning operator
 \end{algorithmic}
-Note how there is no notion of selectors, parents and offspring. Selection and offspring generation still happens in this algorithm, but the details of this process are embedded within each of the operators. This genetic algorithm is a slightly modified version of the algorithm by Li and Liu\cite{Li2016}.
+Note how there is no notion of selectors, parents and offspring. Selection and offspring generation still happens in this algorithm, but the details of this process are embedded within each of the operators. This genetic algorithm is a slightly modified version of the algorithm by Li and Liu \cite{Li2016}.
 \par
-The algorithm is terminated if one of the following conditions is true: The maximum time $T_{max}$ has elapsed, the maximum number of generations without improvement has been achieved $N_{s}$ or if the best fitness in the population has converged sufficiently. This is detemined by keeping a rolling average of the last $N_1$ and $N_2$ generations, with $N_1 > N_2$. If those rolling averages differ by less than $\epsilon$, the algorithm is terminated.  
+The algorithm is terminated if one of the following conditions is true: The maximum time $T_{max}$ has elapsed, the maximum number of generations without improvement has been achieved $N_{s}$ or if the best fitness in the population has converged sufficiently. This is determined by keeping a rolling average of the last $N_1$ and $N_2$ generations, with $N_1 > N_2$. If those rolling averages differ by less than $\epsilon$, the algorithm is terminated.  
 \subsubsection{Fitness Function}
 The fitness function is the measure that drives the evolution process towards better solutions. The fitness measure typically used when evaluating the partitioning of a graph is the modularity measure Q from Newman and Girvan\cite{Newman2004}:
 \begin{equation}
 Q = \sum_{k=1}^{s} \left[ \frac{l_{k}}{L} - \left( \frac{d_{k}}{2L} \right)^{2} \right]
 \end{equation}
-In this formula, $s$ is the total number of communities, $L$ is the amount of edges in the network, $l_{k}$ is the amount of edges in community $k$ and $d_{k}$ is the sum of the degrees of all the vertices in community $k$. !!!TODO!!! code? !!!TODO!!!
+In this formula, $s$ is the total number of communities, $L$ is the amount of edges in the network, $l_{k}$ is the amount of edges in community $k$ and $d_{k}$ is the sum of the degrees of all the vertexes in community $k$. !!!TODO!!! code? !!!TODO!!!
 \par
 Before the fitness function can be evaluated, the genotype needs to be decoded into communities. Since each gene represents a link from one vertex to one other vertex, a vertex is in a certain community if a member of that community can be reached by following the links in the genotype.
 \par
-As mentioned before, there are some slight changes that need to be made to the fitness function to make sure the existance of cliques does not change the result. This means calculating $L$, $l_{k}$ and $d_{k}$ as if the cliques did not exist. Both $L$ and $l_{k}$ count the edges inside the clique as well. Since in a clique all vertices are connected to all other vertices, a clique of size $n$ contributes an additional $ (n * (n - 1))/2 $ edges to those counts. The same clique will also add an additional $n * (n - 1)$ degrees to $d_{k}$. This ensures the fitness measure does not change.
+As mentioned before, there are some slight changes that need to be made to the fitness function to make sure the existence of cliques does not change the result. This means calculating $L$, $l_{k}$ and $d_{k}$ as if the cliques did not exist. Both $L$ and $l_{k}$ count the edges inside the clique as well. Since in a clique all vertexes are connected to all other vertexes, a clique of size $n$ contributes an additional $ (n * (n - 1))/2 $ edges to those counts. The same clique will also add an additional $n * (n - 1)$ degrees to $d_{k}$. This ensures the fitness measure does not change.
 \subsubsection{Split/Merge Neighborhood Competition Operator}
 When a single gene (part of community $s_1$ ) is changed in a genotype to an allele which is not in the same community (say, $s_2$), one of the following things can happen. If the gene we changed was not a crucial link holding community $s_1$ together, the communities $s_1$ and $s_2$ are merged. Otherwise, $s1$ will split in two. One part (containing the gene we changed) will be merged with $s_2$, while the other part is now a smaller community on its own.
 \par
@@ -88,7 +88,7 @@ This operator is applied to every agent in every generation. However, it will on
 \subsubsection{Hybrid Neighborhood Crossover Operator}
 The Hybrid Neighborhood Crossover operator combines two popular crossover techniques and randomly chooses between them. First of all, it has a probability $p_c$ of being applied, and only when the current agent is not the maximum of its neighbors. When it is being applied to a certain agent, it will replace that agent by crossing it over with its maximum neighbor. The specific is decided by $p_s$. Two-point crossover is executed with a probability of $p_s$, otherwise uniform crossover is executed.
 \subsubsection{Adaptive Mutation Operator}
-The Adaptive Mutation operator iterates over every gene of every agent, and with a probability of $p_m$ it changes the value of that gene to the allele of one of its neighbors. To make the algorithm more likely to jump out of local maxima, the mutation rate increases when the best fitness in a population is not changing between generations. If $t$ is the amount of generations with no improvement, the mutation rate is the following:
+The Adaptive Mutation operator iterates over every gene of every agent, and with a probability of $p_m$ it changes the value of that gene to the allele of one of its neighbors. To make the algorithm more likely to jump out of local optima, the mutation rate increases when the best fitness in a population is not changing between generations. If $t$ is the amount of generations with no improvement, the mutation rate is the following:
 \begin{equation}
 p_{m}' = ( t / N_s + 1)p_m
 \end{equation}
