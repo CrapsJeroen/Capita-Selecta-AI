@@ -29,7 +29,6 @@ The pre-processing algorithm is only useful if it doesn't take more time to run 
 \end{figure}
 
 \subsection{Community detection}
-!!!TODO!!! algorithm settings !!!TODO!!!
 To test the effects of reducing the graph, we ran the community detection genetic algorithm ten times for each graph, five times with the original graph and five times with a reduced graph. Execution time was limited to five minutes. The reported execution times and modularity scores are the averages of those five runs. The maximum execution time is only checked at the end of each generation, which is why the reported execution time can be significantly higher than five minutes. We have also noted the fitness score for a random community partitioning as a comparison. These are the average of 100 random partitionings for regular and reduced graphs. This provides a baseline measure to compare the results against.
 \par
 During testing we found that the self-learning operator took a very long time to complete compared to the other operators. This made generations take a very long time on larger graphs. Since we were mainly interested in the effects of reducing the graph, we disabled the self-learning operator for larger graphs. We have also repeated our tests for the smaller graphs without this operator. Results without the self-learning operator are marked with ``-SL''.\footnote{We believe this is mainly due to the slow initialization of the jenetics library. In the paper by Li and Liu, they do not seem to have this issue. }

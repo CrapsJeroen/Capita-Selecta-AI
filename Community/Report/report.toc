@@ -16,27 +16,27 @@
 \contentsline {subsection}{\numberline {5.2}Genetic Algorithm}{8}{subsection.5.2}
 \contentsline {subsubsection}{\numberline {5.2.1}Representation}{8}{subsubsection.5.2.1}
 \contentsline {subsubsection}{\numberline {5.2.2}Selection}{8}{subsubsection.5.2.2}
-\contentsline {subsubsection}{\numberline {5.2.3}Competition operator}{9}{subsubsection.5.2.3}
-\contentsline {subsubsection}{\numberline {5.2.4}Hybrid neighborhood crossover}{9}{subsubsection.5.2.4}
-\contentsline {subsubsection}{\numberline {5.2.5}Mutation}{9}{subsubsection.5.2.5}
-\contentsline {section}{\numberline {6}Implementation}{10}{section.6}
-\contentsline {subsection}{\numberline {6.1}Clique algorithm}{10}{subsection.6.1}
-\contentsline {subsection}{\numberline {6.2}Genetic Algorithm}{11}{subsection.6.2}
-\contentsline {subsubsection}{\numberline {6.2.1}The Jenetics library}{11}{subsubsection.6.2.1}
-\contentsline {subsubsection}{\numberline {6.2.2}Core}{11}{subsubsection.6.2.2}
-\contentsline {subsubsection}{\numberline {6.2.3}Fitness Function}{12}{subsubsection.6.2.3}
-\contentsline {subsubsection}{\numberline {6.2.4}Split/Merge Neighborhood Competition Operator}{12}{subsubsection.6.2.4}
-\contentsline {subsubsection}{\numberline {6.2.5}Hybrid Neighborhood Crossover Operator}{13}{subsubsection.6.2.5}
-\contentsline {subsubsection}{\numberline {6.2.6}Adaptive Mutation Operator}{13}{subsubsection.6.2.6}
-\contentsline {subsubsection}{\numberline {6.2.7}Self-Learning Operator}{13}{subsubsection.6.2.7}
-\contentsline {section}{\numberline {7}Results}{14}{section.7}
-\contentsline {subsection}{\numberline {7.1}Pre-processing}{14}{subsection.7.1}
-\contentsline {subsection}{\numberline {7.2}Community detection}{15}{subsection.7.2}
-\contentsline {subsubsection}{\numberline {7.2.1}Karate}{16}{subsubsection.7.2.1}
-\contentsline {subsubsection}{\numberline {7.2.2}Football}{16}{subsubsection.7.2.2}
-\contentsline {subsubsection}{\numberline {7.2.3}Facebook}{17}{subsubsection.7.2.3}
-\contentsline {subsubsection}{\numberline {7.2.4}Power}{17}{subsubsection.7.2.4}
-\contentsline {subsubsection}{\numberline {7.2.5}Arxiv}{18}{subsubsection.7.2.5}
-\contentsline {subsubsection}{\numberline {7.2.6}Internet}{18}{subsubsection.7.2.6}
-\contentsline {subsubsection}{\numberline {7.2.7}Enron}{19}{subsubsection.7.2.7}
-\contentsline {section}{\numberline {8}Conclusion}{19}{section.8}
+\contentsline {subsubsection}{\numberline {5.2.3}Competition operator}{10}{subsubsection.5.2.3}
+\contentsline {subsubsection}{\numberline {5.2.4}Hybrid neighborhood crossover}{10}{subsubsection.5.2.4}
+\contentsline {subsubsection}{\numberline {5.2.5}Mutation}{10}{subsubsection.5.2.5}
+\contentsline {section}{\numberline {6}Implementation}{11}{section.6}
+\contentsline {subsection}{\numberline {6.1}Clique algorithm}{11}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Genetic Algorithm}{12}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}The Jenetics library}{12}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}Core}{12}{subsubsection.6.2.2}
+\contentsline {subsubsection}{\numberline {6.2.3}Fitness Function}{13}{subsubsection.6.2.3}
+\contentsline {subsubsection}{\numberline {6.2.4}Split/Merge Neighborhood Competition Operator}{13}{subsubsection.6.2.4}
+\contentsline {subsubsection}{\numberline {6.2.5}Hybrid Neighborhood Crossover Operator}{14}{subsubsection.6.2.5}
+\contentsline {subsubsection}{\numberline {6.2.6}Adaptive Mutation Operator}{14}{subsubsection.6.2.6}
+\contentsline {subsubsection}{\numberline {6.2.7}Self-Learning Operator}{14}{subsubsection.6.2.7}
+\contentsline {section}{\numberline {7}Results}{15}{section.7}
+\contentsline {subsection}{\numberline {7.1}Pre-processing}{15}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Community detection}{16}{subsection.7.2}
+\contentsline {subsubsection}{\numberline {7.2.1}Karate}{17}{subsubsection.7.2.1}
+\contentsline {subsubsection}{\numberline {7.2.2}Football}{17}{subsubsection.7.2.2}
+\contentsline {subsubsection}{\numberline {7.2.3}Facebook}{18}{subsubsection.7.2.3}
+\contentsline {subsubsection}{\numberline {7.2.4}Power}{18}{subsubsection.7.2.4}
+\contentsline {subsubsection}{\numberline {7.2.5}Arxiv}{19}{subsubsection.7.2.5}
+\contentsline {subsubsection}{\numberline {7.2.6}Internet}{19}{subsubsection.7.2.6}
+\contentsline {subsubsection}{\numberline {7.2.7}Enron}{20}{subsubsection.7.2.7}
+\contentsline {section}{\numberline {8}Conclusion}{20}{section.8}

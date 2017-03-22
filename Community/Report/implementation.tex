@@ -55,7 +55,7 @@ Quite a bit of time was spent understanding and modifying this library to our ne
 \subsubsection{Core}
 Before we can talk about how the algorithm works, there are a few important pieces of information to keep in mind. 
 \par
-First of all there is the concept of a ``neighbor''. In the previous parts of this report, ``neighbor'' always meant ``a vertex which shares and edge with another vertex''. It is a relation between vertexes in context of the graph. The lattice structure of the genetic algorithm means that a candidate solution (i.e. a possible way to divide the graph into communities) also has neighbors. We'll call this candidate solutions ``agents''. In context of the genetic algorithm ``neighbor'' represents a relation between two agents. Of course we still want to be able to talk about the structure of the graph itself. Since our locus-based representation maps each gene to a specific vertex, we'll use the term from biologic evolution and call the neighbors of that vertex (in context of the graph) the alleles of that gene.
+First of all there is the concept of a ``neighbor''. In the previous parts of this report, ``neighbor'' always meant ``a vertex which shares and edge with another vertex''. It is a relation between vertexes in context of the graph. The lattice structure of the genetic algorithm means that a candidate solution (i.e. a possible way to divide the graph into communities) also has neighbors. We'll call this candidate solutions ``agents''. In context of the genetic algorithm ``neighbor'' represents a relation between two agents. Of course we still want to be able to talk about the structure of the graph itself. Since our locus-based representation maps each gene to a specific vertex, we'll use the term from biologic evolution and call the neighbors of that vertex (in context of the graph) the alleles of that gene. The size of one edge of the lattice is $L_{size}$, making the total population size equals to $L_{size} * L_{size}$.
 \par
 The second thing to keep in mind is related to cliques. For the genetic algorithm, cliques are treated exactly the same as vertexes. A clique is also mapped to a single gene and all operators will generally treat cliques in exactly the same way. However there are some important differences. The common idea behind these changes is to make cliques essentially transparent to the algorithm. This is most obvious in the fitness function, which should return the same score for equivalent community partitionings, no matter how many cliques are present. Two partitionings are equivalent if they are the same when all cliques are replaced again by their members. There are some other cases where this comes into play.
 \par
@@ -68,33 +68,85 @@ With that in mind, the core flow of the genetic algorithm is as follows:
 \STATE Evaluate the population
 \STATE Apply the Self-Learning operator
 \end{algorithmic}
-Note how there is no notion of selectors, parents and offspring. Selection and offspring generation still happens in this algorithm, but the details of this process are embedded within each of the operators. This genetic algorithm is a slightly modified version of the algorithm by Li and Liu \cite{Li2016}.
+Note how there is no notion of selectors, parents and offspring. Selection and offspring generation still happens in this algorithm, but the details of this process are embedded within each of the operators. This genetic algorithm is a slightly modified version of the algorithm by Li and Liu \cite{Li2016}. We have kept the paramters for the algorithm the same. It is possible, even likely, that other values for these paremters could lead to better results. However finding the optimal paramters was not the goal for this project.
 \par
-The algorithm is terminated if one of the following conditions is true: The maximum time $T_{max}$ has elapsed, the maximum number of generations without improvement has been achieved $N_{s}$ or if the best fitness in the population has converged sufficiently. This is determined by keeping a rolling average of the last $N_1$ and $N_2$ generations, with $N_1 > N_2$. If those rolling averages differ by less than $\epsilon$, the algorithm is terminated.  
+The algorithm is terminated if one of the following conditions is true: The maximum time $T_{max}$ has elapsed, the maximum number of generations without improvement has been achieved $N_{s}$ or if the best fitness in the population has converged sufficiently. This is determined by keeping a rolling average of the last $N_1$ and $N_2$ generations, with $N_1 > N_2$. If those rolling averages differ by less than $\epsilon$, the algorithm is terminated.
+\begin{figure}[H]
+\begin{center}
+\begin{tabular}{ c c c c c c c c c c c}
+ $L_{size}$ &  $N_{s}$ & $N_1$  & $N_2$ & $\epsilon$ & $T_{max}$ \\
+ \hline  
+  5 & 10 &  15 & 5 & $10^{-4}$ & 300
+\end{tabular}
+\caption{The values for the parameters of the genetic algorithm}
+\end{center}
+\end{figure}  
 \subsubsection{Fitness Function}
 The fitness function is the measure that drives the evolution process towards better solutions. The fitness measure typically used when evaluating the partitioning of a graph is the modularity measure Q from Newman and Girvan\cite{Newman2004}:
 \begin{equation}
 Q = \sum_{k=1}^{s} \left[ \frac{l_{k}}{L} - \left( \frac{d_{k}}{2L} \right)^{2} \right]
 \end{equation}
-In this formula, $s$ is the total number of communities, $L$ is the amount of edges in the network, $l_{k}$ is the amount of edges in community $k$ and $d_{k}$ is the sum of the degrees of all the vertexes in community $k$. !!!TODO!!! code? !!!TODO!!!
+In this formula, $s$ is the total number of communities, $L$ is the amount of edges in the network, $l_{k}$ is the amount of edges in community $k$ and $d_{k}$ is the sum of the degrees of all the vertexes in community $k$.
 \par
 Before the fitness function can be evaluated, the genotype needs to be decoded into communities. Since each gene represents a link from one vertex to one other vertex, a vertex is in a certain community if a member of that community can be reached by following the links in the genotype.
 \par
 As mentioned before, there are some slight changes that need to be made to the fitness function to make sure the existence of cliques does not change the result. This means calculating $L$, $l_{k}$ and $d_{k}$ as if the cliques did not exist. Both $L$ and $l_{k}$ count the edges inside the clique as well. Since in a clique all vertexes are connected to all other vertexes, a clique of size $n$ contributes an additional $ (n * (n - 1))/2 $ edges to those counts. The same clique will also add an additional $n * (n - 1)$ degrees to $d_{k}$. This ensures the fitness measure does not change.
 \subsubsection{Split/Merge Neighborhood Competition Operator}
+\label{sec:splitmerge}
 When a single gene (part of community $s_1$ ) is changed in a genotype to an allele which is not in the same community (say, $s_2$), one of the following things can happen. If the gene we changed was not a crucial link holding community $s_1$ together, the communities $s_1$ and $s_2$ are merged. Otherwise, $s1$ will split in two. One part (containing the gene we changed) will be merged with $s_2$, while the other part is now a smaller community on its own.
 \par
-This operator is applied to every agent in every generation. However, it will only do anything if the agent does not have a fitness higher than all of its neighbors. This preserves the current best solution. With a probability $p_s/m$, the operator changes a random gene to an allele in a different community. If that did not happen (in $1 - p_s/m$ of the cases), it will replace a random gene with any of its alleles. Either way, the agent is always replaced by the result of this operation.
+This operator is applied to every agent in every generation. However, it will only do anything if the agent does not have a fitness higher than all of its neighbors. This preserves the current best solution. With a probability $p_{s/m}$, the operator changes a random gene to an allele in a different community. If that did not happen (in $1 - p_{s/m}$ of the cases), it will replace a random gene with any of its alleles. Either way, the agent is always replaced by the result of this operation.
+\begin{figure}[H]
+\begin{center}
+\begin{tabular}{ c }
+ $p_{s/m}$\\
+ \hline  
+  0.5
+\end{tabular}
+\caption{The values for the parameters of the Split/Merge operator}
+\end{center}
+\end{figure}  
 \subsubsection{Hybrid Neighborhood Crossover Operator}
 The Hybrid Neighborhood Crossover operator combines two popular crossover techniques and randomly chooses between them. First of all, it has a probability $p_c$ of being applied, and only when the current agent is not the maximum of its neighbors. When it is being applied to a certain agent, it will replace that agent by crossing it over with its maximum neighbor. The specific is decided by $p_s$. Two-point crossover is executed with a probability of $p_s$, otherwise uniform crossover is executed.
+\begin{figure}[H]
+\begin{center}
+\begin{tabular}{ c c}
+ $p_{c}$ & $p_{s}$\\
+ \hline  
+  0.6 & 0.5
+\end{tabular}
+\caption{The values for the parameters of the Hybrid Crossover operator}
+\end{center}
+\end{figure}  
 \subsubsection{Adaptive Mutation Operator}
 The Adaptive Mutation operator iterates over every gene of every agent, and with a probability of $p_m$ it changes the value of that gene to the allele of one of its neighbors. To make the algorithm more likely to jump out of local optima, the mutation rate increases when the best fitness in a population is not changing between generations. If $t$ is the amount of generations with no improvement, the mutation rate is the following:
 \begin{equation}
 p_{m}' = ( t / N_s + 1)p_m
 \end{equation}
-\subsubsection{Self-Learning Operator}
-!!!TODO!!!
 
+\begin{figure}[H]
+\begin{center}
+\begin{tabular}{ c }
+ $p_{m}$\\
+ \hline  
+  0.05
+\end{tabular}
+\caption{The values for the parameters of the Hybrid Crossover operator}
+\end{center}
+\end{figure}  
+\subsubsection{Self-Learning Operator}
+The Self-Learning operator performs a local search on the best $sl$ agents of a generation. The operator is an a genetic algorithm itself, but with a smaller lattice and only a single operator. For each of the $sl$ best agents, a new population is generated. If the lattice of the new genetic algorithm has $sL_{size}$ on one edge, $sL_{size} * sL_{size} - 1$ agents are generated by using the mutation operator with probability $_{s}p_{m}$, and one agent is a direct copy of the current agent. The new genetic algorithm has only one operator, which is the Split/Merge operator from section \ref{sec:splitmerge}. The original algorithm by Li and Liu only terminates after $sN_s = 50$ steady generations. We still have that termination condition, but also added a maximum generation count of $sN_{max} = 100$ generations to make sure it does terminate in a reasonable amount of time.
+\par
+\begin{figure}[H]
+\begin{center}
+\begin{tabular}{ c c c c c}
+ $sL_{size}$ & $sl$ &  $sN_{s}$ & $sN_{max}$ & $_{s}p_{m}$ \\
+ \hline  
+  3 & 3 &  50 & 100 & 0.02
+\end{tabular}
+\caption{The values for the parameters of the genetic algorithm}
+\end{center}
+\end{figure}  
 
 %%% Local Variables: 
 %%% mode: latex
