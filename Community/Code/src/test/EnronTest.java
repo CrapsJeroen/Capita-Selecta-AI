@@ -14,6 +14,6 @@ public class EnronTest extends ParentTest{
 		Parser parser = new Parser();
 		graph = parser.parseFile(new File("data/enron.txt"));
         maxTime = 60*10;
-        lSize = 2;
+        lSize = 3;
     }
 }

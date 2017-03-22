@@ -15,7 +15,7 @@ Figure \ref{fig:reducedtable} shows the results from the pre-processing algorith
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=1\textwidth]{images/reducedtable.png}
-\caption{The amount of vertices and edges after the preprocessing step, as well as the percentage change.}\label{fig:reducedtable}
+\caption{The amount of vertexes and edges after the pre-processing step, as well as the percentage change.}\label{fig:reducedtable}
 \end{center}
 \end{figure}
 
@@ -53,7 +53,7 @@ Even with the reduced graphs, the Amazon and YouTube graphs were still too large
 \end{center}
 \end{figure}
 
-The Karate graph is the smallest in the dataset. The reason why we have tested all the graphs with both the self-learning operator enabled and disable becomes immediatly clear, as the execution time goes from tens of milliseconds to seconds. However, we do see slightly better results in the modularity score with self-learning enabled. For this graph, reducing the graph seems to have a slightly negative effect. In all cases (including the random population average modularity), the reduced graph scores slightly worse than the regular graph. We expect this is due to the limited search space due to the reduction. In this small example, it is possible to properly explore the search space. We believe that the smallest cliques of size 3 may need to be split up for the best score.
+The Karate graph is the smallest in the dataset. The reason why we have tested all the graphs with both the self-learning operator enabled and disable becomes immediately clear, as the execution time goes from tens of milliseconds to seconds. However, we do see slightly better results in the modularity score with self-learning enabled. For this graph, reducing the graph seems to have a slightly negative effect. In all cases (including the random population average modularity), the reduced graph scores slightly worse than the regular graph. We expect this is due to the limited search space due to the reduction. In this small example, it is possible to properly explore the search space. We believe that some of the smallest cliques of size 3 may need to be split up for the best score.
 \subsubsection{Football}
 \begin{figure}[H]
 \begin{center}
@@ -70,7 +70,7 @@ The Karate graph is the smallest in the dataset. The reason why we have tested a
 \caption{Results for the Football graph}\label{fig:football}
 \end{center}
 \end{figure}
-The football graph is significantly larger and the advantages of reducing the graph are starting to show. The self-learning operator is still very slow, but no matter if it is enabled or disabled, the reduced graph significantly speeds up the algorithm. Without the self-learning operator we see a slight edge for the reduced graph, but with the operator enabled the edge goes back to the regular graph. With more than triple the execution time, the self-learning operator still manages to find a better solution than is possible with the reduced graph. The random scores give a signficant advantage to reduced graph. The football graph shows relations between players of several different football teams. Reducing parts of those teams to cliques makes sure that they stay together, even the communities are randomized, leading to the higher score.
+The football graph is significantly larger and the advantages of reducing the graph are starting to show. The self-learning operator is still very slow, but no matter if it is enabled or disabled, the reduced graph significantly speeds up the algorithm. Without the self-learning operator we see a slight advantage for the reduced graph, but with the operator enabled the advantage goes back to the regular graph. With more than triple the execution time, the self-learning operator still manages to find a better solution than is possible with the reduced graph. The random scores give a significant advantage to reduced graph. The football graph shows relations between players of several different football teams. Reducing parts of those teams to cliques makes sure that they stay together, even the communities are randomized, leading to the higher score.
 
 \subsubsection{Facebook}
 \begin{figure}[H]
@@ -88,7 +88,7 @@ The football graph is significantly larger and the advantages of reducing the gr
 \caption{Results for the Facebook graph}\label{fig:facebook}
 \end{center}
 \end{figure}
-The Facebook graph is the best-case scenario for our algorithm. There are over 20 times as many edges as vertices, which left only around a third of the vertices and a sixth of the edges after reduction. There is a large lead in processing time for the reduced graph, and the scores are better across the board. Especially the random score is impressive: The random, initial population for the genetic algorithm is already significantly better with the reduced graph. The self-learning operator for the regular graph actually makes the score worse. The execution time got so high that only 2 or 3 generations can be processed. This is why we no longer include it in the larger graphs.
+The Facebook graph is the best-case scenario for our algorithm. There are over 20 times as many edges as vertexes, which left only around a third of the vertexes and a sixth of the edges after reduction. There is a large lead in processing time for the reduced graph, and the scores are better across the board. Especially the random score is impressive: The random, initial population for the genetic algorithm is already significantly better with the reduced graph. The self-learning operator for the regular graph actually makes the score worse. The execution time got so high that only 2 or 3 generations can be processed. This is why we no longer include it in the larger graphs.
 
 \subsubsection{Power}
 \begin{figure}[H]
@@ -106,7 +106,7 @@ The Facebook graph is the best-case scenario for our algorithm. There are over 2
 \caption{Results for the Power graph}\label{fig:power}
 \end{center}
 \end{figure}
-The Power graph is a relatively bad case for our algorithm. The graph is only reduced by around 10\% of the vertices. However, there still is a large advantage for the reduced graph when it comes to execution time. The modularity of the 2 graphs is almost identical, but the random scores show a slight improvement for the reduced graph. For this graph, the reduction leads to a better start. This allows the algorithm to converge faster on roughly the same solution.
+The Power graph is a relatively bad case for our algorithm. The graph is only reduced by around 10\% of the vertexes. However, there still is a large advantage for the reduced graph when it comes to execution time. The modularity of the two graphs is almost identical, but the random scores show a slight improvement for the reduced graph. For this graph, the reduction leads to a better start. This allows the algorithm to converge faster on roughly the same solution.
 
 \subsubsection{Arxiv}
 \begin{figure}[H]
