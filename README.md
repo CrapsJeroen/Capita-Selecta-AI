@@ -9,3 +9,4 @@ Given a topic the students were required to do the necessary research to be able
 ## Community Detection
 
 The goal of this part was to find a gap in the literature of algorithms for community detection in very large graphs. 
+The approach we took in this assigment was that we would create cliques of nodes to reduce the general size of the graph. The main conclusion was that we could improve the baseline for genetic algorithms by a significant margin.
